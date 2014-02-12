@@ -11,6 +11,7 @@ public class Pool {
 	private ArrayList<String> lignes = new ArrayList<String>();
 	private String titre = "Pas de titre";
 	private ArrayList<Piece> pool = new ArrayList<Piece>();
+	private ArrayList<Piece> utilisee = new ArrayList<Piece>();
 	
 	public Pool(String path){
 		this.charge(path);
@@ -18,11 +19,21 @@ public class Pool {
 		this.creePool();
 	}
 	
+	public Pool(String titre, ArrayList<Piece> array){
+		if (titre.length() != 1) {
+			System.out.println("Le titre ne doit comporter qu'un caractère !");
+		}else {
+			this.titre = titre;
+		}
+		this.pool = array;
+	}
+	
 	public void creePool(){
 		for (int i = 1; i < 10; i++) {
 			pool.add(this.creePieces(lignes.get(i)));
 		}
 	}
+	
 	public Piece creePieces(String ligne){
 		int longueur = ligne.length();
 		String titre = ligne.substring(0, 1);
@@ -48,8 +59,7 @@ public class Pool {
 		}
 		return new Piece(titre, tab);
 	}
-	
-	
+
 	public void charge(String path){
 		String ligne = "";
 		try {
@@ -64,14 +74,35 @@ public class Pool {
 		}
 	}
 
-	public ArrayList<String> getLignes() {
-		return lignes;
+	public boolean isPerfect(){
+		boolean reponse = true;
+		for (Piece p : pool) {
+			if (!p.estParfaite()) {
+				reponse = false;
+			}
+		}
+		return reponse;
 	}
-
-	public void setLignes(ArrayList<String> lignes) {
-		this.lignes = lignes;
+	
+	public boolean isLibre(Piece p){
+		boolean libre = true, trouve = false;
+		for (Piece piece : pool) {
+			if (piece.equals(p)) {
+				trouve = true;
+			}
+		}
+		if (trouve) {
+			for (Piece piece : utilisee) {
+				if (piece.equals(p)) {
+					libre = false;
+				}
+			}
+		}else {
+			System.out.println("Cette pièce n'existe pas !");
+		}
+		return libre;
 	}
-
+	
 	public String getTitre() {
 		return titre;
 	}
