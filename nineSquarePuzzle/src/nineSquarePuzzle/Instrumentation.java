@@ -21,16 +21,27 @@ public class Instrumentation {
 		estFini = true; 
 	}
 	
-	public long tempsEcoule(){
+	public String tempsEcoule(){
+		long duree = 0;
+		int heure = 0, minute = 0, seconde = 0, millisec = 0;
 		if (estFini) {
-			return (fin.getTime() - debut.getTime());
+			duree = fin.getTime() - debut.getTime();
+			millisec = (int) (duree % 1000);
+			seconde = (int) (duree /1000);
+			minute = (int) (duree / 60000);
+			heure = (int) (duree / 3600000);
+			return (heure+"h "+minute+"min "+seconde+"s "+millisec+"ms");
 		}else {
 			System.out.println("La solution n'a pas encore été trouvée !");
-			return -1;
+			return "-1";
 		}
 	}
 	
+	public void appel(){
+		this.nbAppelRecursifs++;
+	}
+	
 	public String afficheInfos(){
-		return ("----------\nTemps d'exécution : "+this.tempsEcoule()+"\nNombre d'appels récursifs : "+nbAppelRecursifs+"\ndebut : "+this.debut.getTime()+"\nfin : "+this.fin.getTime());
+		return ("----------\nTemps d'exécution : "+this.tempsEcoule()+"\nNombre d'appels récursifs : "+nbAppelRecursifs);
 	}
 }
