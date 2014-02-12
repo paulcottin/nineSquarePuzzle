@@ -23,7 +23,9 @@ public class Piece {
 	
 //	Faire tourner la piece, de n quart, dans le sens des aiguilles d'une montre
 	public void tourne(int n){
-		
+		for (int i = 0; i < n ; i++) {
+			tourneUneFois();
+		}
 	}
 	
 	public void tourneUneFois(){
