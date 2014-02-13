@@ -17,6 +17,8 @@ public class Pool {
 		this.charge(path);
 		this.titre = lignes.get(0);
 		this.creePool();
+//		au depart toutes les pieces sont utilisees
+		this.utilisee = this.pool;
 	}
 	
 	public Pool(String titre, ArrayList<Piece> array){
@@ -84,8 +86,9 @@ public class Pool {
 		return reponse;
 	}
 	
-	public boolean isLibre(Piece p){
-		boolean libre = true, trouve = false;
+//	Verifie qu'une piece existe et si elle est sur le plateau ou pas.
+	public boolean isUtilise(Piece p){
+		boolean utilise = false, trouve = false;
 		for (Piece piece : pool) {
 			if (piece.equals(p)) {
 				trouve = true;
@@ -94,13 +97,27 @@ public class Pool {
 		if (trouve) {
 			for (Piece piece : utilisee) {
 				if (piece.equals(p)) {
-					libre = false;
+					utilise = true;
 				}
 			}
 		}else {
 			System.out.println("Cette pièce n'existe pas !");
 		}
-		return libre;
+		return utilise;
+	}
+	
+//	enleve une piece pour bouger les autres
+	public void enlevePiece(Piece p){
+		if (this.isUtilise(p)) {
+			utilisee.remove(p);
+		}
+	}
+	
+//	remet une piece en place
+	public void ajoutePiece(Piece p){
+		if (!this.isUtilise(p)) {
+			utilisee.add(p);
+		}
 	}
 	
 	public String getTitre() {

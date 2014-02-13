@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -13,6 +14,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 import nineSquarePuzzle.Instrumentation;
 import nineSquarePuzzle.Pool;
@@ -47,7 +49,6 @@ public class Fenetre extends JFrame{
 		container.setBackground(Color.white);
 		
 		setGridLayout();
-//		setInstrumentation();
 		setMenu();
 		
 		JPanel titreProjetPanel = new JPanel(); titreProjetPanel.setOpaque(false);
@@ -80,6 +81,7 @@ public class Fenetre extends JFrame{
 		fichier = new JMenu("Fichier");
 			quitter = new JMenuItem("Quitter");
 			quitter.addActionListener(new menuActionListener());
+			quitter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.CTRL_MASK));
 		fichier.add(quitter);
 		
 		menu.add(fichier);
