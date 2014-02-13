@@ -4,9 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import nineSquarePuzzle.Instrumentation;
@@ -21,6 +26,10 @@ public class Fenetre extends JFrame{
 	
 	JPanel container = new JPanel();
 	JLabel titreProjet = new JLabel("Nine Square Puzzle");
+	JMenuBar menu = new JMenuBar();
+	JMenu fichier;
+	JMenuItem quitter;
+	
 	int width = 600, height = 600;
 	int carreCote = (width - 100)/3;
 	PoolCarre poolcarre;
@@ -39,10 +48,11 @@ public class Fenetre extends JFrame{
 		
 		setGridLayout();
 //		setInstrumentation();
+		setMenu();
 		
 		JPanel titreProjetPanel = new JPanel(); titreProjetPanel.setOpaque(false);
 		titreProjetPanel.add(titreProjet);
-		container.add(titreProjetPanel, BorderLayout.NORTH);
+		container.add(menu, BorderLayout.NORTH);
 		this.setContentPane(container);
 		this.setVisible(true);
 	}
@@ -63,6 +73,28 @@ public class Fenetre extends JFrame{
 		JLabel nbAppelRecur = new JLabel("Nombre d'appel recursif : "+String.valueOf(instrumentation.getNbAppelRecursifs()));
 		inst.add(tempsExec); inst.add(nbAppelRecur);
 		container.add(inst, BorderLayout.SOUTH);
+	}
+	
+	public void setMenu(){
+		
+		fichier = new JMenu("Fichier");
+			quitter = new JMenuItem("Quitter");
+			quitter.addActionListener(new menuActionListener());
+		fichier.add(quitter);
+		
+		menu.add(fichier);
+	}
+	
+	class menuActionListener implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if (e.getSource().equals(quitter)) {
+				System.exit(0);
+			}
+		}
+		
 	}
 
 }

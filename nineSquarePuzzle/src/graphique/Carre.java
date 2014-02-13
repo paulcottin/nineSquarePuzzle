@@ -21,12 +21,10 @@ public class Carre extends JPanel {
 	
 	int north, weast, east, south;
 	String titre;
-	String[] labelTitres = new String[9]; /*= {" ", String.valueOf(north), " ", String.valueOf(weast), this.titre, String.valueOf(east), " ", String.valueOf(south), " "};*/
+	String[] labelTitres = new String[9]; 
 	JLabel[] labels = new JLabel[9];
 	Color color;
 	int carreX, carreY;
-	
-//	JLabel c1, c2, c3, c4, c5, c6, c7, c8, c9;
 	
 	public Carre() {
 	}
