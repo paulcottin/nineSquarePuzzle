@@ -39,4 +39,76 @@ public class Piece {
 	public String toString(){//Finir de modifier
 		return ("+----------------+\n|\t"+this.northSigne+Math.abs(this.north)+" \t |\n|  "+this.weastSigne+Math.abs(this.west)+"   ["+this.nom+"]   "+this.eastSigne+Math.abs(this.east)+" |\n|\t"+this.southSigne+Math.abs(this.south)+"\t |\n+----------------+");
 	}
+
+	public int getNorth() {
+		return north;
+	}
+
+	public void setNorth(int north) {
+		this.north = north;
+	}
+
+	public int getSouth() {
+		return south;
+	}
+
+	public void setSouth(int south) {
+		this.south = south;
+	}
+
+	public int getEast() {
+		return east;
+	}
+
+	public void setEast(int east) {
+		this.east = east;
+	}
+
+	public int getWest() {
+		return west;
+	}
+
+	public void setWest(int west) {
+		this.west = west;
+	}
+
+	public String getNorthSigne() {
+		return northSigne;
+	}
+
+	public void setNorthSigne(String northSigne) {
+		this.northSigne = northSigne;
+	}
+
+	public String getSouthSigne() {
+		return southSigne;
+	}
+
+	public void setSouthSigne(String southSigne) {
+		this.southSigne = southSigne;
+	}
+
+	public String getEastSigne() {
+		return eastSigne;
+	}
+
+	public void setEastSigne(String eastSigne) {
+		this.eastSigne = eastSigne;
+	}
+
+	public String getWeastSigne() {
+		return weastSigne;
+	}
+
+	public void setWeastSigne(String weastSigne) {
+		this.weastSigne = weastSigne;
+	}
+
+	public String getNom() {
+		return nom;
+	}
+
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
 }
