@@ -34,8 +34,8 @@ public class Carre extends JPanel {
 		String[] tabValeurs = {String.valueOf(north), String.valueOf(weast), String.valueOf(east), String.valueOf(south)};
 		this.color = c;
 		this.carreX = x; this.carreY = y;
-		this.setPreferredSize(new Dimension(x, y));
-		this.setBackground(c);
+		this.setPreferredSize(new Dimension(carreX, carreY));
+		this.setBackground(color);
 		
 		JPanel grid = new JPanel(); grid.setLayout(new GridLayout(3, 3, 50, 50));
 //		Remplissage des tableaux pour l'affichage des valeurs dans les carrés

@@ -29,7 +29,11 @@ public class Piece {
 	}
 	
 	public void tourneUneFois(){
-		
+		int temp = north;String tempSign = northSigne;
+		north = west;northSigne = weastSigne;
+		west = south; weastSigne = southSigne;
+		south = east; southSigne = eastSigne;
+		east = temp; eastSigne = tempSign;
 	}
 	
 	public boolean estParfaite(){

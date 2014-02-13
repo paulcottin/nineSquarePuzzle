@@ -13,6 +13,7 @@ public class Pool {
 	private ArrayList<Piece> pool = new ArrayList<Piece>();
 	private ArrayList<Piece> utilisee = new ArrayList<Piece>();
 	
+	
 	public Pool(String path){
 		this.charge(path);
 		this.titre = lignes.get(0);

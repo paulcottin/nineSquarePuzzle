@@ -1,8 +1,17 @@
 package nineSquarePuzzle;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import javax.swing.JOptionPane;
+
 import graphique.Fenetre;
+import graphique.PoolCarre;
 
 public class Main {
+	
+	public static String path = "data1.txt";
 
 	public static void main(String[] args){
 //		Main sans GUI (interface graphique)
@@ -18,10 +27,9 @@ public class Main {
 		
 //		Avec GUI
 		Instrumentation i = new Instrumentation();
-		Pool pool = new Pool("data1.txt");
+		Pool pool = new Pool(path);
 		Fenetre fen = new Fenetre(pool, i);
 		i.start();
-		pool.getPool().get(0).tourne(1);
 		i.stop();
 		fen.setInstrumentation();
 	}
