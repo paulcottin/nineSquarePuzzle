@@ -21,30 +21,43 @@ public class Carre extends JPanel {
 	
 	int north, weast, east, south;
 	String titre;
+	String[] labelTitres = new String[9]; /*= {" ", String.valueOf(north), " ", String.valueOf(weast), this.titre, String.valueOf(east), " ", String.valueOf(south), " "};*/
+	JLabel[] labels = new JLabel[9];
 	Color color;
-	int x, y;
+	int carreX, carreY;
 	
-	JLabel c1 = new JLabel(" ");
-	JLabel c2 = new JLabel(String.valueOf(north));
-	JLabel c3 = new JLabel(" ");
-	JLabel c4 = new JLabel(String.valueOf(weast));
-	JLabel c5 = new JLabel(titre);
-	JLabel c6 = new JLabel(String.valueOf(east));
-	JLabel c7 = new JLabel(" ");
-	JLabel c8 = new JLabel(String.valueOf(south));
-	JLabel c9 = new JLabel(" ");
+//	JLabel c1, c2, c3, c4, c5, c6, c7, c8, c9;
 	
 	public Carre() {
 	}
 	
 	public Carre(int x, int y, Color c, Piece p){
 		this.north = p.getNorth(); this.weast = p.getWest(); this.east = p.getEast(); this.south = p.getSouth();this.titre = p.getNom();
+		String[] tabValeurs = {String.valueOf(north), String.valueOf(weast), String.valueOf(east), String.valueOf(south)};
 		this.color = c;
-		this.x = x; this.y = y;
+		this.carreX = x; this.carreY = y;
 		this.setPreferredSize(new Dimension(x, y));
 		this.setBackground(c);
-		JPanel grid = new JPanel(); this.setLayout(new GridLayout(3, 3, 50, 50));
-		this.add(c1);  this.add(c2); this.add(c3); this.add(c4);this.add(c5);  this.add(c6); this.add(c7); this.add(c8);this.add(c9);
+		
+		JPanel grid = new JPanel(); grid.setLayout(new GridLayout(3, 3, 50, 50));
+//		Remplissage des tableaux pour l'affichage des valeurs dans les carrés
+		int cpt = 0;
+		for (int i = 0; i < labels.length; i++) {
+			if (i%2 == 0 && i != 4) {
+				labelTitres[i] = " ";
+			}
+			else if (i == 4) {
+				labelTitres[i] = titre;
+			}else {
+				labelTitres[i] = tabValeurs[cpt++];
+			}
+			labels[i] = new JLabel(labelTitres[i]);
+			grid.add(labels[i]);
+		}
+		
+		grid.setOpaque(false);
+		this.add(grid);
+		
 	}
 	
 	public Color getColor(){
@@ -55,19 +68,19 @@ public class Carre extends JPanel {
 		this.color = c;
 	}
 
-	public int getX() {
-		return x;
+	public int getCarreX() {
+		return carreX;
 	}
 
-	public void setX(int x) {
-		this.x = x;
+	public void setCarreX(int x) {
+		this.carreX = x;
 	}
 
-	public int getY() {
-		return y;
+	public int getCarreY() {
+		return carreY;
 	}
 
-	public void setY(int y) {
-		this.y = y;
+	public void setCarreY(int y) {
+		this.carreY = y;
 	}
 }

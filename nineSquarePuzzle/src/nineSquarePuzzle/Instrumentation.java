@@ -44,4 +44,12 @@ public class Instrumentation {
 	public String afficheInfos(){
 		return ("----------\nTemps d'exécution : "+this.tempsEcoule()+"\nNombre d'appels récursifs : "+nbAppelRecursifs);
 	}
+
+	public int getNbAppelRecursifs() {
+		return nbAppelRecursifs;
+	}
+
+	public void setNbAppelRecursifs(int nbAppelRecursifs) {
+		this.nbAppelRecursifs = nbAppelRecursifs;
+	}
 }
