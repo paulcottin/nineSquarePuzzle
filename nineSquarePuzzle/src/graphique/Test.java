@@ -6,6 +6,7 @@ import nineSquarePuzzle.Instrumentation;
 import nineSquarePuzzle.NineSquarePuzzle;
 import nineSquarePuzzle.Pool;
 
+// Ne sert plus à rien ! :)
 public class Test {
 
 	public static void main(String[] args){
