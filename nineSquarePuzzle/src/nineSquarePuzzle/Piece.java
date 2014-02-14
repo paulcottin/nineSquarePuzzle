@@ -40,7 +40,7 @@ public class Piece {
 		return true;
 	}
 	
-	public String toString(){//Finir de modifier
+	public String toString(){
 		return ("+----------------+\n|\t"+this.northSigne+Math.abs(this.north)+" \t |\n|  "+this.weastSigne+Math.abs(this.west)+"   ["+this.nom+"]   "+this.eastSigne+Math.abs(this.east)+" |\n|\t"+this.southSigne+Math.abs(this.south)+"\t |\n+----------------+");
 	}
 

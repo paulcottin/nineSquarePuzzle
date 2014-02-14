@@ -1,13 +1,6 @@
 package nineSquarePuzzle;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import javax.swing.JOptionPane;
-
 import graphique.Fenetre;
-import graphique.PoolCarre;
 
 public class Main {
 	
@@ -27,8 +20,8 @@ public class Main {
 		
 //		Avec GUI
 		Instrumentation i = new Instrumentation();
-		Pool pool = new Pool(path);
-		Fenetre fen = new Fenetre(pool, i);
+		NineSquarePuzzle puzzle = new NineSquarePuzzle(path);
+		Fenetre fen = new Fenetre(puzzle.getBoard().getPool(), i);
 		i.start();
 		i.stop();
 		fen.setInstrumentation();
