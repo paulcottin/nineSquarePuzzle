@@ -55,7 +55,6 @@ public class Carre extends JPanel {
 		
 		grid.setOpaque(false);
 		this.add(grid);
-		
 	}
 	
 	public Color getColor(){

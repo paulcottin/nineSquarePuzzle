@@ -144,10 +144,8 @@ public class Fenetre extends JFrame{
 				String nbString = (String)JOptionPane.showInputDialog(null, "Combien de tours ?", "Faire tourner", JOptionPane.QUESTION_MESSAGE, null, nbTours, nbTours[1]);
 				int nb = Integer.valueOf(nbString);
 				pool.getPool().get(0).tourne(nb);
-				System.out.println(pool.getPool().get(0).toString());poolcarre = new PoolCarre(pool, width, height);
-				grid.removeAll();
-				setGridLayout();
-				System.out.println("Il devrait se tourner aussi dans la GUI mais je n'y arrive pas... :(");
+				poolcarre = new PoolCarre(pool, width, height);setGridLayout();
+				grid.revalidate();
 			}
 		}
 		
