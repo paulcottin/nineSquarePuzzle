@@ -6,6 +6,7 @@ public class Board {
 
 	ArrayList<Piece> positions;
 	ArrayList<Boolean> positionOccupees;
+	ArrayList<Integer> inclinaison = new ArrayList<Integer>();
 	private Pool pool;
 	
 	public Board(String path){
