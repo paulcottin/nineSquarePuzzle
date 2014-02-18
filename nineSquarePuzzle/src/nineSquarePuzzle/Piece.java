@@ -35,10 +35,19 @@ public class Piece {
 		west = south; weastSigne = southSigne;
 		south = east; southSigne = eastSigne;
 		east = temp; eastSigne = tempSign;
+		inclinaison = inclinaison++ % 4; //Sert à placer les pièces dans le bon ordre dans le Board
 	}
 	
 	public boolean estParfaite(){
 		return true;
+	}
+	
+	public boolean equals(Piece p){
+		if (p.getNom().equals(this.nom)) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 	
 	public String toString(){
