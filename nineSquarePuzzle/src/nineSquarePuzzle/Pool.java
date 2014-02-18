@@ -1,5 +1,6 @@
 package nineSquarePuzzle;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -12,7 +13,7 @@ public class Pool {
 	private String titre = "Pas de titre";
 	private ArrayList<Piece> pool = new ArrayList<Piece>();
 	private ArrayList<Piece> utilisee = new ArrayList<Piece>();
-	
+	private Color[] couleursPiece = {Color.red, Color.blue, Color.green, Color.gray, Color.pink, Color.cyan, Color.orange, Color.white, Color.black};
 	
 	public Pool(String path){
 		this.charge(path);
@@ -139,5 +140,13 @@ public class Pool {
 
 	public void setPool(ArrayList<Piece> pool) {
 		this.pool = pool;
+	}
+
+	public Color[] getCouleursPiece() {
+		return couleursPiece;
+	}
+
+	public void setCouleursPiece(Color[] couleursPiece) {
+		this.couleursPiece = couleursPiece;
 	}
 }

@@ -40,7 +40,7 @@ public class Fenetre extends JFrame{
 	
 	int width = 600, height = 600;
 	int carreCote = (width - 100)/3;
-	PoolCarre poolcarre;
+	PoolCarre poolcarre; BoardCarre boardCarre;
 	Pool pool;
 	Board board;
 	Instrumentation instrumentation;
@@ -50,6 +50,7 @@ public class Fenetre extends JFrame{
 		this.pool = board.getPool();
 		this.instrumentation = instrumentation;
 		this.poolcarre = new PoolCarre(this.pool, width, height);
+		this.boardCarre = new BoardCarre(this.board, width, height);
 		
 		this.setTitle(Main.path);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -72,19 +73,25 @@ public class Fenetre extends JFrame{
 	}
 	
 	public void afficheBoard(){
-		resetBoard();
-		grid.add(poolcarre.getCarresTab(0),Board.CENTRE);
+		resetBoard();//Met des carrés vides sur toute la grille
+		boardCarre.charge();//Mise à jour du tableau de carrés chargés
+		for (int i = 0; i < boardCarre.getBoard().getPositions().size(); i++) {
+			grid.add(boardCarre.getCarres()[i]);
+		}
 		container.add(grid);
+		container.revalidate();
 	}
 	
+//	Met des carrés vides sur toute la grille
 	public void resetBoard(){
+		grid.removeAll();
 		for (int i = 0; i < 8; i++) {
-			grid.add(new Carre(poolcarre.getCarresTab(0).getCarreX(), poolcarre.getCarresTab(0).getCarreY()));
+			grid.add(new Carre(width, height));
 		}
 	}
 	
+//	Ajout des carrés de couleur au grid layout	
 	public void affichePool(){
-//		Ajout des carrés de couleur au grid layout
 		for (int i = 0; i < poolcarre.getCarresTab().length; i++) {
 			grid.add(poolcarre.getCarresTab(i));
 		}
