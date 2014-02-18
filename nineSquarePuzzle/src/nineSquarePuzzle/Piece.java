@@ -5,7 +5,7 @@ public class Piece {
 	String nom;
 	int north, south, east, west;
 	String northSigne, southSigne, eastSigne, weastSigne;
-	int inclinaison = 0;//Sert à faire tourner la pièce du bon nb de tours dans l'algo.
+	int orientation = 0;//Sert à faire tourner la pièce du bon nb de tours dans l'algo.
 //	tableau permettant de stocker l'information : le nombre est positif/neg pour l'affichage
 	String[] signes = new String[4];
 	
@@ -35,7 +35,7 @@ public class Piece {
 		west = south; weastSigne = southSigne;
 		south = east; southSigne = eastSigne;
 		east = temp; eastSigne = tempSign;
-		inclinaison = inclinaison++ % 4; //Sert à placer les pièces dans le bon ordre dans le Board
+		orientation = orientation++ % 4; //Sert à placer les pièces dans le bon ordre dans le Board
 	}
 	
 	public boolean estParfaite(){
@@ -124,5 +124,13 @@ public class Piece {
 
 	public void setNom(String nom) {
 		this.nom = nom;
+	}
+
+	public int getOrientation() {
+		return orientation;
+	}
+
+	public void setOrientation(int orientation) {
+		this.orientation = orientation;
 	}
 }
