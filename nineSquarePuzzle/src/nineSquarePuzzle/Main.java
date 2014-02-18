@@ -21,7 +21,7 @@ public class Main {
 //		Avec GUI
 		Instrumentation i = new Instrumentation();
 		NineSquarePuzzle puzzle = new NineSquarePuzzle(path);
-		Fenetre fen = new Fenetre(puzzle.getBoard().getPool(), i);
+		Fenetre fen = new Fenetre(puzzle.getBoard(), i);
 		i.start();
 		i.stop();
 		fen.setInstrumentation();

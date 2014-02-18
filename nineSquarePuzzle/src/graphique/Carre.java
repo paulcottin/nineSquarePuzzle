@@ -26,7 +26,11 @@ public class Carre extends JPanel {
 	Color color;
 	int carreX, carreY;
 	
-	public Carre() {
+//	Carre vide (sert pour afficher le Board au fur et à mesure)
+	public Carre(int x, int y) {
+		this.carreX = x; this.carreY = y;
+		this.setPreferredSize(new Dimension(carreX, carreY));
+		this.setVisible(true);
 	}
 	
 	public Carre(int x, int y, Color c, Piece p){

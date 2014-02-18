@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+import nineSquarePuzzle.Board;
 import nineSquarePuzzle.Instrumentation;
 import nineSquarePuzzle.Main;
 import nineSquarePuzzle.Pool;
@@ -31,7 +32,7 @@ public class Fenetre extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	JPanel container = new JPanel(), grid;
+	JPanel container = new JPanel(), grid = new JPanel();
 	JLabel titreProjet = new JLabel("Nine Square Puzzle");
 	JMenuBar menu = new JMenuBar();
 	JMenu fichier, action;
@@ -41,21 +42,26 @@ public class Fenetre extends JFrame{
 	int carreCote = (width - 100)/3;
 	PoolCarre poolcarre;
 	Pool pool;
+	Board board;
 	Instrumentation instrumentation;
 	
-	public Fenetre(Pool pool, Instrumentation instrumentation){
-		this.pool = pool; this.instrumentation = instrumentation;
+	public Fenetre(Board board, Instrumentation instrumentation){
+		this.board = board;
+		this.pool = board.getPool();
+		this.instrumentation = instrumentation;
 		this.poolcarre = new PoolCarre(this.pool, width, height);
 		
 		this.setTitle(Main.path);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(width, height);
 		this.setLocationRelativeTo(null);
+		grid.setLayout(new GridLayout(3,3,5,5));
 		
 		container.setLayout(new BorderLayout());
 		container.setBackground(Color.white);
 		
-		setGridLayout();
+		afficheBoard();
+//		affichePool();
 		setMenu();
 		
 		JPanel titreProjetPanel = new JPanel(); titreProjetPanel.setOpaque(false);
@@ -65,9 +71,19 @@ public class Fenetre extends JFrame{
 		this.setVisible(true);
 	}
 	
-	public void setGridLayout(){
-		grid = new JPanel();
-		grid.setLayout(new GridLayout(3, 3, 5, 5));
+	public void afficheBoard(){
+		resetBoard();
+		grid.add(poolcarre.getCarresTab(0),Board.CENTRE);
+		container.add(grid);
+	}
+	
+	public void resetBoard(){
+		for (int i = 0; i < 8; i++) {
+			grid.add(new Carre(poolcarre.getCarresTab(0).getCarreX(), poolcarre.getCarresTab(0).getCarreY()));
+		}
+	}
+	
+	public void affichePool(){
 //		Ajout des carrés de couleur au grid layout
 		for (int i = 0; i < poolcarre.getCarresTab().length; i++) {
 			grid.add(poolcarre.getCarresTab(i));
@@ -144,7 +160,7 @@ public class Fenetre extends JFrame{
 				String nbString = (String)JOptionPane.showInputDialog(null, "Combien de tours ?", "Faire tourner", JOptionPane.QUESTION_MESSAGE, null, nbTours, nbTours[1]);
 				int nb = Integer.valueOf(nbString);
 				pool.getPool().get(0).tourne(nb);
-				poolcarre = new PoolCarre(pool, width, height);setGridLayout();
+				poolcarre = new PoolCarre(pool, width, height);affichePool();
 				grid.revalidate();
 			}
 		}
