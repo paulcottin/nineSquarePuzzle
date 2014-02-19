@@ -13,9 +13,6 @@ public class PoolCarre {
 		for (int i = 0; i < pool.getPool().size() ; i++) {
 			carresTab[i] = new Carre((fenetreX-100)/3, (fenetreY-100)/3, pool.getCouleursPiece()[i], pool.getPool().get(i));
 		}
-		for (int i = 0; i < pool.getPool().size(); i++) {
-			carresTab[i].repaint();
-		}
 	}
 
 	public Carre[] getCarresTab() {

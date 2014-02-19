@@ -40,7 +40,7 @@ public class Fenetre extends JFrame{
 	
 	int width = 600, height = 600;
 	int carreCote = (width - 100)/3;
-	PoolCarre poolcarre; BoardCarre boardCarre;
+	public PoolCarre poolcarre; BoardCarre boardCarre;
 	Pool pool;
 	Board board;
 	Instrumentation instrumentation;
@@ -61,8 +61,7 @@ public class Fenetre extends JFrame{
 		container.setLayout(new BorderLayout());
 		container.setBackground(Color.white);
 		
-		afficheBoard();
-//		affichePool();
+		initialiseBoard();
 		setMenu();
 		
 		JPanel titreProjetPanel = new JPanel(); titreProjetPanel.setOpaque(false);
@@ -72,30 +71,23 @@ public class Fenetre extends JFrame{
 		this.setVisible(true);
 	}
 	
-	public void afficheBoard(){
-		resetBoard();//Met des carrés vides sur toute la grille
-		boardCarre.charge();//Mise à jour du tableau de carrés chargés
-		for (int i = 0; i < boardCarre.getBoard().getPositions().size(); i++) {
+	public void initialiseBoard(){
+		for (int i = 0; i < 9; i++) {
 			grid.add(boardCarre.getCarres()[i]);
 		}
+		boardCarre.charge();
 		container.add(grid);
-		container.revalidate();
 	}
 	
-//	Met des carrés vides sur toute la grille
-	public void resetBoard(){
-		grid.removeAll();
-		for (int i = 0; i < 8; i++) {
-			grid.add(new Carre(width, height));
+	public void refreshBoard(){
+		for (int i = 8; i >= 0; i--) {
+			grid.remove(i);
 		}
-	}
-	
-//	Ajout des carrés de couleur au grid layout	
-	public void affichePool(){
-		for (int i = 0; i < poolcarre.getCarresTab().length; i++) {
-			grid.add(poolcarre.getCarresTab(i));
+		boardCarre.charge();
+		for (int i = 0; i < 9; i++) {
+			grid.add(boardCarre.getCarres()[i], i);
 		}
-		container.add(grid, BorderLayout.CENTER);
+		grid.revalidate();
 	}
 	
 	public void setInstrumentation(){
@@ -167,11 +159,27 @@ public class Fenetre extends JFrame{
 				String nbString = (String)JOptionPane.showInputDialog(null, "Combien de tours ?", "Faire tourner", JOptionPane.QUESTION_MESSAGE, null, nbTours, nbTours[1]);
 				int nb = Integer.valueOf(nbString);
 				pool.getPool().get(0).tourne(nb);
-				poolcarre = new PoolCarre(pool, width, height);affichePool();
+				poolcarre = new PoolCarre(pool, width, height);//affichePool();
 				grid.revalidate();
 			}
 		}
 		
+	}
+
+	public PoolCarre getPoolcarre() {
+		return poolcarre;
+	}
+
+	public void setPoolcarre(PoolCarre poolcarre) {
+		this.poolcarre = poolcarre;
+	}
+
+	public BoardCarre getBoardCarre() {
+		return boardCarre;
+	}
+
+	public void setBoardCarre(BoardCarre boardCarre) {
+		this.boardCarre = boardCarre;
 	}
 
 }

@@ -31,6 +31,7 @@ public class Carre extends JPanel {
 		this.carreX = x; this.carreY = y;
 		this.setPreferredSize(new Dimension(carreX, carreY));
 		this.setVisible(true);
+		this.setBackground(Color.gray);
 	}
 	
 	public Carre(int x, int y, Color c, Piece p){

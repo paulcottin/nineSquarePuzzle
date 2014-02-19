@@ -22,12 +22,13 @@ public class Main {
 		Instrumentation i = new Instrumentation();
 		NineSquarePuzzle puzzle = new NineSquarePuzzle(path);
 		Fenetre fen = new Fenetre(puzzle.getBoard(), i);
+//		System.out.println(puzzle.getBoard().getPositions().get(0).toString());
 //		puzzle.getBoard().positionner(puzzle.getBoard().getPool().getPool().get(0), Board.GAUCHE_HAUT);
-//		fen.afficheBoard();
+//		fen.refreshBoard();
+//		System.out.println(puzzle.getBoard().getPositions().get(0).toString());
 		puzzle.getBoard().positionner(puzzle.getBoard().getPool().getPool().get(1), Board.CENTRE_HAUT);
-		fen.afficheBoard();
+		fen.refreshBoard();
 //		puzzle.getBoard().positionner(puzzle.getBoard().getPool().getPool().get(1), Board.DROITE_HAUT);
-//		fen.afficheBoard();
 		i.start();
 		i.stop();
 		fen.setInstrumentation();

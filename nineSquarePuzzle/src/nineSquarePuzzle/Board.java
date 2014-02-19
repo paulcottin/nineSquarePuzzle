@@ -9,7 +9,7 @@ public class Board {
 	
 	ArrayList<Piece> positions;
 	boolean[] positionOccupees = new boolean[9];
-	ArrayList<Integer> inclinaison = new ArrayList<Integer>();
+	int[] orientation = new int[9];
 	private Pool pool;
 	
 	public Board(String path){
@@ -18,8 +18,14 @@ public class Board {
 		 * Changer positions.add(indice, p) par un set
 		 * */
 		positions = new ArrayList<Piece>();
+		for (int i = 0; i < 9; i++) {//Au départ les cases sont occupées par des pièces vides
+			positions.add(new Piece());
+		}
 		for (int i = 0; i < 9; i++) {//Au départ aucune position n'est occupée
 			positionOccupees[i] = false;
+		}
+		for (int i = 0; i < 9; i++) {
+			orientation[i] = 0;
 		}
 		pool = new Pool(path);
 	}
@@ -27,7 +33,7 @@ public class Board {
 	public void positionner(Piece p, int indice){
 		if (indice < 9) {
 			if (!positionOccupees[indice]) {
-				positions.add(indice, p);
+				positions.set(indice, p);
 				positionOccupees[indice] = true;
 			}
 		}else {
@@ -38,7 +44,7 @@ public class Board {
 	public void retirer(Piece p){
 		for (int i = 0; i < positions.size(); i++) {
 			if (p.equals(positions.get(i))) {
-				positions.remove(i);
+				positions.set(i, new Piece());//Au lieu de supprimer on met une pièce vide
 				positionOccupees[i] = false;
 			}
 		}
@@ -77,14 +83,6 @@ public class Board {
 
 	public void setPositionOccupees(boolean[] positionOccupees) {
 		this.positionOccupees = positionOccupees;
-	}
-
-	public ArrayList<Integer> getInclinaison() {
-		return inclinaison;
-	}
-
-	public void setInclinaison(ArrayList<Integer> inclinaison) {
-		this.inclinaison = inclinaison;
 	}
 	
 	

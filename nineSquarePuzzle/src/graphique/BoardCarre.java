@@ -1,5 +1,7 @@
 package graphique;
 
+import javax.swing.text.Position;
+
 import nineSquarePuzzle.Board;
 
 public class BoardCarre {
@@ -15,9 +17,19 @@ public class BoardCarre {
 		charge();
 	}
 	
+	public void initialise(){
+		for (int i = 0; i < 9; i++) {
+			carres[i] = new Carre(carreX, carreY);
+		}
+	}
+	
 	public void charge(){
-		for (int i = 0; i < board.getPositions().size(); i++) {
-			carres[i] = new Carre(carreX, carreY, board.getPool().getCouleursPiece()[i], board.getPool().getPool().get(i));
+		for (int i = 0; i < 9; i++) {
+			if (board.getPositions().get(i).getNom().equals("*")) {
+				carres[i] = new Carre(carreX, carreY);
+			}else{
+			carres[i] = new Carre(carreX, carreY, board.getPool().getCouleursPiece()[i], board.getPositions().get(i));
+			}
 		}
 	}
 

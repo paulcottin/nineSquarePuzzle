@@ -9,6 +9,13 @@ public class Piece {
 //	tableau permettant de stocker l'information : le nombre est positif/neg pour l'affichage
 	String[] signes = new String[4];
 	
+//	Constructeur par default
+	public Piece(){
+		this.north = 0;	this.south = 0;	this.east = 0; this.west = 0;
+		this.northSigne = "-"; this.southSigne = "-"; this.eastSigne = "-"; this.weastSigne = "-";
+		this.nom = "*";
+	}
+	
 	public Piece(String nom, int[] valeurs){
 		this.nom = nom;
 		if (valeurs.length == 4) {
