@@ -27,19 +27,24 @@ public class Main {
 		Piece r = puzzle.getBoard().getPool().getPool().get(3);
 		Piece s = puzzle.getBoard().getPool().getPool().get(8);
 		Piece t = puzzle.getBoard().getPool().getPool().get(6);
-		i.start();
+		
 		puzzle.getBoard().positionner(q, Board.CENTRE);
 		puzzle.getBoard().positionner(p, Board.GAUCHE);
-		puzzle.getBoard().positionner(r, Board.CENTRE_HAUT);
+		puzzle.getBoard().positionner(r, Board.GAUCHE_BAS);
 		puzzle.getBoard().positionner(s, Board.DROITE);
 		puzzle.getBoard().positionner(t, Board.CENTRE_BAS);
 		fen.refreshBoard();
+		System.out.println(t.getNom()+" a qquun a droite : "+puzzle.aPieceADroite(t));
+		i.start();
+		System.out.println(r.getNom()+" correspond à "+t.getNom()+" : "+puzzle.match(r,t));
+		i.stop();
+		System.out.println(r.getNom()+" correspond à "+p.getNom()+" : "+puzzle.match(r,p));
 		System.out.println(p.getNom()+" est à droite de "+q.getNom()+" : "+puzzle.isADroite(p, q));
 		System.out.println(q.getNom()+" est en dessous de "+r.getNom()+" : "+puzzle.isUnder(q, r));
 		System.out.println(s.getNom()+" est à droite de "+p.getNom()+" : "+puzzle.isADroite(s, p));
 		System.out.println(r.getNom()+" est en dessous de "+t.getNom()+" : "+puzzle.isUnder(r, t));
 		System.out.println(q.getNom()+" est au dessus de "+r.getNom()+" : "+puzzle.isUpper(q, r));
-		i.stop();
+		
 		fen.setInstrumentation();
 	}
 }
