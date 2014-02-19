@@ -13,7 +13,7 @@ public class Pool {
 	private String titre = "Pas de titre";
 	private ArrayList<Piece> pool = new ArrayList<Piece>();
 	private ArrayList<Piece> utilisee = new ArrayList<Piece>();
-	private Color[] couleursPiece = {Color.red, Color.blue, Color.green, Color.gray, Color.pink, Color.cyan, Color.orange, Color.white, Color.black};
+	private Color[] couleursPiece = {Color.red, Color.blue, Color.green, Color.magenta, Color.pink, Color.cyan, Color.orange, Color.white, Color.black};
 	
 	public Pool(String path){
 		this.charge(path);

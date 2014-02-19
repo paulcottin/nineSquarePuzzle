@@ -155,11 +155,11 @@ public class Fenetre extends JFrame{
 				}
 			}
 			else if (e.getSource().equals(tourner)) {
-				String[] nbTours = {"0","1","2","3","4"}; 
+				String[] nbTours = {"1","2","3"}; 
 				String nbString = (String)JOptionPane.showInputDialog(null, "Combien de tours ?", "Faire tourner", JOptionPane.QUESTION_MESSAGE, null, nbTours, nbTours[1]);
 				int nb = Integer.valueOf(nbString);
 				pool.getPool().get(0).tourne(nb);
-				poolcarre = new PoolCarre(pool, width, height);//affichePool();
+				poolcarre = new PoolCarre(pool, width, height);
 				grid.revalidate();
 			}
 		}
