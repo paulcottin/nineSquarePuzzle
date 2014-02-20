@@ -5,6 +5,7 @@ public class NineSquarePuzzle {
 	private Board board;
 	private int[] ordrePlacement = {Board.CENTRE, Board.DROITE, Board.DROITE_BAS, Board.CENTRE_BAS, Board.GAUCHE_BAS, Board.GAUCHE, Board.GAUCHE, Board.GAUCHE_HAUT, Board.CENTRE_HAUT, Board.DROITE_HAUT};
 	private int iterateur;
+	private boolean fini = false;
 	
 	public NineSquarePuzzle(String path){
 		this.board = new Board(path);
@@ -15,8 +16,25 @@ public class NineSquarePuzzle {
 		
 	}
 	
-	public void resoudre(){
-		
+	public void resoudre(int n){
+		int cptTours = 0;
+		board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);
+		while(!fini){
+			n++;
+			board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);
+			if (bienPlacee(board.getPositions().get(this.ordrePlacement[n]))) {
+				resoudre(n+1);
+			}else {
+				while (bienPlacee(board.getPositions().get(this.ordrePlacement[n])) || cptTours == 3) {
+					board.getPositions().get(this.ordrePlacement[n]).tourne(1);
+					cptTours++;
+				}
+				if (cptTours == 3) {// => la piece a tourne sans trouver de bonne solutions
+					cptTours = 0;
+					board.retirer(board.getPositions().get(this.ordrePlacement[n]));
+				}
+			}
+		}
 	}
 	
 	public boolean match(Piece p, Piece q){
@@ -31,6 +49,9 @@ public class NineSquarePuzzle {
 				}
 			}
 			
+			if (p.getNom() == "*" || q.getNom() == "*") {
+				return false;
+			}
 			if (indiceP == Board.GAUCHE_BAS && indiceQ == Board.GAUCHE && p.getNorth()+q.getSouth() == 0) {
 				return true;
 			}
@@ -104,6 +125,13 @@ public class NineSquarePuzzle {
 				return true;
 			}
 		return false;
+	}
+	
+	public boolean bienPlacee(Piece p){
+		if (fini) {
+			
+		}
+		return true;
 	}
 	
 	public boolean estAutour(Piece p, Piece q){

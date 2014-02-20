@@ -35,6 +35,7 @@ public class Board {
 			if (!positionOccupees[indice]) {
 				positions.set(indice, p);
 				positionOccupees[indice] = true;
+				pool.enlevePiece(p);
 			}
 		}else {
 			System.out.println("Indice > 9 !!!");
@@ -46,6 +47,7 @@ public class Board {
 			if (p.equals(positions.get(i))) {
 				positions.set(i, new Piece());//Au lieu de supprimer on met une pièce vide
 				positionOccupees[i] = false;
+				pool.ajoutePiece(p);
 			}
 		}
 	}
