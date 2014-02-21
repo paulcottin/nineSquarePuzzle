@@ -5,8 +5,12 @@ import graphique.Fenetre;
 public class Main {
 	
 	public static String path = "data1.txt";
+	
+	public static Main main = new Main();
+	public static Fenetre fen;
+	public static NineSquarePuzzle puzzle;
 
-	public static void main(String[] args){
+	public static void main(String[] args) throws InterruptedException{
 //		Main sans GUI (interface graphique)
 //		int[] tab = {1,-2,-3,4};
 //		Instrumentation i = new Instrumentation();
@@ -19,32 +23,63 @@ public class Main {
 //		System.out.println(i.afficheInfos());
 		
 //		Avec GUI
+		Board board = new Board(path);
 		Instrumentation i = new Instrumentation();
-		NineSquarePuzzle puzzle = new NineSquarePuzzle(path);
-		Fenetre fen = new Fenetre(puzzle.getBoard(), i);
-		Piece p = puzzle.getBoard().getPool().getPool().get(0);
-		Piece q = puzzle.getBoard().getPool().getPool().get(5);
+		fen = new Fenetre(board, i, main);
+		puzzle = new NineSquarePuzzle(board, fen, main);
+		
+		
+		Piece p = puzzle.getBoard().getPool().getPool().get(3);
+		Piece q = puzzle.getBoard().getPool().getPool().get(4);
 		Piece r = puzzle.getBoard().getPool().getPool().get(3);
 		Piece s = puzzle.getBoard().getPool().getPool().get(8);
 		Piece t = puzzle.getBoard().getPool().getPool().get(6);
 		
-		puzzle.getBoard().positionner(q, Board.CENTRE);
-		puzzle.getBoard().positionner(p, Board.GAUCHE);
-		puzzle.getBoard().positionner(r, Board.GAUCHE_BAS);
-		puzzle.getBoard().positionner(s, Board.DROITE);
-		puzzle.getBoard().positionner(t, Board.CENTRE_BAS);
-		fen.refreshBoard();
-		System.out.println(t.getNom()+" a qquun a droite : "+puzzle.aPieceADroite(t));
-		i.start();
-		System.out.println(r.getNom()+" correspond à "+t.getNom()+" : "+puzzle.match(r,t));
-		i.stop();
-		System.out.println(r.getNom()+" correspond à "+p.getNom()+" : "+puzzle.match(r,p));
-		System.out.println(p.getNom()+" est à droite de "+q.getNom()+" : "+puzzle.isADroite(p, q));
-		System.out.println(q.getNom()+" est en dessous de "+r.getNom()+" : "+puzzle.isUnder(q, r));
-		System.out.println(s.getNom()+" est à droite de "+p.getNom()+" : "+puzzle.isADroite(s, p));
-		System.out.println(r.getNom()+" est en dessous de "+t.getNom()+" : "+puzzle.isUnder(r, t));
-		System.out.println(q.getNom()+" est au dessus de "+r.getNom()+" : "+puzzle.isUpper(q, r));
+//		System.out.println(p.toString());
+//		puzzle.getBoard().positionner(p, Board.CENTRE_HAUT);
+//		puzzle.getBoard().positionner(q, Board.DROITE_HAUT);
+//		puzzle.getBoard().positionner(r, Board.GAUCHE_BAS);
+//		puzzle.getBoard().positionner(s, Board.DROITE);
+//		puzzle.getBoard().positionner(t, Board.CENTRE_BAS);
+		
+		puzzle.resoudre(0);
+//		puzzle.affiche();
+		
+////		Vérification fonction tourne();
+//		System.out.println(puzzle.getBoard().getPool().getPool().get(2));
+//		puzzle.getBoard().getPool().getPool().get(2).tourne(3);
+//		System.out.println(puzzle.getBoard().getPool().getPool().get(2));
+//		p.tourne(1);
+//		fen.refreshBoard();
+		
+		
+//		System.out.println(t.getNom()+" a qquun a droite : "+puzzle.aPieceADroite(t));
+//		i.start();
+//		System.out.println(r.getNom()+" correspond à "+t.getNom()+" : "+puzzle.match(r,t));
+//		i.stop();
+//		System.out.println(p.getNom()+" correspond à "+q.getNom()+" : "+puzzle.match(p,q));
+//		System.out.println(p.getNom()+" est à droite de "+q.getNom()+" : "+puzzle.isADroite(p, q));
+//		System.out.println(q.getNom()+" est en dessous de "+r.getNom()+" : "+puzzle.isUnder(q, r));
+//		System.out.println(s.getNom()+" est à droite de "+p.getNom()+" : "+puzzle.isADroite(s, p));
+//		System.out.println(r.getNom()+" est en dessous de "+t.getNom()+" : "+puzzle.isUnder(r, t));
+//		System.out.println(q.getNom()+" est au dessus de "+r.getNom()+" : "+puzzle.isUpper(q, r));
 		
 		fen.setInstrumentation();
+	}
+
+	public static Fenetre getFen() {
+		return fen;
+	}
+
+	public static void setFen(Fenetre fen) {
+		Main.fen = fen;
+	}
+
+	public NineSquarePuzzle getPuzzle() {
+		return puzzle;
+	}
+
+	public static void setPuzzle(NineSquarePuzzle puzzle) {
+		Main.puzzle = puzzle;
 	}
 }

@@ -32,7 +32,18 @@ public class Board {
 	
 	public void positionner(Piece p, int indice){
 		if (indice < 9) {
+			int indiceP = 0;
+//			Récupération de l'indice de p
+			for (int i = 0; i < this.getPool().getPool().size(); i++) {
+				if (this.getPool().getPool().contains(p)) {
+					indiceP = i;
+				}
+			}
 			if (!positionOccupees[indice]) {
+				while (p.getNom().equals("*")) {
+					indiceP = indiceP++ % this.getPool().getPool().size();
+					p = this.getPool().getPool().get(indiceP);
+				}
 				positions.set(indice, p);
 				positionOccupees[indice] = true;
 				pool.enlevePiece(p);

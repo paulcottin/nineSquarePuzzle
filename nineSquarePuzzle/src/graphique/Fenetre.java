@@ -36,7 +36,7 @@ public class Fenetre extends JFrame{
 	JLabel titreProjet = new JLabel("Nine Square Puzzle");
 	JMenuBar menu = new JMenuBar();
 	JMenu fichier, action;
-	JMenuItem quitter, ouvrir, tourner;
+	JMenuItem quitter, ouvrir, tourner, lancerAlgo;
 	
 	int width = 600, height = 600;
 	int carreCote = (width - 100)/3;
@@ -44,8 +44,10 @@ public class Fenetre extends JFrame{
 	Pool pool;
 	Board board;
 	Instrumentation instrumentation;
+	Main main;
 	
-	public Fenetre(Board board, Instrumentation instrumentation){
+	public Fenetre(Board board, Instrumentation instrumentation, Main m){
+		this.main = m;
 		this.board = board;
 		this.pool = board.getPool();
 		this.instrumentation = instrumentation;
@@ -88,6 +90,7 @@ public class Fenetre extends JFrame{
 			grid.add(boardCarre.getCarres()[i], i);
 		}
 		grid.revalidate();
+		container.revalidate();
 	}
 	
 	public void setInstrumentation(){
@@ -113,7 +116,11 @@ public class Fenetre extends JFrame{
 		action = new JMenu("Action");
 			tourner = new JMenuItem("Tourner");
 			tourner.addActionListener(new menuActionListener());
+			lancerAlgo = new JMenuItem("Lancer");
+			lancerAlgo.addActionListener(new menuActionListener());
+			lancerAlgo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
 		action.add(tourner);
+		action.add(lancerAlgo);
 		
 		menu.add(fichier);
 		menu.add(action);
@@ -135,6 +142,14 @@ public class Fenetre extends JFrame{
 		this.pool = pool;
 	}
 
+	public JMenuItem getLancerAlgo() {
+		return lancerAlgo;
+	}
+
+	public void setLancerAlgo(JMenuItem lancerAlgo) {
+		this.lancerAlgo = lancerAlgo;
+	}
+
 	class menuActionListener implements ActionListener {
 
 		@Override
@@ -149,7 +164,12 @@ public class Fenetre extends JFrame{
 				if (Files.exists(p)) {
 					Main.path = path;
 					Fenetre.this.setEnabled(false);Fenetre.this.setVisible(false);
-					Main.main(null);
+					try {
+						Main.main(null);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}else {
 					JOptionPane.showMessageDialog(null, "Ce fichier n'existe pas !!", "erreur d'ouverture !", JOptionPane.ERROR_MESSAGE);
 				}
@@ -161,6 +181,15 @@ public class Fenetre extends JFrame{
 				pool.getPool().get(0).tourne(nb);
 				poolcarre = new PoolCarre(pool, width, height);
 				grid.revalidate();
+			}
+			else if (e.getSource().equals(lancerAlgo)) {
+				try {
+					main.puzzle.resoudre(0);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				refreshBoard();
 			}
 		}
 		
