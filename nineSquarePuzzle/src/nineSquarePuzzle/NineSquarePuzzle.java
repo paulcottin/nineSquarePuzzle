@@ -182,14 +182,14 @@ public class NineSquarePuzzle {
 				n--;
 				System.out.println("board contenu !");
 				board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
-				if (aEteUneInstance(board.getInstance(), boardsFaux)) {
-					n--;
-					System.out.println("board contenu !");
-					board.retirer(board.getPositions().get(this.ordrePlacement[n]));
+//				if (aEteUneInstance(board.getInstance(), boardsFaux)) {
+//					n--;
+//					System.out.println("board contenu !");
+//					board.retirer(board.getPositions().get(this.ordrePlacement[n]));
 					resoudreAide(n - 1, n, 0, 0, false, boardsFaux);
-				}else {
-					resoudreAide(n - 1, n, 0, 0, true, boardsFaux);
-				}
+//				}else {
+//					resoudreAide(n - 1, n, 0, 0, true, boardsFaux);
+//				}
 			}else {
 				resoudreAide(n - 1, n, 0, 0, true, boardsFaux);
 			}
