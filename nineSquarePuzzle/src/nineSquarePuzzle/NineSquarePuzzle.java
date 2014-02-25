@@ -172,9 +172,6 @@ public class NineSquarePuzzle {
 		if (board.getPool().getPool().size() == 0) {
 			System.out.println("FINI !!!!!!");return ;
 		}
-		if (aEteUneInstance(board.getInstance(), boardsFaux) && avance) {
-			
-		}
 		if (aEteUneInstance(board.getInstance(), boardsFaux) /*&& !avance*/) {
 			System.out.println("board contenu !");
 			board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
@@ -201,7 +198,7 @@ public class NineSquarePuzzle {
 			board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
 			boardsFaux.add(board.getInstance());System.out.println("Board ajouté !");
 			System.out.println(board.toString(board.getInstance()));
-			resoudreAide(n - 1, n, 0, 0, false, boardsFaux);
+			resoudreAide(n - 1, n, nbTours, nbPiecesTestees, false, boardsFaux);
 		}
 		if (bienPlacee(board.getPositions().get(this.ordrePlacement[n])) && !avance) {
 			board.getPositions().get(this.ordrePlacement[n]).tourne(1);fen.refreshBoard();
