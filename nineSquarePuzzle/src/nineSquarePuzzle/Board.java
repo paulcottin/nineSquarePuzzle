@@ -74,6 +74,18 @@ public class Board {
 		}
 	}
 
+	public String[] getInstance() {
+		String[] instance = new String[9];
+		for (int i = 0; i < this.getPositions().size(); i++) {
+			instance[i] = this.getPositions().get(i).getNom();
+		}
+		return instance;
+	}
+	
+	public String toString(String[] instance){
+		return ("instance : "+instance[0]+", "+instance[1]+", "+instance[2]+", "+instance[3]+", "+instance[4]+", "+instance[5]+", "+instance[6]+", "+instance[7]+", "+instance[8]);
+	}
+	
 	public Pool getPool() {
 		return pool;
 	}

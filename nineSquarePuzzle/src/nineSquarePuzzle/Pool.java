@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 
 public class Pool {
@@ -14,10 +15,13 @@ public class Pool {
 	private ArrayList<Piece> pool = new ArrayList<Piece>();
 	private ArrayList<Piece> utilisee = new ArrayList<Piece>();
 	private Color[] couleursPiece = {Color.red, Color.blue, Color.green, Color.magenta, Color.pink, Color.cyan, Color.orange, Color.white, Color.black};
+	private int nbSolutions, nbSolutionsTrouvees;
 	
 	public Pool(String path){
 		this.charge(path);
 		this.titre = lignes.get(0);
+		this.nbSolutions = setNbSolutions();
+		this.nbSolutionsTrouvees = 0;
 		this.creePool();
 //		au depart toutes les pieces sont utilisees
 		this.utilisee = this.pool;
@@ -111,11 +115,13 @@ public class Pool {
 	
 //	remet une piece en place
 	public void ajoutePiece(Piece p){
-		if (!this.isUtilise(p)) {
-			utilisee.add(p);
-			System.out.println("Piece "+p.getNom()+" mise dans le pool");
-		}else {
-			System.out.println("Piece "+p.getNom()+" déjà utilisée : Pool.ajoutePiece");
+		if (!p.getNom().equals("*")) {
+			if (!this.isUtilise(p)) {
+				utilisee.add(p);
+				System.out.println("Piece "+p.getNom()+" mise dans le pool");
+			}else {
+				System.out.println("Piece "+p.getNom()+" déjà utilisée : Pool.ajoutePiece");
+			}
 		}
 	}
 	
@@ -145,5 +151,40 @@ public class Pool {
 
 	public void setCouleursPiece(Color[] couleursPiece) {
 		this.couleursPiece = couleursPiece;
+	}
+
+	public int getNbSolutions() {
+		return nbSolutions;
+	}
+
+	public int setNbSolutions() {
+		ArrayList<String> tab = new ArrayList<String>();
+		int result = -1;
+		String nb = "";
+		for (int i = 0; i < titre.length()-1; i++) {
+			result = -1;
+			try {
+				result = Integer.parseInt(titre.substring(i, i+1));
+			} catch (NumberFormatException e) {
+				// TODO: handle exception
+			}
+			if (result != -1) {
+				System.out.println("result : "+result);
+				tab.add(titre.substring(i, i+1));
+			}
+		}
+		for (int i = 1; i < tab.size(); i++) {
+			nb = nb + tab.get(i);
+		}
+		System.out.println("nb : "+nb);
+		return Integer.parseInt(nb);
+	}
+
+	public int getNbSolutionsTrouvees() {
+		return nbSolutionsTrouvees;
+	}
+
+	public void setNbSolutionsTrouvees(int nbSolutionsTrouvees) {
+		this.nbSolutionsTrouvees = nbSolutionsTrouvees;
 	}
 }

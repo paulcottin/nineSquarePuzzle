@@ -27,7 +27,7 @@ public class NineSquarePuzzle {
 			board.positionner(board.getPool().getPool().get(i), this.ordrePlacement[i]);
 		}
 	}
-	
+	/*
 	public void resoudre(int n) throws InterruptedException{
 		int cptTours = 0;
 		int cptToursPieceInit = 0;
@@ -87,6 +87,28 @@ public class NineSquarePuzzle {
 //				Si on a fait toutes les pièces on tourne d'un quart de tour la première et on recommence
 				if (piecesToutesFaites) {// Si on a fait toutes les pièces sans trouver de solutions
 					System.out.println("ON A FAIT TOUTES LES PIECES");
+					board.getPositions().get(this.ordrePlacement[n]).tourne(1);
+					//Tant qu'on a pas placé une pièce correctement au dessus
+					while (bienPlacee(board.getPositions().get(this.ordrePlacement[n]))) {
+						cptTours = 0;
+						//On fait tourner la pièce n pour voir si il n'existe pas une autre solution
+						while (bienPlacee(board.getPositions().get(this.ordrePlacement[n])) || cptTours < 2) {
+							board.getPositions().get(this.ordrePlacement[n]).tourne(1);
+							fen.refreshBoard();
+							System.out.println(board.getPositions().get(this.ordrePlacement[n]).toString()+"\ta tourné\tcompteur de tours : "+cptTours+"\tValeur de n : "+n);
+						}
+						//Si il y a une autre solution on continue l'algo
+						if (bienPlacee(board.getPositions().get(this.ordrePlacement[n]))) {
+							System.out.println(board.getPositions().get(this.ordrePlacement[n+1]).getNom()+" bien placé !\t cpt de tours : "+cptTours+"\tValeur de n : "+n+"\tDans le while");
+							n++;premierePieceRetiree = false;piecesToutesFaites = false;
+						}
+						//Sinon on retire la piece et on essaye de trouver une autre solution avec la précédente
+						if (cptTours > 2) {//Sinon on enlève la pièce et on essaye avec la précédente
+							board.retirer(board.getPositions().get(this.ordrePlacement[n]));
+							fen.refreshBoard();
+							n--;piecesToutesFaites = false;
+						}
+					}
 					//On retire les pièces du Board
 					while (nbPiecesNonPlacees() != 8) {
 						System.out.println("La piece "+board.getPositions().get(this.ordrePlacement[n]).getNom()+" a été retirée");
@@ -119,12 +141,86 @@ public class NineSquarePuzzle {
 					board.getPositions().get(this.ordrePlacement[n]).tourne(1);
 					System.out.println(board.getPositions().get(this.ordrePlacement[n]));
 				}
-				if (board.getPool().getPool().size() == 3 /*|| antiInfnty > 50*/) {
+				if (board.getPool().getPool().size() == 3 /*|| antiInfnty > 50) {
 					fini = true;
 					System.out.println("antiInfnty : "+antiInfnty);
 					System.out.println("FIIIIIIIIIIIIIIIIIIIINNNNNNNNNNNNNNNNNNNNNNIIIIIIIIIIIIIIIIIIIIIIIIIIIII !!!!!!!!!!!!!!!!!!! :)");
 				}
 			}
+		}
+	}
+	*/
+
+	public void resoudre(int n) throws InterruptedException{
+		if (board.getPool().getPool().size() == 1) {
+			return;
+		}
+		int nPrecedent = -1;
+		int nbTours = 0;
+		int nbPiecesTestees = 0;
+		boolean avance = true;
+		ArrayList<String[]> boardsFaux = new ArrayList<String[]>();
+		resoudreAide(n, nPrecedent, nbTours, nbPiecesTestees, avance, boardsFaux);
+	}
+	
+	public void resoudreAide(int n, int nPrecedent, int nbTours, int nbPiecesTestees, boolean avance, ArrayList<String[]> boardsFaux) throws InterruptedException{
+		Thread.sleep(1000-fen.getVitesseExec());
+		System.out.println("n : "+n+" nPrécédent : "+nPrecedent+" nbTours : "+nbTours+" nbPiecesTestees : "+nbPiecesTestees+"/"+board.getPool().getPool().size()+" avance : "+avance);
+		if (n < 0) {
+			System.out.println("n < 0");System.exit(0);
+		}
+		if (board.getPool().getPool().size() == 0) {
+			System.out.println("FINI !!!!!!");return ;
+		}
+		if (aEteUneInstance(board.getInstance(), boardsFaux) && avance) {
+			
+		}
+		if (aEteUneInstance(board.getInstance(), boardsFaux) /*&& !avance*/) {
+			System.out.println("board contenu !");
+			board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+			if (aEteUneInstance(board.getInstance(), boardsFaux)/* && !avance*/) {
+				n--;
+				System.out.println("board contenu !");
+				board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+				if (aEteUneInstance(board.getInstance(), boardsFaux)) {
+					n--;
+					System.out.println("board contenu !");
+					board.retirer(board.getPositions().get(this.ordrePlacement[n]));
+					resoudreAide(n - 1, n, 0, 0, false, boardsFaux);
+				}else {
+					resoudreAide(n - 1, n, 0, 0, true, boardsFaux);
+				}
+			}else {
+				resoudreAide(n - 1, n, 0, 0, true, boardsFaux);
+			}
+		}
+		if (n > nPrecedent) {
+			board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);fen.refreshBoard();
+		}
+		if (nbPiecesTestees == board.getPool().getPool().size()) {
+			board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+			boardsFaux.add(board.getInstance());System.out.println("Board ajouté !");
+			System.out.println(board.toString(board.getInstance()));
+			resoudreAide(n - 1, n, 0, 0, false, boardsFaux);
+		}
+		if (bienPlacee(board.getPositions().get(this.ordrePlacement[n])) && !avance) {
+			board.getPositions().get(this.ordrePlacement[n]).tourne(1);fen.refreshBoard();
+			resoudreAide(n, n, nbTours + 1, nbPiecesTestees, true, boardsFaux);
+		}
+		if (bienPlacee(board.getPositions().get(this.ordrePlacement[n])) && avance) {
+			resoudreAide(n+1, n, 0, 0, true, boardsFaux);
+		}
+		if (nbTours < 4) {
+			board.getPositions().get(this.ordrePlacement[n]).tourne(1);fen.refreshBoard();
+			resoudreAide(n, n, nbTours + 1, nbPiecesTestees, avance, boardsFaux);
+		}
+		if (nbTours >= 4 && avance) {
+			board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+			resoudreAide(n, n-1, 0, nbPiecesTestees + 1, avance, boardsFaux);
+		}
+		if (nbTours >= 4 && !avance) {
+			board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+			resoudreAide(n - 1, n, 0, 0, false, boardsFaux);
 		}
 	}
 	
@@ -136,6 +232,29 @@ public class NineSquarePuzzle {
 			}
 		}
 		return nb;
+	}
+	
+	public boolean aEteUneInstance(String[] instance, ArrayList<String[]> boardsFaux){
+		System.out.println("-----------------------------\n"+boardsFaux.size()+" instances\n|\t"+board.toString(instance));
+		for (String[] strings : boardsFaux) {
+			int cpt = 0;
+			System.out.println("|\t"+board.toString(strings));
+			for (int i = 0; i < strings.length; i++) {
+				if (instance[i].equals(strings[i])) {
+					cpt++;
+				}
+			}
+			System.out.println("cpt : "+cpt);
+			if (cpt == instance.length) {
+				System.out.println("instance.equals(strings) : "+instance.equals(strings));
+			}
+			if (cpt == instance.length && !instance.equals(strings)) {
+				System.out.println("true\n-------------------------");
+				return true;
+			}
+		}
+		System.out.println("false\n-------------------------");
+		return false;
 	}
 	
 	public boolean match(Piece p, Piece q){
@@ -236,6 +355,10 @@ public class NineSquarePuzzle {
 //			Si la pièce est vide retourner faux
 			if (p.getNom().equals("*")) {
 				return false;
+			}
+//			Si la pièce est la première retourner vrai
+			if (indiceP == 0) {
+				return true;
 			}
 		if (aPieceAGauche(p)) {
 			if(!match(p, board.getPositions().get(indiceP - 1))){

@@ -2,6 +2,8 @@ package graphique;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -10,7 +12,10 @@ import java.awt.event.KeyEvent;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Hashtable;
 
+import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -18,7 +23,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.KeyStroke;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import nineSquarePuzzle.Board;
 import nineSquarePuzzle.Instrumentation;
@@ -37,9 +45,11 @@ public class Fenetre extends JFrame{
 	JMenuBar menu = new JMenuBar();
 	JMenu fichier, action;
 	JMenuItem quitter, ouvrir, tourner, lancerAlgo;
+	JSlider vitesse;
 	
-	int width = 600, height = 600;
+	int width = 700, height = 600;
 	int carreCote = (width - 100)/3;
+	int vitesseExec;
 	public PoolCarre poolcarre; BoardCarre boardCarre;
 	Pool pool;
 	Board board;
@@ -65,6 +75,7 @@ public class Fenetre extends JFrame{
 		
 		initialiseBoard();
 		setMenu();
+		setCoteDroit();
 		
 		JPanel titreProjetPanel = new JPanel(); titreProjetPanel.setOpaque(false);
 		titreProjetPanel.add(titreProjet);
@@ -73,6 +84,72 @@ public class Fenetre extends JFrame{
 		this.setVisible(true);
 	}
 	
+	private void setCoteDroit() {
+		JPanel cote = new JPanel();
+		cote.setBackground(Color.GREEN);
+		cote.setPreferredSize(new Dimension(100, height));
+		cote.setLayout(new BoxLayout(cote, BoxLayout.PAGE_AXIS));		
+		
+		Dimension textDimension = new Dimension(100,50);
+		JLabel titre = new JLabel(pool.getTitre().substring(0, 9));
+		titre.setPreferredSize(textDimension);
+		titre.setAlignmentX(Component.LEFT_ALIGNMENT);
+		JLabel nbSolutions;
+		if (pool.getNbSolutions() == 1) {
+			nbSolutions = new JLabel("Il y a "+pool.getNbSolutions()+" solution");
+		}else {
+			nbSolutions = new JLabel("Il y a "+pool.getNbSolutions()+" solutions");
+		}
+		nbSolutions.setPreferredSize(textDimension);
+		nbSolutions.setAlignmentX(Component.LEFT_ALIGNMENT);
+		JLabel rapport = new JLabel("Trouvées : "+pool.getNbSolutionsTrouvees()+"/"+pool.getNbSolutions());
+		rapport.setPreferredSize(textDimension);
+		rapport.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
+		cote.add(titre);
+		cote.add(nbSolutions);
+		cote.add(rapport);
+		
+//		GroupLayout layout = new GroupLayout(cote);
+//		cote.setLayout(layout);
+//		layout.setAutoCreateGaps(true);
+//		layout.setAutoCreateContainerGaps(true);
+//		layout.setHorizontalGroup(
+//				layout.createSequentialGroup()
+//					.addComponent(titre)
+//					.addComponent(nbSolutions)
+//					.addComponent(rapport)
+//		);
+		
+		JPanel slider = new JPanel();
+		JLabel vitesseExec = new JLabel("Vitesse");
+		this.vitesse = new JSlider(JSlider.VERTICAL,0, 1000, 500);
+		vitesse.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				// TODO Auto-generated method stub
+				if (arg0.getSource().equals(vitesse)) {
+					Fenetre.this.vitesseExec = vitesse.getValue();
+				}
+			}
+		});
+		vitesse.setMajorTickSpacing(200);
+		vitesse.setPaintTicks(true);
+		Hashtable<Integer, JLabel> labelVitesseTable = new Hashtable<Integer, JLabel>();
+		labelVitesseTable.put(new Integer(0), new JLabel("min"));
+		labelVitesseTable.put(new Integer(1000), new JLabel("max"));
+		vitesse.setLabelTable(labelVitesseTable);
+		vitesse.setPaintLabels(true);
+		slider.add(vitesseExec);
+		slider.add(vitesse);
+		cote.add(slider);
+		
+		this.vitesseExec = vitesse.getValue();
+		
+		container.add(cote, BorderLayout.EAST);
+	}
+
 	public void initialiseBoard(){
 		for (int i = 0; i < 9; i++) {
 			grid.add(boardCarre.getCarres()[i]);
@@ -177,7 +254,12 @@ public class Fenetre extends JFrame{
 			else if (e.getSource().equals(tourner)) {
 				String[] nbTours = {"1","2","3"}; 
 				String nbString = (String)JOptionPane.showInputDialog(null, "Combien de tours ?", "Faire tourner", JOptionPane.QUESTION_MESSAGE, null, nbTours, nbTours[1]);
-				int nb = Integer.valueOf(nbString);
+				int nb = 0;
+				try {
+					nb = Integer.valueOf(nbString);
+				} catch (NumberFormatException e2) {
+					
+				}
 				pool.getPool().get(0).tourne(nb);
 				poolcarre = new PoolCarre(pool, width, height);
 				grid.revalidate();
@@ -209,6 +291,14 @@ public class Fenetre extends JFrame{
 
 	public void setBoardCarre(BoardCarre boardCarre) {
 		this.boardCarre = boardCarre;
+	}
+
+	public int getVitesseExec() {
+		return vitesseExec;
+	}
+
+	public void setVitesseExec(int vitesseExec) {
+		this.vitesseExec = vitesseExec;
 	}
 
 }

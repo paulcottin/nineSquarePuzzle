@@ -36,7 +36,7 @@ public class Main {
 		Piece t = puzzle.getBoard().getPool().getPool().get(6);
 		
 //		System.out.println(p.toString());
-//		puzzle.getBoard().positionner(p, Board.CENTRE_HAUT);
+//		puzzle.getBoard().positionner(p, 0);
 //		puzzle.getBoard().positionner(q, Board.DROITE_HAUT);
 //		puzzle.getBoard().positionner(r, Board.GAUCHE_BAS);
 //		puzzle.getBoard().positionner(s, Board.DROITE);
