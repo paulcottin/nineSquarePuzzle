@@ -151,85 +151,131 @@ public class NineSquarePuzzle {
 	}
 	*/
 
+//	public void resoudre(int n) throws InterruptedException{
+//		if (board.getPool().getPool().size() == 1) {
+//			return;
+//		}
+//		int nPrecedent = -1;
+//		int nbTours = 0;
+//		int nbPiecesTestees = 0;
+//		boolean avance = true;
+//		ArrayList<InstanceBoard> boardsFaux = new ArrayList<InstanceBoard>();
+//		resoudreAide(n, nPrecedent, nbTours, nbPiecesTestees, avance, boardsFaux);
+//	}
+//	
+//	public void resoudreAide(int n, int nPrecedent, int nbTours, int nbPiecesTestees, boolean avance, ArrayList<InstanceBoard> boardsFaux) throws InterruptedException{
+//		Thread.sleep(1000-fen.getVitesseExec());
+//		System.out.println("n : "+n+" nPrécédent : "+nPrecedent+" nbTours : "+nbTours+" nbPiecesTestees : "+nbPiecesTestees+"/"+board.getPool().getPool().size()+" avance : "+avance);
+//		if (n < 0) {
+//			System.out.println("n < 0");System.exit(0);
+//		}
+//		if (board.getPool().getPool().size() == 0) {
+//			System.out.println("FINI !!!!!!");return ;
+//		}
+//		if (aEteUneInstance(new InstanceBoard(board), boardsFaux) && n > nPrecedent/*&& !avance*/) {
+//			nbPiecesTestees++;
+//			System.out.println("board contenu !");
+//			board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+//			if (aEteUneInstance(new InstanceBoard(board), boardsFaux)/* && !avance*/) {
+//				n--;
+////				nbPiecesTestees++;
+//				System.out.println("board contenu !");
+//				board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+////				if (aEteUneInstance(board.getInstance(), boardsFaux)) {
+////					n--;
+////					System.out.println("board contenu !");
+////					board.retirer(board.getPositions().get(this.ordrePlacement[n]));
+//					resoudreAide(n - 1, n, 0, nbPiecesTestees, false, boardsFaux);
+////				}else {
+////					resoudreAide(n - 1, n, 0, 0, true, boardsFaux);
+////				}
+//			}else {
+//				resoudreAide(n - 1, n, 0, 0, true, boardsFaux);
+//			}
+//		}
+//		if (n > nPrecedent) {
+//			board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);fen.refreshBoard();
+//		}
+//		if (nbPiecesTestees == board.getPool().getPool().size()) {
+//			board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+//			boardsFaux.add(new InstanceBoard(board));System.out.println("Board ajouté !");
+//			System.out.println(board.toString(board.getInstance()));
+//			resoudreAide(n - 1, n, nbTours, nbPiecesTestees, false, boardsFaux);
+//		}
+//		if (bienPlacee(board.getPositions().get(this.ordrePlacement[n])) && !avance ) {
+//			if (aUneAutreSolution(board.getPositions().get(this.ordrePlacement[n]))) {
+//				board.getPositions().get(this.ordrePlacement[n]).tourne(1);fen.refreshBoard();
+//				resoudreAide(n, n, nbTours + 1, nbPiecesTestees, true, boardsFaux);
+//			}else {
+//				board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+//				resoudreAide(n-1, n, 0, 0, false, boardsFaux);
+//			}
+//			
+//		}
+//		if (bienPlacee(board.getPositions().get(this.ordrePlacement[n])) && avance) {
+//			resoudreAide(n+1, n, 0, 0, true, boardsFaux);
+//		}
+//		if (nbTours < 4) {
+//			board.getPositions().get(this.ordrePlacement[n]).tourne(1);fen.refreshBoard();
+//			resoudreAide(n, n, nbTours + 1, nbPiecesTestees, avance, boardsFaux);
+//		}
+//		if (nbTours >= 4 && avance) {
+//			boardsFaux.add(new InstanceBoard(board));
+//			board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+//			resoudreAide(n, n-1, 0, nbPiecesTestees + 1, avance, boardsFaux);
+//		}
+//		if (nbTours >= 4 && !avance) {
+//			boardsFaux.add(new InstanceBoard(board));
+//			board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+//			resoudreAide(n - 1, n, 0, nbPiecesTestees + 1, false, boardsFaux);
+//		}
+//	}
+	
 	public void resoudre(int n) throws InterruptedException{
-		if (board.getPool().getPool().size() == 1) {
-			return;
-		}
-		int nPrecedent = -1;
-		int nbTours = 0;
-		int nbPiecesTestees = 0;
-		boolean avance = true;
-		ArrayList<InstanceBoard> boardsFaux = new ArrayList<InstanceBoard>();
-		resoudreAide(n, nPrecedent, nbTours, nbPiecesTestees, avance, boardsFaux);
+		resoudreAide(n, 0, 0, false);
 	}
 	
-	public void resoudreAide(int n, int nPrecedent, int nbTours, int nbPiecesTestees, boolean avance, ArrayList<InstanceBoard> boardsFaux) throws InterruptedException{
-		Thread.sleep(1000-fen.getVitesseExec());
-		System.out.println("n : "+n+" nPrécédent : "+nPrecedent+" nbTours : "+nbTours+" nbPiecesTestees : "+nbPiecesTestees+"/"+board.getPool().getPool().size()+" avance : "+avance);
-		if (n < 0) {
-			System.out.println("n < 0");System.exit(0);
-		}
-		if (board.getPool().getPool().size() == 0) {
-			System.out.println("FINI !!!!!!");return ;
-		}
-		if (aEteUneInstance(new InstanceBoard(board), boardsFaux) && n > nPrecedent/*&& !avance*/) {
-			nbPiecesTestees++;
-			System.out.println("board contenu !");
-			board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
-			if (aEteUneInstance(new InstanceBoard(board), boardsFaux)/* && !avance*/) {
-				n--;
-//				nbPiecesTestees++;
-				System.out.println("board contenu !");
-				board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
-//				if (aEteUneInstance(board.getInstance(), boardsFaux)) {
-//					n--;
-//					System.out.println("board contenu !");
-//					board.retirer(board.getPositions().get(this.ordrePlacement[n]));
-					resoudreAide(n - 1, n, 0, nbPiecesTestees, false, boardsFaux);
-//				}else {
-//					resoudreAide(n - 1, n, 0, 0, true, boardsFaux);
-//				}
-			}else {
-				resoudreAide(n - 1, n, 0, 0, true, boardsFaux);
+	//Essayer avec une array list qui classe les états qui ne fonctionnent pas et qui enlève l'étape au dessus..
+	public void resoudreAide(int n, int orientation, int nbPiecesTestees, boolean aTourne) throws InterruptedException{
+		if (n < 10) {
+			while (board.getPool().getPool().size() > 0) {
+				if (nbPiecesTestees > board.getPool().getPool().size()) {
+					board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
+					board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+					n--;
+					board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
+					board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+					n--;
+				}
+				while (nbPiecesTestees <= board.getPool().getPool().size()) {
+					System.out.println("n : "+n+"\ta tourné : "+aTourne+"\tnb de p testées : "+nbPiecesTestees);
+					if (n != 0 && aTourne) {
+						board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
+						board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+						nbPiecesTestees++;
+					}
+					board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);fen.refreshBoard();
+					orientation = 0;
+					board.getPositions().get(this.ordrePlacement[n]).setOrientation(orientation);fen.refreshBoard();
+
+					Thread.sleep(1000-fen.getVitesseExec());
+					while (orientation < 4) {
+						Thread.sleep(1000-fen.getVitesseExec());
+						if (bienPlacee(board.getPositions().get(this.ordrePlacement[n]))) {
+							resoudreAide(n+1, 0, 0, false);
+						}else {
+							orientation++;
+							aTourne = true;
+							board.getPositions().get(this.ordrePlacement[n]).setOrientation(board.getPositions().get(this.ordrePlacement[n]).getOrientation()+1);fen.refreshBoard();
+						}
+					}
+				}
 			}
-		}
-		if (n > nPrecedent) {
-			board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);fen.refreshBoard();
-		}
-		if (nbPiecesTestees == board.getPool().getPool().size()) {
-			board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
-			boardsFaux.add(new InstanceBoard(board));System.out.println("Board ajouté !");
-			System.out.println(board.toString(board.getInstance()));
-			resoudreAide(n - 1, n, nbTours, nbPiecesTestees, false, boardsFaux);
-		}
-		if (bienPlacee(board.getPositions().get(this.ordrePlacement[n])) && !avance ) {
-			if (aUneAutreSolution(board.getPositions().get(this.ordrePlacement[n]))) {
-				board.getPositions().get(this.ordrePlacement[n]).tourne(1);fen.refreshBoard();
-				resoudreAide(n, n, nbTours + 1, nbPiecesTestees, true, boardsFaux);
-			}else {
-				board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
-				resoudreAide(n-1, n, 0, 0, false, boardsFaux);
-			}
-			
-		}
-		if (bienPlacee(board.getPositions().get(this.ordrePlacement[n])) && avance) {
-			resoudreAide(n+1, n, 0, 0, true, boardsFaux);
-		}
-		if (nbTours < 4) {
-			board.getPositions().get(this.ordrePlacement[n]).tourne(1);fen.refreshBoard();
-			resoudreAide(n, n, nbTours + 1, nbPiecesTestees, avance, boardsFaux);
-		}
-		if (nbTours >= 4 && avance) {
-			boardsFaux.add(new InstanceBoard(board));
-			board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
-			resoudreAide(n, n-1, 0, nbPiecesTestees + 1, avance, boardsFaux);
-		}
-		if (nbTours >= 4 && !avance) {
-			boardsFaux.add(new InstanceBoard(board));
-			board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
-			resoudreAide(n - 1, n, 0, nbPiecesTestees + 1, false, boardsFaux);
+		}else {
+			fen.refreshBoard();System.exit(0);
 		}
 	}
+
 	
 	public int nbPiecesNonPlacees(){
 		int nb = 0;

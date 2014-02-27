@@ -138,6 +138,8 @@ public class Piece {
 	}
 
 	public void setOrientation(int orientation) {
-		this.orientation = orientation;
+		this.tourne((orientation-this.orientation) % 4);
+		this.orientation = orientation % 4;
+		System.out.println("la pièce "+this.nom+" a pr orient : "+this.orientation);
 	}
 }
