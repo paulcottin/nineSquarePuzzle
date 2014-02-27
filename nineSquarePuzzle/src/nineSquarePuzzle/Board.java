@@ -25,7 +25,7 @@ public class Board {
 			positionOccupees[i] = false;
 		}
 		for (int i = 0; i < 9; i++) {
-			orientation[i] = 0;
+			orientation[i] = positions.get(i).getOrientation();
 		}
 		pool = new Pool(path);
 	}
