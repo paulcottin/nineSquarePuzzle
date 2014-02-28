@@ -4,7 +4,7 @@ import graphique.Fenetre;
 
 public class Main {
 	
-	public static String path = "data2.txt";
+	public static String path = "data1.txt";
 	
 	public static Main main = new Main();
 	public static Fenetre fen;

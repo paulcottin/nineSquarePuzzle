@@ -232,13 +232,13 @@ public class NineSquarePuzzle {
 //	}
 	
 	public void resoudre(int n) throws InterruptedException{
-		resoudreAide(n, 0, 0, false, new ArrayList<InstanceBoard>());
+		resoudreAide(0, 0, 0, false, new ArrayList<InstanceBoard>(), false);
 		System.out.println("sorti de la fonction");
 	}
 	
-	public void resoudreAide(int n, int orientation, int nbPiecesTestees, boolean aTourne, ArrayList<InstanceBoard> boardFaux) throws InterruptedException{
+	public void resoudreAide(int n, int orientation, int nbPiecesTestees, boolean aTourne, ArrayList<InstanceBoard> boardFaux, boolean fini) throws InterruptedException{
 		if (n <= 8) {
-			while (board.getPool().getPool().size() > 0) {
+			while (board.getPool().getPool().size() > 0 && !fini) {
 				if (nbPiecesTestees > board.getPool().getPool().size()) {
 					board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
 					board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
@@ -259,7 +259,7 @@ public class NineSquarePuzzle {
 						boardFaux.add(new InstanceBoard(board));
 					}
 				}
-				while (nbPiecesTestees <= board.getPool().getPool().size()) {
+				while (nbPiecesTestees <= board.getPool().getPool().size() && !fini) {
 					System.out.println("n : "+n+"\ta tourné : "+aTourne+"\tnb de p testées : "+nbPiecesTestees);
 					if (n > 0 && aTourne) {
 						board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
@@ -273,15 +273,16 @@ public class NineSquarePuzzle {
 							board.getPositions().get(this.ordrePlacement[n]).setOrientation(orientation);fen.refreshBoard();
 							Thread.sleep(1000-fen.getVitesseExec());
 					}else {
-						System.out.println("Fini");System.out.println((new InstanceBoard(board).toString()));System.exit(0);
+						System.out.println("Fini");System.out.println((new InstanceBoard(board).toString()));fini = true;//System.exit(0);
 					}
 					System.out.println("coucou");
-					while (orientation < 4) {
+					while (orientation < 4 && !fini) {
 						Thread.sleep(1000-fen.getVitesseExec());
-						System.out.println("n : "+n+"\t modulo  = 0 : "+(this.ordrePlacement[n] % 2 == 0)+"\t pool size "+board.getPool().getPool().size());
+						System.out.println("n : "+n+"\t modulo  = 0 : "+(this.ordrePlacement[n] % 2 == 0)+"\t pool size "+board.getPool().getPool().size()+"\tfini : "+fini);
 						if (bienPlacee(board.getPositions().get(this.ordrePlacement[n]), n)) {
 							System.out.println("bien placée");
-							resoudreAide(n+1, 0, 0, false, boardFaux);
+							resoudreAide(n+1, 0, 0, false, boardFaux, fini);
+							fini = true;
 						}else {
 							orientation++;
 							aTourne = true;
@@ -292,10 +293,11 @@ public class NineSquarePuzzle {
 			}
 		}else {
 			fen.refreshBoard();
+			fini = true;
 //			if (this.nbSolutions < board.getPool().getNbSolutions()) {
 //				resoudre(this.nbSolutions++);
 //			}else {
-				System.exit(0);
+//				System.exit(0);
 //			}
 		}
 	}
