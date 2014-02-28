@@ -11,10 +11,10 @@ public class Board {
 	boolean[] positionOccupees = new boolean[9];
 	int[] orientation = new int[9];
 	private Pool pool;
+	String path;
 	
-	public Board(){// A finir
-		positions = new ArrayList<Piece>();
-		pool = new Pool(Main.path);
+	public Board(){
+		
 	}
 	
 	public Board(String path){
@@ -33,6 +33,7 @@ public class Board {
 			orientation[i] = positions.get(i).getOrientation();
 		}
 		pool = new Pool(path);
+		this.path = path;
 	}
 	
 	public void positionner(Piece p, int indice){
@@ -80,7 +81,12 @@ public class Board {
 	}
 
 	public Board clone(){
-		Board board = new Board(Main.path);//A changer
+		Board board = new Board();//A changer
+		board.setPath(this.getPath());
+		board.setPool(this.getPool());
+		board.setPositionOccupees(this.getPositionOccupees());
+		board.setPositions(this.getPositions());
+		board.setOrientation(this.getOrientation());
 		return board;
 	}
 	
@@ -118,6 +124,22 @@ public class Board {
 
 	public void setPositionOccupees(boolean[] positionOccupees) {
 		this.positionOccupees = positionOccupees;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public int[] getOrientation() {
+		return orientation;
+	}
+
+	public void setOrientation(int[] orientation) {
+		this.orientation = orientation;
 	}
 	
 	

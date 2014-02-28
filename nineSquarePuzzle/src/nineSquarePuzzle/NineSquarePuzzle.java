@@ -10,7 +10,7 @@ public class NineSquarePuzzle {
 
 	private Board board;
 	private int[] ordrePlacement = {Board.CENTRE, Board.DROITE, Board.DROITE_HAUT, Board.CENTRE_HAUT, Board.GAUCHE_HAUT, Board.GAUCHE, Board.GAUCHE_BAS, Board.CENTRE_BAS, Board.DROITE_BAS};
-	private int iterateur, nbSolutions = 0;
+	private int iterateur, nbSolutions = 0, nbSolutionsTrouvees = 0;
 	private boolean fini = false;
 	private Fenetre fen;
 	private Main main;
@@ -31,224 +31,24 @@ public class NineSquarePuzzle {
 			board.positionner(board.getPool().getPool().get(i), this.ordrePlacement[i]);
 		}
 	}
-	/*
-	public void resoudre(int n) throws InterruptedException{
-		int cptTours = 0;
-		int cptToursPieceInit = 0;
-		ArrayList<Piece> piecesInit = new ArrayList<Piece>();
-		int numeroPiece = 0;
-		int antiInfnty = 0;
-		String nomPremierePieceRetiree = "";boolean premierePieceRetiree = false;
-		boolean piecesToutesFaites = false;
-		
-		System.out.println("Nb pièces non placées : "+nbPiecesNonPlacees()+"\tn : "+n);
-		if (nbPiecesNonPlacees() == 0) {//Si le puzzle est résolu
-			System.out.println("fini");
-			return;
-		}
-		System.out.println("La piece "+board.getPool().getPool().get(numeroPiece).getNom()+" a été ajoutée au Board en position "+this.ordrePlacement[n]);
-		piecesInit.add(board.getPool().getPool().get(numeroPiece));
-		board.positionner(board.getPool().getPool().get(numeroPiece), this.ordrePlacement[n]);
-		fen.refreshBoard();
-		while(!fini){
-			cptTours = 0;
-			Thread.sleep(00);
-			antiInfnty++;
-			System.out.println("taille de pool : "+board.getPool().getPool().size());
-			System.out.println(board.getPool().getPool().get(numeroPiece));
-			System.out.println("La piece "+board.getPool().getPool().get(numeroPiece).getNom()+" a été ajoutée au Board en position "+this.ordrePlacement[n+1]);
-			board.positionner(board.getPool().getPool().get(numeroPiece), this.ordrePlacement[n+1]);
-			fen.refreshBoard();
-			if (bienPlacee(board.getPositions().get(this.ordrePlacement[n+1]))) {
-//				resoudre(n+1);
-				System.out.println(board.getPositions().get(this.ordrePlacement[n+1]).getNom()+" bien placé !\t cpt de tours : "+cptTours+"\tValeur de n : "+n+"\tDans le while");
-				n++;premierePieceRetiree = false;piecesToutesFaites = false;
-			}else {
-				while (!(bienPlacee(board.getPositions().get(this.ordrePlacement[n+1])) || cptTours > 3)) {
-					board.getPositions().get(this.ordrePlacement[n+1]).tourne(1);
-					fen.refreshBoard();
-					System.out.println(board.getPositions().get(this.ordrePlacement[n+1]).toString()+"\ta tourné\tcompteur de tours : "+cptTours+"\tValeur de n : "+n);
-					cptTours++;
-				}
-				if (bienPlacee(board.getPositions().get(this.ordrePlacement[n+1]))) {
-					System.out.println(board.getPositions().get(this.ordrePlacement[n+1]).getNom()+" bien placé !\t cpt de tours : "+cptTours+"\tValeur de n : "+n+"\tDans le while");
-					n++;premierePieceRetiree = false;piecesToutesFaites = false;
-				}
-				if (cptTours == 4) {// => la piece a tourne sans trouver de bonne solutions
-					cptTours = 0;
-					if (!premierePieceRetiree) {
-						nomPremierePieceRetiree = board.getPositions().get(this.ordrePlacement[n+1]).getNom();
-						System.out.println("La pièce "+nomPremierePieceRetiree+" est la première à avoir été retirée");
-					}
-					if (board.getPositions().get(this.ordrePlacement[n+1]).getNom().equals(nomPremierePieceRetiree) && premierePieceRetiree) {
-						piecesToutesFaites = true;
-					}
-					System.out.println("La piece "+board.getPositions().get(this.ordrePlacement[n+1]).getNom()+" ne correspond pas\n"+board.getPositions().get(this.ordrePlacement[n+1]).getNom()+" est enlevée du Board");
-					board.retirer(board.getPositions().get(this.ordrePlacement[n+1]));//On l'enlève 
-					premierePieceRetiree = true;
-					fen.refreshBoard();
-				}
-//				Si on a fait toutes les pièces on tourne d'un quart de tour la première et on recommence
-				if (piecesToutesFaites) {// Si on a fait toutes les pièces sans trouver de solutions
-					System.out.println("ON A FAIT TOUTES LES PIECES");
-					board.getPositions().get(this.ordrePlacement[n]).tourne(1);
-					//Tant qu'on a pas placé une pièce correctement au dessus
-					while (bienPlacee(board.getPositions().get(this.ordrePlacement[n]))) {
-						cptTours = 0;
-						//On fait tourner la pièce n pour voir si il n'existe pas une autre solution
-						while (bienPlacee(board.getPositions().get(this.ordrePlacement[n])) || cptTours < 2) {
-							board.getPositions().get(this.ordrePlacement[n]).tourne(1);
-							fen.refreshBoard();
-							System.out.println(board.getPositions().get(this.ordrePlacement[n]).toString()+"\ta tourné\tcompteur de tours : "+cptTours+"\tValeur de n : "+n);
-						}
-						//Si il y a une autre solution on continue l'algo
-						if (bienPlacee(board.getPositions().get(this.ordrePlacement[n]))) {
-							System.out.println(board.getPositions().get(this.ordrePlacement[n+1]).getNom()+" bien placé !\t cpt de tours : "+cptTours+"\tValeur de n : "+n+"\tDans le while");
-							n++;premierePieceRetiree = false;piecesToutesFaites = false;
-						}
-						//Sinon on retire la piece et on essaye de trouver une autre solution avec la précédente
-						if (cptTours > 2) {//Sinon on enlève la pièce et on essaye avec la précédente
-							board.retirer(board.getPositions().get(this.ordrePlacement[n]));
-							fen.refreshBoard();
-							n--;piecesToutesFaites = false;
-						}
-					}
-					//On retire les pièces du Board
-					while (nbPiecesNonPlacees() != 8) {
-						System.out.println("La piece "+board.getPositions().get(this.ordrePlacement[n]).getNom()+" a été retirée");
-						board.retirer(board.getPositions().get(this.ordrePlacement[n]));
-						fen.refreshBoard();
-						n--;
-					}//Et on fait tourner la pièce en première position
-					n = 0;
-					cptToursPieceInit++;
-					if (cptToursPieceInit == 4) {//Si on a déjà fait tourner 4 fois la première pièce on la remplace par une suivante.
-						System.out.println("La pièce "+board.getPositions().get(this.ordrePlacement[n]).getNom()+" a été retirée");
-						board.retirer(board.getPositions().get(this.ordrePlacement[n]));
-						cptToursPieceInit = 0;int cpt = 0;
-						while (piecesInit.contains(board.getPool().getPool().get(numeroPiece)) || cpt < 10) {
-							numeroPiece = (numeroPiece +1) % (board.getPool().getPool().size() - 1);
-							System.out.println(board.getPool().getPool().get(numeroPiece).getNom()+"\tnuméro pièce : "+numeroPiece+"\tTaille Pool : "+(board.getPool().getPool().size()-1));
-							cpt++;
-							if (cpt > 10) {
-								System.out.println("boucle infinie...");System.exit(0);
-							}
-						}
-						cpt = 0;
-						numeroPiece = 0;
-						System.out.println("La piece "+board.getPool().getPool().get(numeroPiece).getNom()+" a été ajoutée au Board en position "+this.ordrePlacement[n]);
-						piecesInit.add(board.getPool().getPool().get(numeroPiece));
-						board.positionner(board.getPool().getPool().get(numeroPiece), this.ordrePlacement[n]);
-						fen.refreshBoard();
-					}
-					premierePieceRetiree = false;piecesToutesFaites = false;
-					board.getPositions().get(this.ordrePlacement[n]).tourne(1);
-					System.out.println(board.getPositions().get(this.ordrePlacement[n]));
-				}
-				if (board.getPool().getPool().size() == 3 /*|| antiInfnty > 50) {
-					fini = true;
-					System.out.println("antiInfnty : "+antiInfnty);
-					System.out.println("FIIIIIIIIIIIIIIIIIIIINNNNNNNNNNNNNNNNNNNNNNIIIIIIIIIIIIIIIIIIIIIIIIIIIII !!!!!!!!!!!!!!!!!!! :)");
-				}
-			}
-		}
-	}
-	*/
-
-//	public void resoudre(int n) throws InterruptedException{
-//		if (board.getPool().getPool().size() == 1) {
-//			return;
-//		}
-//		int nPrecedent = -1;
-//		int nbTours = 0;
-//		int nbPiecesTestees = 0;
-//		boolean avance = true;
-//		ArrayList<InstanceBoard> boardsFaux = new ArrayList<InstanceBoard>();
-//		resoudreAide(n, nPrecedent, nbTours, nbPiecesTestees, avance, boardsFaux);
-//	}
-//	
-//	public void resoudreAide(int n, int nPrecedent, int nbTours, int nbPiecesTestees, boolean avance, ArrayList<InstanceBoard> boardsFaux) throws InterruptedException{
-//		Thread.sleep(1000-fen.getVitesseExec());
-//		System.out.println("n : "+n+" nPrécédent : "+nPrecedent+" nbTours : "+nbTours+" nbPiecesTestees : "+nbPiecesTestees+"/"+board.getPool().getPool().size()+" avance : "+avance);
-//		if (n < 0) {
-//			System.out.println("n < 0");System.exit(0);
-//		}
-//		if (board.getPool().getPool().size() == 0) {
-//			System.out.println("FINI !!!!!!");return ;
-//		}
-//		if (aEteUneInstance(new InstanceBoard(board), boardsFaux) && n > nPrecedent/*&& !avance*/) {
-//			nbPiecesTestees++;
-//			System.out.println("board contenu !");
-//			board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
-//			if (aEteUneInstance(new InstanceBoard(board), boardsFaux)/* && !avance*/) {
-//				n--;
-////				nbPiecesTestees++;
-//				System.out.println("board contenu !");
-//				board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
-////				if (aEteUneInstance(board.getInstance(), boardsFaux)) {
-////					n--;
-////					System.out.println("board contenu !");
-////					board.retirer(board.getPositions().get(this.ordrePlacement[n]));
-//					resoudreAide(n - 1, n, 0, nbPiecesTestees, false, boardsFaux);
-////				}else {
-////					resoudreAide(n - 1, n, 0, 0, true, boardsFaux);
-////				}
-//			}else {
-//				resoudreAide(n - 1, n, 0, 0, true, boardsFaux);
-//			}
-//		}
-//		if (n > nPrecedent) {
-//			board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);fen.refreshBoard();
-//		}
-//		if (nbPiecesTestees == board.getPool().getPool().size()) {
-//			board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
-//			boardsFaux.add(new InstanceBoard(board));System.out.println("Board ajouté !");
-//			System.out.println(board.toString(board.getInstance()));
-//			resoudreAide(n - 1, n, nbTours, nbPiecesTestees, false, boardsFaux);
-//		}
-//		if (bienPlacee(board.getPositions().get(this.ordrePlacement[n])) && !avance ) {
-//			if (aUneAutreSolution(board.getPositions().get(this.ordrePlacement[n]))) {
-//				board.getPositions().get(this.ordrePlacement[n]).tourne(1);fen.refreshBoard();
-//				resoudreAide(n, n, nbTours + 1, nbPiecesTestees, true, boardsFaux);
-//			}else {
-//				board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
-//				resoudreAide(n-1, n, 0, 0, false, boardsFaux);
-//			}
-//			
-//		}
-//		if (bienPlacee(board.getPositions().get(this.ordrePlacement[n])) && avance) {
-//			resoudreAide(n+1, n, 0, 0, true, boardsFaux);
-//		}
-//		if (nbTours < 4) {
-//			board.getPositions().get(this.ordrePlacement[n]).tourne(1);fen.refreshBoard();
-//			resoudreAide(n, n, nbTours + 1, nbPiecesTestees, avance, boardsFaux);
-//		}
-//		if (nbTours >= 4 && avance) {
-//			boardsFaux.add(new InstanceBoard(board));
-//			board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
-//			resoudreAide(n, n-1, 0, nbPiecesTestees + 1, avance, boardsFaux);
-//		}
-//		if (nbTours >= 4 && !avance) {
-//			boardsFaux.add(new InstanceBoard(board));
-//			board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
-//			resoudreAide(n - 1, n, 0, nbPiecesTestees + 1, false, boardsFaux);
-//		}
-//	}
 	
 	public void resoudre(int n) throws InterruptedException{
 		int cptSolutions = 0;
 		int premierePiece = 0;
+		boolean premierTour = true;
+		
 		while (cptSolutions != board.getPool().getNbSolutions()) {
-			resoudreAide(0, 0, 0, false, new ArrayList<InstanceBoard>(), false, premierePiece);
+			resoudreAide(0, 0, 0, false, new ArrayList<InstanceBoard>(), false, premierePiece, premierTour);
+			System.out.println("cpt de sols : "+cptSolutions+"\tNb de sols trouvées : "+this.getNbSolutionsTrouvees()+"\tTaille du tabl : "+solutions.size());
+			premierePiece = pieceCentraleSuivante(solutions.get(cptSolutions));
+			premierTour = true;
 			pool = new Pool(Main.path);
 			cptSolutions++;
-//			premierePiece++;
-			System.out.println("sorti de la fonction");
-			System.out.println("nbSolutions : "+solutions.size());
+			premierePiece++;
 		}
 	}
 	
-	public void resoudreAide(int n, int orientation, int nbPiecesTestees, boolean aTourne, ArrayList<InstanceBoard> boardFaux, boolean fini, int premierePiece) throws InterruptedException{
+	public void resoudreAide(int n, int orientation, int nbPiecesTestees, boolean aTourne, ArrayList<InstanceBoard> boardFaux, boolean fini, int premierePiece, boolean premierTour) throws InterruptedException{
 		if (n <= 8) {
 			while (board.getPool().getPool().size() > 0 && !fini) {
 				if (nbPiecesTestees > board.getPool().getPool().size()) {
@@ -272,29 +72,36 @@ public class NineSquarePuzzle {
 					}
 				}
 				while (nbPiecesTestees <= board.getPool().getPool().size() && !fini) {
-					System.out.println("n : "+n+"\ta tourné : "+aTourne+"\tnb de p testées : "+nbPiecesTestees);
+//					System.out.println("n : "+n+"\ta tourné : "+aTourne+"\tnb de p testées : "+nbPiecesTestees);
 					if (n >= 0 && aTourne) {
 						board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
 						board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
 						nbPiecesTestees++;
 					}
 					if (board.getPool().getPool().size() > 0) {
-						System.out.println("n : "+n);
-						
+//						System.out.println("n : "+n);
+						if (premierTour) {
+							premierTour = false;
+							board.positionner(board.getPool().getPool().get(premierePiece), this.ordrePlacement[n]);fen.refreshBoard();
+							orientation = 0;
+							board.getPositions().get(this.ordrePlacement[n]).setOrientation(orientation);fen.refreshBoard();
+							Thread.sleep(1000-fen.getVitesseExec());
+						}else {
 							board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);fen.refreshBoard();
 							orientation = 0;
 							board.getPositions().get(this.ordrePlacement[n]).setOrientation(orientation);fen.refreshBoard();
 							Thread.sleep(1000-fen.getVitesseExec());
+						}
 					}else {
-						System.out.println("Fini");System.out.println((new InstanceBoard(board).toString()));fini = true;//System.exit(0);
+//						System.out.println("Fini");System.out.println((new InstanceBoard(board).toString()));fini = true;//System.exit(0);
 					}
-					System.out.println("coucou");
+//					System.out.println("coucou");
 					while (orientation < 4 && !fini) {
 						Thread.sleep(1000-fen.getVitesseExec());
-						System.out.println("n : "+n+"\t modulo  = 0 : "+(this.ordrePlacement[n] % 2 == 0)+"\t pool size "+board.getPool().getPool().size()+"\tfini : "+fini);
+//						System.out.println("n : "+n+"\t modulo  = 0 : "+(this.ordrePlacement[n] % 2 == 0)+"\t pool size "+board.getPool().getPool().size()+"\tfini : "+fini);
 						if (bienPlacee(board.getPositions().get(this.ordrePlacement[n]), n)) {
-							System.out.println("bien placée");
-							resoudreAide(n+1, 0, 0, false, boardFaux, fini, premierePiece);
+//							System.out.println("bien placée");
+							resoudreAide(n+1, 0, 0, false, boardFaux, fini, premierePiece, premierTour);
 							
 							fini = true;
 						}else {
@@ -307,12 +114,7 @@ public class NineSquarePuzzle {
 			}
 		}else {
 			fen.refreshBoard();
-			fini = true;solutions.add(this.board.clone());
-//			if (this.nbSolutions < board.getPool().getNbSolutions()) {
-//				resoudre(this.nbSolutions++);
-//			}else {
-//				System.exit(0);
-//			}
+			fini = true;solutions.add(this.board.clone());this.nbSolutionsTrouvees++;
 		}
 	}
 
@@ -327,7 +129,7 @@ public class NineSquarePuzzle {
 		return nb;
 	}
 	
-	public int pieceCentraleSuivante(){
+	public int pieceCentraleSuivante(Board board){
 		Piece piece = board.getPositions().get(board.CENTRE);
 		int indice = 0;
 		for (int i = 0; i < board.getPool().getPool().size(); i++) {
@@ -366,11 +168,11 @@ public class NineSquarePuzzle {
 	}
 	
 	public boolean aEteUneInstance(InstanceBoard instance, ArrayList<InstanceBoard> boardsFaux){
-		System.out.println("-----------------------------\n"+boardsFaux.size()+" instances\n|\t"+instance.toString());
+//		System.out.println("-----------------------------\n"+boardsFaux.size()+" instances\n|\t"+instance.toString());
 		for (InstanceBoard instanceBoard : boardsFaux) {
-			System.out.println(instanceBoard.toString());
+//			System.out.println(instanceBoard.toString());
 			if (instance.equals(instanceBoard)) {
-				System.out.println("A été une instance !!");
+//				System.out.println("A été une instance !!");
 				return true;
 			}
 		}
@@ -737,6 +539,14 @@ public class NineSquarePuzzle {
 			}
 		}
 		
+	}
+
+	public int getNbSolutionsTrouvees() {
+		return nbSolutionsTrouvees;
+	}
+
+	public void setNbSolutionsTrouvees(int nbSolutionsTrouvees) {
+		this.nbSolutionsTrouvees = nbSolutionsTrouvees;
 	}
 }
 
