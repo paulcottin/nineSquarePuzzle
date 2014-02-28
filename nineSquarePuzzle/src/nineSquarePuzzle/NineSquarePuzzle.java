@@ -36,15 +36,23 @@ public class NineSquarePuzzle {
 		int cptSolutions = 0;
 		int premierePiece = 0;
 		boolean premierTour = true;
+		Board b;
 		
 		while (cptSolutions != board.getPool().getNbSolutions()) {
 			resoudreAide(0, 0, 0, false, new ArrayList<InstanceBoard>(), false, premierePiece, premierTour);
+			
+			b = board.clone();
+			
+			this.board.resetBoard();fen.refreshBoard();
+			this.pool = new Pool(board.getPath());
+			
+			premierePiece = pieceCentraleSuivante(b);
+			
 			System.out.println("cpt de sols : "+cptSolutions+"\tNb de sols trouvées : "+this.getNbSolutionsTrouvees()+"\tTaille du tabl : "+solutions.size());
-			premierePiece = pieceCentraleSuivante(solutions.get(cptSolutions));
+			
 			premierTour = true;
-			pool = new Pool(Main.path);
 			cptSolutions++;
-			premierePiece++;
+			Thread.sleep(10000);
 		}
 	}
 	
@@ -114,6 +122,7 @@ public class NineSquarePuzzle {
 			}
 		}else {
 			fen.refreshBoard();
+			System.out.println("Solution ajoutée à l'arrayList");
 			fini = true;solutions.add(this.board.clone());this.nbSolutionsTrouvees++;
 		}
 	}
@@ -131,12 +140,26 @@ public class NineSquarePuzzle {
 	
 	public int pieceCentraleSuivante(Board board){
 		Piece piece = board.getPositions().get(board.CENTRE);
+		System.out.println("Pièce du centre : \n"+board.getPositions().get(board.CENTRE).toString());
 		int indice = 0;
+		System.out.println("--------Board----------");
+		for (Piece p : board.getPositions()) {
+			System.out.println(p.getNom());
+		}
+		System.out.println("-----------------------");
+		System.out.println("-----Pool-------------");
+		for (int i = 0; i < board.getPool().getPool().size(); i++) {
+			System.out.println(board.getPool().getPool().get(i).toString());
+		}
+		System.out.println("----------------------");
 		for (int i = 0; i < board.getPool().getPool().size(); i++) {
 			if (board.getPool().getPool().get(i).equals(piece)) {
 				indice = i;
 			}
 		}
+		System.out.println("indice : "+indice);
+		System.out.println(solutions.get(0).getPositions().get(indice).toString());
+		System.out.println(solutions.get(0).getPositions().get(indice+1).toString());
 		return (indice+1);
 	}
 	

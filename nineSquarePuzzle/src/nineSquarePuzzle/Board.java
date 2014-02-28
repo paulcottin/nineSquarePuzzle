@@ -14,7 +14,9 @@ public class Board {
 	String path;
 	
 	public Board(){
-		
+		positions = new ArrayList<Piece>();
+		positionOccupees = new boolean[9];
+		orientation = new int[9];
 	}
 	
 	public Board(String path){
@@ -88,6 +90,12 @@ public class Board {
 		board.setPositions(this.getPositions());
 		board.setOrientation(this.getOrientation());
 		return board;
+	}
+	
+	public void resetBoard(){
+		for (Piece p : this.positions) {
+			this.retirer(p);
+		}
 	}
 	
 	public String[] getInstance() {
