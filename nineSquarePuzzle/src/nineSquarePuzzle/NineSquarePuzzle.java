@@ -9,7 +9,7 @@ import graphique.Fenetre;
 public class NineSquarePuzzle {
 
 	private Board board;
-	private int[] ordrePlacement = {Board.GAUCHE_HAUT, Board.CENTRE_HAUT, Board.DROITE_HAUT, Board.GAUCHE, Board.CENTRE, Board.DROITE, Board.GAUCHE_BAS, Board.CENTRE_BAS, Board.DROITE_BAS};
+	private int[] ordrePlacement = {Board.CENTRE, Board.DROITE, Board.DROITE_HAUT, Board.CENTRE_HAUT, Board.GAUCHE_HAUT, Board.GAUCHE, Board.GAUCHE_BAS, Board.CENTRE_BAS, Board.DROITE_BAS};
 	private int iterateur;
 	private boolean fini = false;
 	private Fenetre fen;
@@ -242,9 +242,9 @@ public class NineSquarePuzzle {
 					board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
 					board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
 					n--;
-					board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
-					board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
-					n--;
+//					board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
+//					board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+//					n--;
 					if (aEteUneInstance(new InstanceBoard(board), boardFaux)) {
 						board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
 						board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
@@ -276,12 +276,13 @@ public class NineSquarePuzzle {
 
 						Thread.sleep(1000-fen.getVitesseExec());
 					}else {
-						System.out.println("Fini");System.out.println((new InstanceBoard(board).toString()));System.exit(0);
+						System.out.println("Fini");System.out.println((new InstanceBoard(board).toString()));//System.exit(0);
 					}
 					
 					while (orientation < 4) {
 						Thread.sleep(1000-fen.getVitesseExec());
-						if (bienPlacee(board.getPositions().get(this.ordrePlacement[n]))) {
+						System.out.println("n : "+n+"\t modulo  = 0 : "+(this.ordrePlacement[n] % 2 == 0));
+						if (bienPlacee(board.getPositions().get(this.ordrePlacement[n]), n)) {
 							resoudreAide(n+1, 0, 0, false, boardFaux);
 						}else {
 							orientation++;
@@ -292,7 +293,7 @@ public class NineSquarePuzzle {
 				}
 			}
 		}else {
-			fen.refreshBoard();System.exit(0);
+			fen.refreshBoard();
 		}
 	}
 
@@ -307,10 +308,10 @@ public class NineSquarePuzzle {
 		return nb;
 	}
 	
-	public boolean aUneAutreSolution(Piece p){
+	public boolean aUneAutreSolution(Piece p, int n){
 		for (int i = 0; i < 3; i++) {
 			p.tourne(1);
-			if (bienPlacee(p)) {
+			if (bienPlacee(p, n)) {
 				return true;
 			}
 		}
@@ -409,7 +410,7 @@ public class NineSquarePuzzle {
 			if (indiceP == Board.DROITE && indiceQ == Board.DROITE_HAUT && p.getNorth()+q.getSouth() == 0) {
 				return true;
 			}
-			if (indiceP == Board.GAUCHE_HAUT && indiceQ == Board.GAUCHE && p.getSouth()+p.getNorth() == 0){
+			if (indiceP == Board.GAUCHE_HAUT && indiceQ == Board.GAUCHE && p.getSouth()+q.getNorth() == 0){
 				return true;
 			}
 			if (indiceP == Board.GAUCHE_HAUT && indiceQ == Board.CENTRE_HAUT && p.getEast()+q.getWest() == 0) {
@@ -433,7 +434,7 @@ public class NineSquarePuzzle {
 		return false;
 	}
 	
-	public boolean bienPlacee(Piece p){
+	public boolean bienPlacee(Piece p, int n){
 		int indiceP = 0;
 		//	Recuperation des indices dans Board.positions des pieces p et q
 			for (int i = 0; i < board.getPositions().size(); i++) {
@@ -446,19 +447,18 @@ public class NineSquarePuzzle {
 				return false;
 			}
 //			Si la pièce est la première retourner vrai
-			if (indiceP == 0) {
+			if (indiceP == board.CENTRE) {
 				return true;
 			}
-		if (aPieceAGauche(p)) {
-			if(!match(p, board.getPositions().get(indiceP - 1))){
-				return false;
+			if (this.ordrePlacement[n] % 2 == 0) {
+				if (!match(p, board.getPositions().get(this.ordrePlacement[n-1]))) {
+					return false;
+				}
+			}else {
+				if (!(match(p, board.getPositions().get(this.ordrePlacement[n-1])) && match(p, board.getPositions().get(board.CENTRE)))) {
+					return false;
+				}
 			}
-		}
-		if (aPieceAuDessus(p)) {
-			if(!match(p, board.getPositions().get(indiceP - 3))){
-				return false;
-			}
-		}
 		return true;
 	}
 	
