@@ -10,7 +10,7 @@ public class NineSquarePuzzle {
 
 	private Board board;
 	private int[] ordrePlacement = {Board.CENTRE, Board.DROITE, Board.DROITE_HAUT, Board.CENTRE_HAUT, Board.GAUCHE_HAUT, Board.GAUCHE, Board.GAUCHE_BAS, Board.CENTRE_BAS, Board.DROITE_BAS};
-	private int iterateur;
+	private int iterateur, nbSolutions = 0;
 	private boolean fini = false;
 	private Fenetre fen;
 	private Main main;
@@ -233,18 +233,16 @@ public class NineSquarePuzzle {
 	
 	public void resoudre(int n) throws InterruptedException{
 		resoudreAide(n, 0, 0, false, new ArrayList<InstanceBoard>());
+		System.out.println("sorti de la fonction");
 	}
 	
 	public void resoudreAide(int n, int orientation, int nbPiecesTestees, boolean aTourne, ArrayList<InstanceBoard> boardFaux) throws InterruptedException{
-		if (n < 10) {
+		if (n <= 8) {
 			while (board.getPool().getPool().size() > 0) {
 				if (nbPiecesTestees > board.getPool().getPool().size()) {
 					board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
 					board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
 					n--;
-//					board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
-//					board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
-//					n--;
 					if (aEteUneInstance(new InstanceBoard(board), boardFaux)) {
 						board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
 						board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
@@ -268,21 +266,21 @@ public class NineSquarePuzzle {
 						board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
 						nbPiecesTestees++;
 					}
-					if (board.getPool().getPool().size() > 1) {
+					if (board.getPool().getPool().size() > 0) {
 						System.out.println("n : "+n);
-						board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);fen.refreshBoard();
-						orientation = 0;
-						board.getPositions().get(this.ordrePlacement[n]).setOrientation(orientation);fen.refreshBoard();
-
-						Thread.sleep(1000-fen.getVitesseExec());
+							board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);fen.refreshBoard();
+							orientation = 0;
+							board.getPositions().get(this.ordrePlacement[n]).setOrientation(orientation);fen.refreshBoard();
+							Thread.sleep(1000-fen.getVitesseExec());
 					}else {
-						System.out.println("Fini");System.out.println((new InstanceBoard(board).toString()));//System.exit(0);
+						System.out.println("Fini");System.out.println((new InstanceBoard(board).toString()));System.exit(0);
 					}
-					
+					System.out.println("coucou");
 					while (orientation < 4) {
 						Thread.sleep(1000-fen.getVitesseExec());
-						System.out.println("n : "+n+"\t modulo  = 0 : "+(this.ordrePlacement[n] % 2 == 0));
+						System.out.println("n : "+n+"\t modulo  = 0 : "+(this.ordrePlacement[n] % 2 == 0)+"\t pool size "+board.getPool().getPool().size());
 						if (bienPlacee(board.getPositions().get(this.ordrePlacement[n]), n)) {
+							System.out.println("bien placée");
 							resoudreAide(n+1, 0, 0, false, boardFaux);
 						}else {
 							orientation++;
@@ -294,6 +292,11 @@ public class NineSquarePuzzle {
 			}
 		}else {
 			fen.refreshBoard();
+//			if (this.nbSolutions < board.getPool().getNbSolutions()) {
+//				resoudre(this.nbSolutions++);
+//			}else {
+				System.exit(0);
+//			}
 		}
 	}
 

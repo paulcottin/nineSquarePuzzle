@@ -169,14 +169,12 @@ public class Pool {
 				// TODO: handle exception
 			}
 			if (result != -1) {
-				System.out.println("result : "+result);
 				tab.add(titre.substring(i, i+1));
 			}
 		}
 		for (int i = 1; i < tab.size(); i++) {
 			nb = nb + tab.get(i);
 		}
-		System.out.println("nb : "+nb);
 		return Integer.parseInt(nb);
 	}
 
