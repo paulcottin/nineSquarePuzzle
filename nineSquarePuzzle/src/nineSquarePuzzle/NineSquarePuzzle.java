@@ -261,7 +261,7 @@ public class NineSquarePuzzle {
 				}
 				while (nbPiecesTestees <= board.getPool().getPool().size() && !fini) {
 					System.out.println("n : "+n+"\ta tourné : "+aTourne+"\tnb de p testées : "+nbPiecesTestees);
-					if (n > 0 && aTourne) {
+					if (n >= 0 && aTourne) {
 						board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
 						board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
 						nbPiecesTestees++;
@@ -282,6 +282,7 @@ public class NineSquarePuzzle {
 						if (bienPlacee(board.getPositions().get(this.ordrePlacement[n]), n)) {
 							System.out.println("bien placée");
 							resoudreAide(n+1, 0, 0, false, boardFaux, fini);
+							
 							fini = true;
 						}else {
 							orientation++;
