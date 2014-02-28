@@ -14,12 +14,16 @@ public class NineSquarePuzzle {
 	private boolean fini = false;
 	private Fenetre fen;
 	private Main main;
+	private Pool pool;
+	private ArrayList<Board> solutions;
 	
 	public NineSquarePuzzle(Board b, Fenetre f, Main main){
 		this.board = b;
 		this.iterateur = 0;
 		this.fen = f;
 		this.main = main;
+		this.solutions = new ArrayList<Board>();
+		this.pool = board.getPool();
 	}
 	
 	public void affiche(){
@@ -232,11 +236,19 @@ public class NineSquarePuzzle {
 //	}
 	
 	public void resoudre(int n) throws InterruptedException{
-		resoudreAide(0, 0, 0, false, new ArrayList<InstanceBoard>(), false);
-		System.out.println("sorti de la fonction");
+		int cptSolutions = 0;
+		int premierePiece = 0;
+		while (cptSolutions != board.getPool().getNbSolutions()) {
+			resoudreAide(0, 0, 0, false, new ArrayList<InstanceBoard>(), false, premierePiece);
+			pool = new Pool(Main.path);
+			cptSolutions++;
+//			premierePiece++;
+			System.out.println("sorti de la fonction");
+			System.out.println("nbSolutions : "+solutions.size());
+		}
 	}
 	
-	public void resoudreAide(int n, int orientation, int nbPiecesTestees, boolean aTourne, ArrayList<InstanceBoard> boardFaux, boolean fini) throws InterruptedException{
+	public void resoudreAide(int n, int orientation, int nbPiecesTestees, boolean aTourne, ArrayList<InstanceBoard> boardFaux, boolean fini, int premierePiece) throws InterruptedException{
 		if (n <= 8) {
 			while (board.getPool().getPool().size() > 0 && !fini) {
 				if (nbPiecesTestees > board.getPool().getPool().size()) {
@@ -268,6 +280,7 @@ public class NineSquarePuzzle {
 					}
 					if (board.getPool().getPool().size() > 0) {
 						System.out.println("n : "+n);
+						
 							board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);fen.refreshBoard();
 							orientation = 0;
 							board.getPositions().get(this.ordrePlacement[n]).setOrientation(orientation);fen.refreshBoard();
@@ -281,7 +294,7 @@ public class NineSquarePuzzle {
 						System.out.println("n : "+n+"\t modulo  = 0 : "+(this.ordrePlacement[n] % 2 == 0)+"\t pool size "+board.getPool().getPool().size()+"\tfini : "+fini);
 						if (bienPlacee(board.getPositions().get(this.ordrePlacement[n]), n)) {
 							System.out.println("bien placée");
-							resoudreAide(n+1, 0, 0, false, boardFaux, fini);
+							resoudreAide(n+1, 0, 0, false, boardFaux, fini, premierePiece);
 							
 							fini = true;
 						}else {
@@ -294,7 +307,7 @@ public class NineSquarePuzzle {
 			}
 		}else {
 			fen.refreshBoard();
-			fini = true;
+			fini = true;solutions.add(this.board.clone());
 //			if (this.nbSolutions < board.getPool().getNbSolutions()) {
 //				resoudre(this.nbSolutions++);
 //			}else {
@@ -312,6 +325,17 @@ public class NineSquarePuzzle {
 			}
 		}
 		return nb;
+	}
+	
+	public int pieceCentraleSuivante(){
+		Piece piece = board.getPositions().get(board.CENTRE);
+		int indice = 0;
+		for (int i = 0; i < board.getPool().getPool().size(); i++) {
+			if (board.getPool().getPool().get(i).equals(piece)) {
+				indice = i;
+			}
+		}
+		return (indice+1);
 	}
 	
 	public boolean aUneAutreSolution(Piece p, int n){

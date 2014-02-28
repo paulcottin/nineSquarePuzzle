@@ -12,6 +12,11 @@ public class Board {
 	int[] orientation = new int[9];
 	private Pool pool;
 	
+	public Board(){// A finir
+		positions = new ArrayList<Piece>();
+		pool = new Pool(Main.path);
+	}
+	
 	public Board(String path){
 		/*
 		 * Initialiser positions avec des pieces vides (créer un constructeur vide dans Piece)
@@ -74,6 +79,11 @@ public class Board {
 		}
 	}
 
+	public Board clone(){
+		Board board = new Board(Main.path);//A changer
+		return board;
+	}
+	
 	public String[] getInstance() {
 		String[] instance = new String[9];
 		for (int i = 0; i < this.getPositions().size(); i++) {
