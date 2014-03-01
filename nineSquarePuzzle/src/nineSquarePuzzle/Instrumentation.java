@@ -32,7 +32,6 @@ public class Instrumentation {
 			heure = (int) (duree / 3600000);
 			return (heure+"h "+minute+"min "+seconde+"s "+millisec+"ms");
 		}else {
-			System.out.println("La solution n'a pas encore été trouvée !");
 			return "-1";
 		}
 	}
@@ -42,7 +41,7 @@ public class Instrumentation {
 	}
 	
 	public String afficheInfos(){
-		return ("----------\nTemps d'exécution : "+this.tempsEcoule()+"\nNombre d'appels récursifs : "+nbAppelRecursifs);
+		return ("----------\n Temps d'exécution : "+this.tempsEcoule()+"\nNombre d'appels récursifs : "+nbAppelRecursifs);
 	}
 
 	public int getNbAppelRecursifs() {

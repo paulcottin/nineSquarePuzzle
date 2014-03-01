@@ -35,15 +35,23 @@ public class Main {
 		Piece s = puzzle.getBoard().getPool().getPool().get(8);
 		Piece t = puzzle.getBoard().getPool().getPool().get(6);
 		
-//		System.out.println(p.toString());
+		
 //		puzzle.getBoard().positionner(p, 0);
 //		puzzle.getBoard().positionner(q, Board.DROITE_HAUT);
 //		puzzle.getBoard().positionner(r, Board.GAUCHE_BAS);
 //		puzzle.getBoard().positionner(s, Board.DROITE);
 //		puzzle.getBoard().positionner(t, Board.CENTRE_BAS);
 		
+		i.start();
 		puzzle.resoudre(0);
-//		puzzle.affiche();
+		i.stop();
+		
+//		puzzle.affichePool();fen.refreshBoard();
+//		Board b = puzzle.getBoard().clone();
+//		System.out.println("taille de b.positions : "+b.getPositions().size());
+//		for (Piece piece : b.getPositions()) {
+//			System.out.println(piece.toString());
+//		}
 		
 ////		Vérification fonction tourne();
 //		System.out.println(puzzle.getBoard().getPool().getPool().get(2));

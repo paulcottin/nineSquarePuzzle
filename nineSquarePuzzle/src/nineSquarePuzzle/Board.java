@@ -84,11 +84,22 @@ public class Board {
 
 	public Board clone(){
 		Board board = new Board();//A changer
-		board.setPath(this.getPath());
+		board.setPath(Main.path);
 		board.setPool(this.getPool());
-		board.setPositionOccupees(this.getPositionOccupees());
-		board.setPositions(this.getPositions());
-		board.setOrientation(this.getOrientation());
+//		PositionsOccupees
+		for (int i = 0; i < board.positionOccupees.length; i++) {
+			board.positionOccupees[i] = this.getPositionOccupees()[i];
+		}
+		
+//		Positions
+		for (Piece p : this.positions) {
+			board.positions.add(p);
+		}
+
+//		Orientations
+		for (int i = 0; i < this.orientation.length; i++) {
+			board.orientation[i] = this.orientation[i];
+		}
 		return board;
 	}
 	

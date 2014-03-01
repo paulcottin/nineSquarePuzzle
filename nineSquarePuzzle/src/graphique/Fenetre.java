@@ -172,10 +172,11 @@ public class Fenetre extends JFrame{
 	
 	public void setInstrumentation(){
 		JPanel inst = new JPanel(); inst.setOpaque(false);
-		JLabel tempsExec = new JLabel("temps d'execution : "+instrumentation.tempsEcoule()+"  ---- ");
+		JLabel tempsExec = new JLabel("Temps d'execution : "+instrumentation.tempsEcoule()+"  ---- ");
 		JLabel nbAppelRecur = new JLabel("Nombre d'appel recursif : "+String.valueOf(instrumentation.getNbAppelRecursifs()));
 		inst.add(tempsExec); inst.add(nbAppelRecur);
 		container.add(inst, BorderLayout.SOUTH);
+		this.refreshBoard();
 	}
 	
 	public void setMenu(){

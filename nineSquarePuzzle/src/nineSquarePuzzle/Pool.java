@@ -175,7 +175,7 @@ public class Pool {
 		for (int i = 1; i < tab.size(); i++) {
 			nb = nb + tab.get(i);
 		}
-		return Integer.parseInt(nb);
+		return (Integer.parseInt(nb) / 4);
 	}
 
 	public int getNbSolutionsTrouvees() {
