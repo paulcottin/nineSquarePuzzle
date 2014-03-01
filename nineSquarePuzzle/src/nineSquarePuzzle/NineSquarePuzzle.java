@@ -37,16 +37,14 @@ public class NineSquarePuzzle {
 		int cptSolutions = 0;
 		int premierePiece = 0;
 		boolean premierTour = true;
-		Board b;
 		
 		while (cptSolutions < board.getPool().getNbSolutions()) {
-			resoudreAide(0, 0, 0, false, new ArrayList<InstanceBoard>(), false, premierePiece, true);
+			resoudreAide(0, 0, 0, false, new ArrayList<InstanceBoard>(), false, premierePiece, true, 0);
 			solutions.add(this.board.clone());
 			
-			System.out.println("Taille de la Pool : "+board.getPool().getPool().size());
 			this.board.resetBoard();fen.refreshBoard();
+			
 			this.pool = new Pool(Main.path);
-			System.out.println("Taille de la Pool : "+board.getPool().getPool().size());
 			System.out.println("cpt de sols : "+cptSolutions+"\tNb de sols trouvées : "+this.getNbSolutionsTrouvees()+"\tTaille du tabl : "+solutions.size());
 			premierePiece = pieceCentraleSuivante(solutions.get(cptSolutions));
 			System.out.println("nb total de solutions : "+board.getPool().getNbSolutions());
@@ -64,9 +62,9 @@ public class NineSquarePuzzle {
 		}
 	}
 	
-	public void resoudreAide(int n, int orientation, int nbPiecesTestees, boolean aTourne, ArrayList<InstanceBoard> boardFaux, boolean fini, int premierePiece, boolean premierTour) throws InterruptedException{
-		if (n <= 8) {
-			System.out.println("entre dans résoudreAide()\tn : "+n);
+	public void resoudreAide(int n, int orientation, int nbPiecesTestees, boolean aTourne, ArrayList<InstanceBoard> boardFaux, boolean fini, int premierePiece, boolean premierTour, int nbToursPremierePiece) throws InterruptedException{
+		if (n <= 9 /*&& !boardParfait(n)*/) {
+//			System.out.println("entre dans résoudreAide()\tn : "+n);
 			while (board.getPool().getPool().size() > 0 && !fini) {
 				if (nbPiecesTestees > board.getPool().getPool().size()) {
 					board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
@@ -116,25 +114,40 @@ public class NineSquarePuzzle {
 					while (orientation < 4 && !fini) {
 						Thread.sleep(1000-fen.getVitesseExec());
 //						System.out.println("n : "+n+"\t modulo  = 0 : "+(this.ordrePlacement[n] % 2 == 0)+"\t pool size "+board.getPool().getPool().size()+"\tfini : "+fini);
-						if (bienPlacee(board.getPositions().get(this.ordrePlacement[n]), n)) {
-//							System.out.println("bien placée");
-							resoudreAide(n+1, 0, 0, false, boardFaux, fini, premierePiece, premierTour);
-							System.out.println("n : "+n);
-								fini = true;
-						}else {
-							orientation++;
-							aTourne = true;
-							board.getPositions().get(this.ordrePlacement[n]).setOrientation(board.getPositions().get(this.ordrePlacement[n]).getOrientation()+1);fen.refreshBoard();
-						}
+						if (n == 0) {
+							if (!(nbToursPremierePiece < 4)) {
+								orientation = 8;
+								nbToursPremierePiece = 0;
+							}
+							if ((nbToursPremierePiece == 0)) {
+							}else {
+								board.getPositions().get(this.ordrePlacement[n]).tourne(1);
+								nbToursPremierePiece++;
+							}
+							resoudreAide(n+1, 0, 0, false, boardFaux, fini, premierePiece, premierTour, nbToursPremierePiece);
+						}//else {
+							if (bienPlacee(board.getPositions().get(this.ordrePlacement[n]), n)) {
+//								System.out.println("bien placée");
+								resoudreAide(n+1, 0, 0, false, boardFaux, fini, premierePiece, premierTour, nbToursPremierePiece);
+								System.out.println("n : "+n);
+									if (boardParfait(n)) {
+										fini = true;
+									}
+							}else {
+								orientation++;
+								aTourne = true;
+								board.getPositions().get(this.ordrePlacement[n]).setOrientation(board.getPositions().get(this.ordrePlacement[n]).getOrientation()+1);fen.refreshBoard();
+							}
+						//}
 					}
-					System.out.println("Sorti de orientation < 4");
+//					System.out.println("Sorti de orientation < 4");
 				}
-				System.out.println("Sorti de nbPiecesTestees <= board.getPool().getPool().size()");
+//				System.out.println("Sorti de nbPiecesTestees <= board.getPool().getPool().size()");
 			}
-			System.out.println("Sorti de board.getPool().getPool().size() > 0");
+//			System.out.println("Sorti de board.getPool().getPool().size() > 0");
 		}else {
 			fen.refreshBoard();
-			System.out.println("Solution ajoutée à l'arrayList");
+			System.out.println("Solution ajoutée à l'arrayList\tnb solutions trouvees : "+(this.nbSolutionsTrouvees +1));
 			fini = true;this.nbSolutionsTrouvees++;
 		}
 	}
@@ -306,7 +319,7 @@ public class NineSquarePuzzle {
 //			Si c'est la dernière piece
 			if (n == 8) {
 //				System.out.println("dernière piece : "+p.getNom()+" doit etre testee avec : "+board.getPositions().get(this.ordrePlacement[n-1]).getNom()+" et "+board.getPositions().get(this.ordrePlacement[1]).getNom());
-				if (!match(p, board.getPositions().get(this.ordrePlacement[n-1])) && match(p, board.getPositions().get(this.ordrePlacement[1]))) {
+				if (!(match(p, board.getPositions().get(this.ordrePlacement[n-1])) && match(p, board.getPositions().get(this.ordrePlacement[1])))) {
 					return false;
 				}
 //				for (Piece piece : board.getPositions()) {
@@ -324,6 +337,15 @@ public class NineSquarePuzzle {
 					return false;
 				}
 			}
+		return true;
+	}
+	
+	public boolean boardParfait(int n){
+		for (Piece p : board.getPositions()) {
+			if (!bienPlacee(p, n)) {
+				return false;
+			}
+		}
 		return true;
 	}
 	
@@ -580,6 +602,14 @@ public class NineSquarePuzzle {
 
 	public void setNbSolutionsTrouvees(int nbSolutionsTrouvees) {
 		this.nbSolutionsTrouvees = nbSolutionsTrouvees;
+	}
+
+	public ArrayList<Board> getSolutions() {
+		return solutions;
+	}
+
+	public void setSolutions(ArrayList<Board> solutions) {
+		this.solutions = solutions;
 	}
 }
 

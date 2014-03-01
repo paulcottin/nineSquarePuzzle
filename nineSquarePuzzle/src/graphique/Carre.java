@@ -85,4 +85,12 @@ public class Carre extends JPanel {
 	public void setCarreY(int y) {
 		this.carreY = y;
 	}
+
+	public String getTitre() {
+		return titre;
+	}
+
+	public void setTitre(String titre) {
+		this.titre = titre;
+	}
 }

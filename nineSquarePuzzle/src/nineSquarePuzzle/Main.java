@@ -4,7 +4,7 @@ import graphique.Fenetre;
 
 public class Main {
 	
-	public static String path = "data2.txt";
+	public static String path = "data1.txt";
 	
 	public static Main main = new Main();
 	public static Fenetre fen;
@@ -46,6 +46,12 @@ public class Main {
 		puzzle.resoudre(0);
 		i.stop();
 		
+		for (int j = 0; j < puzzle.getSolutions().get(0).getPositions().size(); j++) {
+			System.out.println(puzzle.getSolutions().get(0).getPositions().get(j).getNom());
+		}
+		board.resetBoard();
+		fen.chargeBoard(puzzle.getSolutions().get(0));
+		fen.revalidate();
 //		puzzle.affichePool();fen.refreshBoard();
 //		Board b = puzzle.getBoard().clone();
 //		System.out.println("taille de b.positions : "+b.getPositions().size());

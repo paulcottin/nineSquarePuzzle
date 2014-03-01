@@ -123,7 +123,7 @@ public class Fenetre extends JFrame{
 		
 		JPanel slider = new JPanel();
 		JLabel vitesseExec = new JLabel("Vitesse");
-		this.vitesse = new JSlider(JSlider.VERTICAL,0, 1000, 1000);//A remettre à 500 après les tests
+		this.vitesse = new JSlider(JSlider.VERTICAL,0, 1000, 500);//A remettre à 500 après les tests
 		vitesse.addChangeListener(new ChangeListener() {
 			
 			@Override
@@ -156,6 +156,23 @@ public class Fenetre extends JFrame{
 		}
 		boardCarre.charge();
 		container.add(grid);
+	}
+	
+	public void chargeBoard(Board b){
+		BoardCarre boardC = new BoardCarre(b, width, height);
+		for (int i = 8; i >= 0; i--) {
+			grid.remove(i);
+		}
+		boardC.charge();
+		System.out.println("test boardCarre");
+		for (int i = 0; i < 9; i++) {
+			System.out.println(boardC.getCarres()[i].getTitre());
+		}
+		for (int i = 0; i < 9; i++) {
+			grid.add(boardC.getCarres()[i], i);
+		}
+		grid.revalidate();
+		container.revalidate();
 	}
 	
 	public void refreshBoard(){
