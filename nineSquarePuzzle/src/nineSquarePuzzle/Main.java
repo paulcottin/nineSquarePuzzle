@@ -46,12 +46,14 @@ public class Main {
 		puzzle.resoudre(0);
 		i.stop();
 		
-		for (int j = 0; j < puzzle.getSolutions().get(0).getPositions().size(); j++) {
-			System.out.println(puzzle.getSolutions().get(0).getPositions().get(j).getNom());
-		}
-		board.resetBoard();
-		fen.chargeBoard(puzzle.getSolutions().get(0));
-		fen.revalidate();
+//		for (int j = 0; j < puzzle.getSolutions().get(0).getPositions().size(); j++) {
+//			System.out.println(puzzle.getSolutions().get(0).getPositions().get(j).getNom());
+//		}
+//		board.resetBoard();
+//		fen.chargeBoard(puzzle.getSolutions().get(0));
+//		fen.revalidate();
+		
+		
 //		puzzle.affichePool();fen.refreshBoard();
 //		Board b = puzzle.getBoard().clone();
 //		System.out.println("taille de b.positions : "+b.getPositions().size());
