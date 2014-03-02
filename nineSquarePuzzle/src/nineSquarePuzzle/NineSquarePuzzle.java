@@ -18,6 +18,7 @@ public class NineSquarePuzzle {
 	private Pool pool;
 	private ArrayList<Board> solutions;
 	private ArrayList<Integer> premierePiece;
+	private ArrayList<InstanceBoard> erreursBoard;
 	
 	public NineSquarePuzzle(Board b, Fenetre f, Main main){
 		this.board = b;
@@ -27,6 +28,7 @@ public class NineSquarePuzzle {
 		this.solutions = new ArrayList<Board>();
 		this.pool = board.getPool();
 		this.premierePiece = new ArrayList<Integer>();
+		this.erreursBoard = new ArrayList<InstanceBoard>();
 	}
 	
 	public void affichePool(){
@@ -41,8 +43,27 @@ public class NineSquarePuzzle {
 		boolean premierTour = true;
 		
 		while (cptSolutions < board.getPool().getNbSolutions()) {
-			resoudreAide(0, 0, 0, false, new ArrayList<InstanceBoard>(), false, premierePiece, true, 0);
-			solutions.add(this.board.clone());
+			boolean unique = false;
+			resoudreAide(0, 0, 0, false, this.erreursBoard, false, premierePiece, true, 0);
+			if (!solutions.isEmpty()) {
+				unique = true;
+				for (int i = 0; i < solutions.size(); i++) {
+					if (((new InstanceBoard(this.board.clone())).equals(new InstanceBoard(solutions.get(i))) )) {
+						unique = false;
+					}
+				}
+				if (unique) {
+					solutions.add(this.board.clone());
+					erreursBoard.add(new InstanceBoard(this.board));
+					System.out.println("Solution ajoutée (not empty)");
+				}else {
+					System.out.println("Solution déjà trouvée");
+				}
+			}else {
+				solutions.add(this.board.clone());
+				erreursBoard.add(new InstanceBoard(this.board));
+				System.out.println("Solution ajoutée (empty)");
+			}
 			
 			this.board.resetBoard();fen.refreshBoard(); 
 			this.fini = false;
@@ -51,7 +72,9 @@ public class NineSquarePuzzle {
 			premierePiece = pieceCentraleSuivante(solutions.get(cptSolutions));
 			System.out.println("nb total de solutions : "+board.getPool().getNbSolutions());
 			premierTour = true;
-			cptSolutions++;
+			if (unique) {
+				cptSolutions++;
+			}
 		}
 		System.out.println("Résolution finie");
 		int i = 0;
@@ -147,6 +170,7 @@ public class NineSquarePuzzle {
 //								System.out.println("bien placée : "+bienPlacee(board.getPositions().get(Board.DROITE_BAS), n));
 									if (bienPlacee(board.getPositions().get(Board.DROITE_BAS), n)) {
 										this.fini = true;
+										nettoieDoublon(erreursBoard);//Enlève les doublons pour raccourcir les tests
 //										System.out.println("fini");
 										orientation = 4;
 										return;
@@ -234,7 +258,7 @@ public class NineSquarePuzzle {
 			}
 		}
 		if (cpt > 1) {
-			for (int i = indicesANettoyer.size(); i > 0; i--) {
+			for (int i = indicesANettoyer.size()-1; i > 0; i--) {
 				boardFaux.remove(indicesANettoyer.get(i));
 			}
 		}
