@@ -63,7 +63,7 @@ public class NineSquarePuzzle {
 	}
 	
 	public void resoudreAide(int n, int orientation, int nbPiecesTestees, boolean aTourne, ArrayList<InstanceBoard> boardFaux, boolean fini, int premierePiece, boolean premierTour, int nbToursPremierePiece) throws InterruptedException{
-		if (n <= 9 /*&& !boardParfait(n)*/) {
+		if (n < 9 /*&& !boardParfait(n)*/) {
 //			System.out.println("entre dans résoudreAide()\tn : "+n);
 			while (board.getPool().getPool().size() > 0 && !fini) {
 				if (nbPiecesTestees > board.getPool().getPool().size()) {
@@ -101,7 +101,12 @@ public class NineSquarePuzzle {
 							orientation = 0;
 							board.getPositions().get(this.ordrePlacement[n]).setOrientation(orientation);fen.refreshBoard();
 							Thread.sleep(1000-fen.getVitesseExec());
+						}
+						else if (nbToursPremierePiece < 4) {
+						//Ne rien faire, laisser tourner	
 						}else {
+							
+						}{
 							board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);fen.refreshBoard();
 							orientation = 0;
 							board.getPositions().get(this.ordrePlacement[n]).setOrientation(orientation);fen.refreshBoard();
@@ -114,17 +119,16 @@ public class NineSquarePuzzle {
 					while (orientation < 4 && !fini) {
 						Thread.sleep(1000-fen.getVitesseExec());
 //						System.out.println("n : "+n+"\t modulo  = 0 : "+(this.ordrePlacement[n] % 2 == 0)+"\t pool size "+board.getPool().getPool().size()+"\tfini : "+fini);
-						if (n == 0) {
+						if (n == 0 && !premierTour) {System.exit(0);
 							if (!(nbToursPremierePiece < 4)) {
 								orientation = 8;
 								nbToursPremierePiece = 0;
 							}
 							if ((nbToursPremierePiece == 0)) {
 							}else {
-								board.getPositions().get(this.ordrePlacement[n]).tourne(1);
+								board.getPositions().get(this.ordrePlacement[n]).tourne(1);fen.refreshBoard();Thread.sleep(1000-fen.getVitesseExec());
 								nbToursPremierePiece++;
 							}
-							resoudreAide(n+1, 0, 0, false, boardFaux, fini, premierePiece, premierTour, nbToursPremierePiece);
 						}//else {
 							if (bienPlacee(board.getPositions().get(this.ordrePlacement[n]), n)) {
 //								System.out.println("bien placée");
@@ -132,6 +136,8 @@ public class NineSquarePuzzle {
 								System.out.println("n : "+n);
 									if (boardParfait(n)) {
 										fini = true;
+									}else {//Sortir de la boucle
+										orientation = 4;
 									}
 							}else {
 								orientation++;
