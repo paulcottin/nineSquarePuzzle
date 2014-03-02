@@ -43,15 +43,18 @@ public class Main {
 //		puzzle.getBoard().positionner(t, Board.CENTRE_BAS);
 		
 		i.start();
-		puzzle.resoudre(0);
+//		puzzle.resoudre(0);
 		i.stop();
 		
-//		for (int j = 0; j < puzzle.getSolutions().get(0).getPositions().size(); j++) {
-//			System.out.println(puzzle.getSolutions().get(0).getPositions().get(j).getNom());
-//		}
+//		Test fonction chargeBoard(Board b)
+//		Board b = new Board();
+//		b.getPositions().add(p);
+//		b.getPositions().add(q);
+//		b.getPositions().add(r);
+//		b.getPositions().add(s);
+//		b.getPositions().add(t);
 //		board.resetBoard();
-//		fen.chargeBoard(puzzle.getSolutions().get(0));
-//		fen.revalidate();
+//		puzzle.chargeBoard(b);
 		
 		
 //		puzzle.affichePool();fen.refreshBoard();

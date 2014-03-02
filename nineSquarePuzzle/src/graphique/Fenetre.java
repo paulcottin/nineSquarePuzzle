@@ -43,8 +43,8 @@ public class Fenetre extends JFrame{
 	JPanel container = new JPanel(), grid = new JPanel();
 	JLabel titreProjet = new JLabel("Nine Square Puzzle");
 	JMenuBar menu = new JMenuBar();
-	JMenu fichier, action;
-	JMenuItem quitter, ouvrir, tourner, lancerAlgo;
+	JMenu fichier, action, solutions;
+	JMenuItem quitter, ouvrir, tourner, lancerAlgo, solutionPrecedente, solutionSuivante;
 	JSlider vitesse;
 	
 	int width = 700, height = 600;
@@ -158,23 +158,6 @@ public class Fenetre extends JFrame{
 		container.add(grid);
 	}
 	
-	public void chargeBoard(Board b){
-		BoardCarre boardC = new BoardCarre(b, width, height);
-		for (int i = 8; i >= 0; i--) {
-			grid.remove(i);
-		}
-		boardC.charge();
-		System.out.println("test boardCarre");
-		for (int i = 0; i < 9; i++) {
-			System.out.println(boardC.getCarres()[i].getTitre());
-		}
-		for (int i = 0; i < 9; i++) {
-			grid.add(boardC.getCarres()[i], i);
-		}
-		grid.revalidate();
-		container.revalidate();
-	}
-	
 	public void refreshBoard(){
 		for (int i = 8; i >= 0; i--) {
 			grid.remove(i);
@@ -217,8 +200,17 @@ public class Fenetre extends JFrame{
 		action.add(tourner);
 		action.add(lancerAlgo);
 		
+		solutions = new JMenu("Solutions");
+			solutionPrecedente = new JMenuItem("Solution précédente");
+			solutionPrecedente.addActionListener(new menuActionListener());
+			solutionSuivante = new JMenuItem("Solution suivante");
+			solutionSuivante.addActionListener(new menuActionListener());
+		solutions.add(solutionPrecedente);
+		solutions.add(solutionSuivante);
+		
 		menu.add(fichier);
 		menu.add(action);
+		menu.add(solutions);
 	}
 	
 	public void repaint() { 

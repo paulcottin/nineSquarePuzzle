@@ -28,6 +28,7 @@ public class Carre extends JPanel {
 	
 //	Carre vide (sert pour afficher le Board au fur et à mesure)
 	public Carre(int x, int y) {
+		this.titre = "*";//A enlever après le test
 		this.carreX = x; this.carreY = y;
 		this.setPreferredSize(new Dimension(carreX, carreY));
 		this.setVisible(true);

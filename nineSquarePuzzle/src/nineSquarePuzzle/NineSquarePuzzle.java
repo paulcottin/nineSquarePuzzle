@@ -37,6 +37,12 @@ public class NineSquarePuzzle {
 		}
 	}
 	
+	public void chargeBoard(Board b){
+		for (int i = 0; i < b.getPositions().size(); i++) {
+			board.positionner(b.getPositions().get(i), this.ordrePlacement[i]);
+		}
+	}
+	
 	public void resoudre(int n) throws InterruptedException{
 		int cptSolutions = 0;
 		int premierePiece = 0;
@@ -258,7 +264,7 @@ public class NineSquarePuzzle {
 			}
 		}
 		if (cpt > 1) {
-			for (int i = indicesANettoyer.size()-1; i > 0; i--) {
+			for (int i = indicesANettoyer.size()-1; i >= 0; i--) {
 				boardFaux.remove(indicesANettoyer.get(i));
 			}
 		}
