@@ -17,6 +17,7 @@ public class NineSquarePuzzle {
 	private Main main;
 	private Pool pool;
 	private ArrayList<Board> solutions;
+	private ArrayList<Integer> premierePiece;
 	
 	public NineSquarePuzzle(Board b, Fenetre f, Main main){
 		this.board = b;
@@ -25,6 +26,7 @@ public class NineSquarePuzzle {
 		this.main = main;
 		this.solutions = new ArrayList<Board>();
 		this.pool = board.getPool();
+		this.premierePiece = new ArrayList<Integer>();
 	}
 	
 	public void affichePool(){
@@ -42,8 +44,8 @@ public class NineSquarePuzzle {
 			resoudreAide(0, 0, 0, false, new ArrayList<InstanceBoard>(), false, premierePiece, true, 0);
 			solutions.add(this.board.clone());
 			
-//			this.board.resetBoard();fen.refreshBoard(); //En attente de la validation de data1.txt
-			
+			this.board.resetBoard();fen.refreshBoard(); 
+			this.fini = false;
 			this.pool = new Pool(Main.path);
 			System.out.println("cpt de sols : "+(cptSolutions+1)+"\tNb de sols trouvées : "+this.getNbSolutionsTrouvees()+"\tTaille du tabl : "+solutions.size());
 			premierePiece = pieceCentraleSuivante(solutions.get(cptSolutions));
@@ -141,11 +143,11 @@ public class NineSquarePuzzle {
 									premierTour = false;
 								}
 								resoudreAide(n+1, 0, 0, false, boardFaux, fini, premierePiece, premierTour, nbToursPremierePiece);
-								System.out.println("n : "+n);
-								System.out.println("bien placée : "+bienPlacee(board.getPositions().get(Board.DROITE_BAS), n));
+//								System.out.println("n : "+n);
+//								System.out.println("bien placée : "+bienPlacee(board.getPositions().get(Board.DROITE_BAS), n));
 									if (bienPlacee(board.getPositions().get(Board.DROITE_BAS), n)) {
 										this.fini = true;
-										System.out.println("fini");
+//										System.out.println("fini");
 										orientation = 4;
 										return;
 									}
@@ -184,14 +186,31 @@ public class NineSquarePuzzle {
 	}
 	
 	public int pieceCentraleSuivante(Board board){
-		Piece piece = board.getPositions().get(board.CENTRE);
-		int indice = 0;
-		for (int i = 0; i < board.getPool().getPool().size(); i++) {
-			if (board.getPool().getPool().get(i).equals(piece)) {
-				indice = i;
+		String[] tabLettres = {"A", "B", "C", "D", "E", "F", "G", "H", "I"};
+		Piece piece = board.getPositions().get(Board.CENTRE);
+		String anciennePieceCentrale = piece.getNom();
+		int indiceAnciennePiece = 0;
+		
+		for (int i = 0; i < tabLettres.length; i++) {
+			if (tabLettres[i].equals(anciennePieceCentrale)) {
+				indiceAnciennePiece = i;
 			}
 		}
-		return (indice+1);
+		if (indiceAnciennePiece < tabLettres.length -1) {
+			for (int i = 0; i < this.board.getPool().getPool().size(); i++) {
+				if (this.board.getPool().getPool().get(i).getNom().equals(tabLettres[indiceAnciennePiece+1])) {
+					return i;
+				}
+			}
+		}else {
+			for (int i = 0; i < this.board.getPool().getPool().size(); i++) {
+				if (this.board.getPool().getPool().get(i).getNom().equals(tabLettres[8])) {
+					return i;
+				}
+			}
+		}
+		
+		return -1;
 	}
 	
 	public boolean aUneAutreSolution(Piece p, int n){
@@ -333,7 +352,7 @@ public class NineSquarePuzzle {
 				return false;
 			}
 //			Si la pièce est la première retourner vrai
-			if (indiceP == board.CENTRE) {
+			if (indiceP == Board.CENTRE) {
 				return true;
 			}
 //			Si c'est la dernière piece
@@ -359,7 +378,7 @@ public class NineSquarePuzzle {
 					return false;
 				}
 			}else {
-				if (!(match(p, board.getPositions().get(this.ordrePlacement[n-1])) && match(p, board.getPositions().get(board.CENTRE)))) {
+				if (!(match(p, board.getPositions().get(this.ordrePlacement[n-1])) && match(p, board.getPositions().get(Board.CENTRE)))) {
 					return false;
 				}
 			}

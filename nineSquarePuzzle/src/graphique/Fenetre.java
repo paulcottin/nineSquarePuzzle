@@ -123,7 +123,7 @@ public class Fenetre extends JFrame{
 		
 		JPanel slider = new JPanel();
 		JLabel vitesseExec = new JLabel("Vitesse");
-		this.vitesse = new JSlider(JSlider.VERTICAL,0, 1000, 1000);//A remettre à 500 après les tests
+		this.vitesse = new JSlider(JSlider.VERTICAL,0, 1000, 500);//A remettre à 500 après les tests
 		vitesse.addChangeListener(new ChangeListener() {
 			
 			@Override
