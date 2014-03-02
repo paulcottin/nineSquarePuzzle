@@ -63,13 +63,15 @@ public class NineSquarePuzzle {
 	}
 	
 	public void resoudreAide(int n, int orientation, int nbPiecesTestees, boolean aTourne, ArrayList<InstanceBoard> boardFaux, boolean fini, int premierePiece, boolean premierTour, int nbToursPremierePiece) throws InterruptedException{
-		if (n < 9 /*&& !boardParfait(n)*/) {
+		if (n < 8 /*&& !boardParfait(n)*/) {
 //			System.out.println("entre dans résoudreAide()\tn : "+n);
 			while (board.getPool().getPool().size() > 0 && !fini) {
 				if (nbPiecesTestees > board.getPool().getPool().size()) {
-					board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
-					board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
-					n--;
+					if (n > 0 || !(nbToursPremierePiece <4)) {
+						board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
+						board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+						n--;
+					}
 					if (aEteUneInstance(new InstanceBoard(board), boardFaux)) {
 						board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
 						board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
@@ -86,9 +88,9 @@ public class NineSquarePuzzle {
 						boardFaux.add(new InstanceBoard(board));
 					}
 				}
-				while (nbPiecesTestees <= board.getPool().getPool().size() && !fini) {
+				while (nbPiecesTestees <= board.getPool().getPool().size() && !fini) {//Tant qu'on a pas testé toutes les pièces pour une case
 //					System.out.println("n : "+n+"\ta tourné : "+aTourne+"\tnb de p testées : "+nbPiecesTestees);
-					if (n >= 0 && aTourne) {
+					if (n > 0 && aTourne || (n == 0 && !(nbToursPremierePiece < 4) )) {
 						board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
 						board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
 						nbPiecesTestees++;
@@ -96,13 +98,12 @@ public class NineSquarePuzzle {
 					if (board.getPool().getPool().size() > 0) {
 //						System.out.println("n : "+n);
 						if (premierTour) {
-							premierTour = false;
 							board.positionner(board.getPool().getPool().get(premierePiece), this.ordrePlacement[n]);fen.refreshBoard();
 							orientation = 0;
 							board.getPositions().get(this.ordrePlacement[n]).setOrientation(orientation);fen.refreshBoard();
 							Thread.sleep(1000-fen.getVitesseExec());
 						}
-						else if (nbToursPremierePiece < 4) {
+						else if (nbToursPremierePiece < 4 && n == 0) {
 						//Ne rien faire, laisser tourner	
 						}else {
 							
@@ -119,19 +120,21 @@ public class NineSquarePuzzle {
 					while (orientation < 4 && !fini) {
 						Thread.sleep(1000-fen.getVitesseExec());
 //						System.out.println("n : "+n+"\t modulo  = 0 : "+(this.ordrePlacement[n] % 2 == 0)+"\t pool size "+board.getPool().getPool().size()+"\tfini : "+fini);
-						if (n == 0 && !premierTour) {System.exit(0);
-							if (!(nbToursPremierePiece < 4)) {
+						if (n == 0 && !premierTour) {
+							if (!(nbToursPremierePiece < 4)) {//Si la pièce à trop tournée, on fait en sorte qu'elle quitte le while et qu'on la retire après
+								aTourne = true;
 								orientation = 8;
 								nbToursPremierePiece = 0;
-							}
-							if ((nbToursPremierePiece == 0)) {
-							}else {
+							}else {//Sinon on la fait tourner
 								board.getPositions().get(this.ordrePlacement[n]).tourne(1);fen.refreshBoard();Thread.sleep(1000-fen.getVitesseExec());
 								nbToursPremierePiece++;
 							}
-						}//else {
+						}
 							if (bienPlacee(board.getPositions().get(this.ordrePlacement[n]), n)) {
 //								System.out.println("bien placée");
+								if (premierTour) {
+									premierTour = false;
+								}
 								resoudreAide(n+1, 0, 0, false, boardFaux, fini, premierePiece, premierTour, nbToursPremierePiece);
 								System.out.println("n : "+n);
 									if (boardParfait(n)) {
@@ -144,7 +147,6 @@ public class NineSquarePuzzle {
 								aTourne = true;
 								board.getPositions().get(this.ordrePlacement[n]).setOrientation(board.getPositions().get(this.ordrePlacement[n]).getOrientation()+1);fen.refreshBoard();
 							}
-						//}
 					}
 //					System.out.println("Sorti de orientation < 4");
 				}
