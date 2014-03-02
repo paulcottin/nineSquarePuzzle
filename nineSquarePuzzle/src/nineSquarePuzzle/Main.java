@@ -4,10 +4,9 @@ import graphique.Fenetre;
 
 public class Main {
 	
-	public static String path = "data2.txt";
+	public static String path = "data1.txt";
 	
 	public static Main main = new Main();
-	public static Fenetre fen;
 	public static NineSquarePuzzle puzzle;
 
 	public static void main(String[] args) throws InterruptedException{
@@ -23,18 +22,19 @@ public class Main {
 //		System.out.println(i.afficheInfos());
 		
 //		Avec GUI
-		Board board = new Board(path);
-		Instrumentation i = new Instrumentation();
-		fen = new Fenetre(board, i, main);
-		puzzle = new NineSquarePuzzle(board, fen, main);
+//		Board board = new Board(path);
+//		Instrumentation i = new Instrumentation();
+//		fen = new Fenetre(board, i, main);
+//		puzzle = new NineSquarePuzzle(board, fen, main);
 		
 		
-		Piece p = puzzle.getBoard().getPool().getPool().get(3);
-		Piece q = puzzle.getBoard().getPool().getPool().get(4);
-		Piece r = puzzle.getBoard().getPool().getPool().get(3);
-		Piece s = puzzle.getBoard().getPool().getPool().get(8);
-		Piece t = puzzle.getBoard().getPool().getPool().get(6);
+//		Piece p = puzzle.getBoard().getPool().getPool().get(3);
+//		Piece q = puzzle.getBoard().getPool().getPool().get(4);
+//		Piece r = puzzle.getBoard().getPool().getPool().get(3);
+//		Piece s = puzzle.getBoard().getPool().getPool().get(8);
+//		Piece t = puzzle.getBoard().getPool().getPool().get(6);
 		
+		Fenetre fen = new Fenetre(Main.path);
 		
 //		puzzle.getBoard().positionner(p, 0);
 //		puzzle.getBoard().positionner(q, Board.DROITE_HAUT);
@@ -42,9 +42,9 @@ public class Main {
 //		puzzle.getBoard().positionner(s, Board.DROITE);
 //		puzzle.getBoard().positionner(t, Board.CENTRE_BAS);
 		
-		i.start();
+//		i.start();
 //		puzzle.resoudre(0);
-		i.stop();
+//		i.stop();
 		
 //		Test fonction chargeBoard(Board b)
 //		Board b = new Board();
@@ -86,13 +86,6 @@ public class Main {
 		fen.setInstrumentation();
 	}
 
-	public static Fenetre getFen() {
-		return fen;
-	}
-
-	public static void setFen(Fenetre fen) {
-		Main.fen = fen;
-	}
 
 	public NineSquarePuzzle getPuzzle() {
 		return puzzle;

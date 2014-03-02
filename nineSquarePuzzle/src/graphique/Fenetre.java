@@ -31,6 +31,7 @@ import javax.swing.event.ChangeListener;
 import nineSquarePuzzle.Board;
 import nineSquarePuzzle.Instrumentation;
 import nineSquarePuzzle.Main;
+import nineSquarePuzzle.NineSquarePuzzle;
 import nineSquarePuzzle.Pool;
 
 public class Fenetre extends JFrame{
@@ -55,21 +56,24 @@ public class Fenetre extends JFrame{
 	Board board;
 	Instrumentation instrumentation;
 	Main main;
+	String path;
+	NineSquarePuzzle puzzle;
 	
-	public Fenetre(Board board, Instrumentation instrumentation, Main m){
-		this.main = m;
-		this.board = board;
+	public Fenetre(String path){
+		this.path = path;
+		this.board = new Board(this.path);
 		this.pool = board.getPool();
-		this.instrumentation = instrumentation;
+		this.instrumentation = new Instrumentation();
 		this.poolcarre = new PoolCarre(this.pool, width, height);
 		this.boardCarre = new BoardCarre(this.board, width, height);
+		this.puzzle = new NineSquarePuzzle(board, this);
 		
-		this.setTitle(Main.path);
+		this.setTitle(this.path);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(width, height);
 		this.setLocationRelativeTo(null);
-		grid.setLayout(new GridLayout(3,3,5,5));
 		
+		grid.setLayout(new GridLayout(3, 3, 5, 5));
 		container.setLayout(new BorderLayout());
 		container.setBackground(Color.white);
 		
@@ -83,6 +87,34 @@ public class Fenetre extends JFrame{
 		this.setContentPane(container);
 		this.setVisible(true);
 	}
+	
+//	public Fenetre(Board board, Instrumentation instrumentation, Main m){
+//		this.main = m;
+//		this.board = board;
+//		this.pool = board.getPool();
+//		this.instrumentation = instrumentation;
+//		this.poolcarre = new PoolCarre(this.pool, width, height);
+//		this.boardCarre = new BoardCarre(this.board, width, height);
+//		
+//		this.setTitle(Main.path);
+//		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		this.setSize(width, height);
+//		this.setLocationRelativeTo(null);
+//		grid.setLayout(new GridLayout(3,3,5,5));
+//		
+//		container.setLayout(new BorderLayout());
+//		container.setBackground(Color.white);
+//		
+//		initialiseBoard();
+//		setMenu();
+//		setCoteDroit();
+//		
+//		JPanel titreProjetPanel = new JPanel(); titreProjetPanel.setOpaque(false);
+//		titreProjetPanel.add(titreProjet);
+//		container.add(menu, BorderLayout.NORTH);
+//		this.setContentPane(container);
+//		this.setVisible(true);
+//	}
 	
 	private void setCoteDroit() {
 		JPanel cote = new JPanel();
@@ -213,6 +245,10 @@ public class Fenetre extends JFrame{
 		menu.add(solutions);
 	}
 	
+	public void lancerAlgo() throws InterruptedException{
+		puzzle.resoudre(0);
+	}
+	
 	public void repaint() { 
 //		 repaint le component courant 
 		super.repaint(); 
@@ -237,6 +273,14 @@ public class Fenetre extends JFrame{
 		this.lancerAlgo = lancerAlgo;
 	}
 
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
 	class menuActionListener implements ActionListener {
 
 		@Override
@@ -246,10 +290,10 @@ public class Fenetre extends JFrame{
 				System.exit(0);
 			}
 			else if (e.getSource().equals(ouvrir)) {
-				String path = JOptionPane.showInputDialog(null, "Path :", "Ouvrir", JOptionPane.QUESTION_MESSAGE);
-				Path p = Paths.get(path);
+				String pathRecu = JOptionPane.showInputDialog(null, "Path :", "Ouvrir", JOptionPane.QUESTION_MESSAGE);
+				Path p = Paths.get(pathRecu);
 				if (Files.exists(p)) {
-					Main.path = path;
+					Main.path = pathRecu;
 					Fenetre.this.setEnabled(false);Fenetre.this.setVisible(false);
 					try {
 						Main.main(null);
@@ -276,7 +320,7 @@ public class Fenetre extends JFrame{
 			}
 			else if (e.getSource().equals(lancerAlgo)) {
 				try {
-					main.puzzle.resoudre(0);
+					lancerAlgo();
 				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

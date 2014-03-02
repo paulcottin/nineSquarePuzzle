@@ -14,17 +14,15 @@ public class NineSquarePuzzle {
 	private int iterateur, nbSolutions = 0, nbSolutionsTrouvees = 0;
 	private boolean fini = false;
 	private Fenetre fen;
-	private Main main;
 	private Pool pool;
 	private ArrayList<Board> solutions;
 	private ArrayList<Integer> premierePiece;
 	private ArrayList<InstanceBoard> erreursBoard;
 	
-	public NineSquarePuzzle(Board b, Fenetre f, Main main){
+	public NineSquarePuzzle(Board b, Fenetre f){
 		this.board = b;
 		this.iterateur = 0;
 		this.fen = f;
-		this.main = main;
 		this.solutions = new ArrayList<Board>();
 		this.pool = board.getPool();
 		this.premierePiece = new ArrayList<Integer>();
@@ -48,7 +46,7 @@ public class NineSquarePuzzle {
 		int premierePiece = 0;
 		boolean premierTour = true;
 		
-		while (cptSolutions < board.getPool().getNbSolutions()) {
+		while (cptSolutions <= board.getPool().getNbSolutions()) {
 			boolean unique = false;
 			resoudreAide(0, 0, 0, false, this.erreursBoard, false, premierePiece, true, 0);
 			if (!solutions.isEmpty()) {
@@ -78,8 +76,9 @@ public class NineSquarePuzzle {
 			premierePiece = pieceCentraleSuivante(solutions.get(cptSolutions));
 			System.out.println("nb total de solutions : "+board.getPool().getNbSolutions());
 			premierTour = true;
-			if (unique) {
+			if (unique || solutions.size() == 1) {
 				cptSolutions++;
+				System.out.println("cpt de sol : "+cptSolutions);
 			}
 		}
 		System.out.println("Résolution finie");
