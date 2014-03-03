@@ -34,7 +34,7 @@ public class Main {
 //		Piece s = puzzle.getBoard().getPool().getPool().get(8);
 //		Piece t = puzzle.getBoard().getPool().getPool().get(6);
 		
-		Fenetre fen = new Fenetre(Main.path);
+		Fenetre fen = new Fenetre(false);
 		
 //		puzzle.getBoard().positionner(p, 0);
 //		puzzle.getBoard().positionner(q, Board.DROITE_HAUT);
@@ -83,7 +83,7 @@ public class Main {
 //		System.out.println(r.getNom()+" est en dessous de "+t.getNom()+" : "+puzzle.isUnder(r, t));
 //		System.out.println(q.getNom()+" est au dessus de "+r.getNom()+" : "+puzzle.isUpper(q, r));
 		
-		fen.setInstrumentation();
+//		fen.setInstrumentation();
 	}
 
 

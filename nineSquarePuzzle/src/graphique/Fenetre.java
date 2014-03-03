@@ -52,6 +52,7 @@ public class Fenetre extends JFrame{
 	int carreCote = (width - 100)/3;
 	int vitesseExec;
 	public PoolCarre poolcarre; BoardCarre boardCarre;
+	boolean fichierOuvert = false;
 	Pool pool;
 	Board board;
 	Instrumentation instrumentation;
@@ -59,14 +60,7 @@ public class Fenetre extends JFrame{
 	String path;
 	NineSquarePuzzle puzzle;
 	
-	public Fenetre(String path){
-		this.path = path;
-		this.board = new Board(this.path);
-		this.pool = board.getPool();
-		this.instrumentation = new Instrumentation();
-		this.poolcarre = new PoolCarre(this.pool, width, height);
-		this.boardCarre = new BoardCarre(this.board, width, height);
-		this.puzzle = new NineSquarePuzzle(board, this);
+	public Fenetre(boolean donneesChargees){		
 		
 		this.setTitle(this.path);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -77,15 +71,27 @@ public class Fenetre extends JFrame{
 		container.setLayout(new BorderLayout());
 		container.setBackground(Color.white);
 		
-		initialiseBoard();
 		setMenu();
-		setCoteDroit();
 		
 		JPanel titreProjetPanel = new JPanel(); titreProjetPanel.setOpaque(false);
 		titreProjetPanel.add(titreProjet);
 		container.add(menu, BorderLayout.NORTH);
 		this.setContentPane(container);
 		this.setVisible(true);
+	}
+	
+	public void initialiseDonnees(){
+		System.out.println("path : "+path);
+		this.board = new Board(this.path);
+		this.pool = board.getPool();
+		this.instrumentation = new Instrumentation();
+		this.poolcarre = new PoolCarre(this.pool, width, height);
+		this.boardCarre = new BoardCarre(this.board, width, height);
+		this.puzzle = new NineSquarePuzzle(board, this);
+		this.initialiseBoard();
+		this.setCoteDroit();
+		this.revalidate();
+		System.out.println(pool.getPool().get(0).toString());
 	}
 	
 //	public Fenetre(Board board, Instrumentation instrumentation, Main m){
@@ -249,6 +255,12 @@ public class Fenetre extends JFrame{
 		puzzle.resoudre(0);
 	}
 	
+	public void videGrid(){
+		for (int i = 0; i < 9; i++) {
+			grid.remove(i);
+		}
+	}
+	
 	public void repaint() { 
 //		 repaint le component courant 
 		super.repaint(); 
@@ -293,14 +305,16 @@ public class Fenetre extends JFrame{
 				String pathRecu = JOptionPane.showInputDialog(null, "Path :", "Ouvrir", JOptionPane.QUESTION_MESSAGE);
 				Path p = Paths.get(pathRecu);
 				if (Files.exists(p)) {
-					Main.path = pathRecu;
-					Fenetre.this.setEnabled(false);Fenetre.this.setVisible(false);
-					try {
-						Main.main(null);
-					} catch (InterruptedException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+					path = pathRecu;
+					System.out.println("fichier ouvert : "+fichierOuvert);
+					if (fichierOuvert) {
+						videGrid();
+						fichierOuvert = false;
+					}else {
+
 					}
+					path = pathRecu;
+					Fenetre.this.initialiseDonnees();
 				}else {
 					JOptionPane.showMessageDialog(null, "Ce fichier n'existe pas !!", "erreur d'ouverture !", JOptionPane.ERROR_MESSAGE);
 				}
