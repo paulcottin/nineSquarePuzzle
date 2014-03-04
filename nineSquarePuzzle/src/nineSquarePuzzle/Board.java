@@ -36,7 +36,6 @@ public class Board {
 		}
 		pool = new Pool(path);
 		this.path = path;
-		System.out.println("Board Construit");
 	}
 	
 	public void positionner(Piece p, int indice){

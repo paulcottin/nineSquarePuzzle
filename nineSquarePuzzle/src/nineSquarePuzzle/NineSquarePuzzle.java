@@ -1,32 +1,41 @@
 package nineSquarePuzzle;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Stack;
+import java.util.Observable;
 
-import graphique.Fenetre;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
-public class NineSquarePuzzle {
+public class NineSquarePuzzle extends Observable{
 
 	private Board board;
 	private int[] ordrePlacement = {Board.CENTRE, Board.DROITE, Board.DROITE_HAUT, Board.CENTRE_HAUT, Board.GAUCHE_HAUT, Board.GAUCHE, Board.GAUCHE_BAS, Board.CENTRE_BAS, Board.DROITE_BAS};
-	private int iterateur, nbSolutions = 0, nbSolutionsTrouvees = 0;
-	private boolean fini = false;
-	private Fenetre fen;
+	private int iterateur, nbSolutions = 0, nbSolutionsTrouvees = 0, vitesseExec;
+	private boolean fini = false, fichierOuvert = false;
+	private JPanel panel;
 	private Pool pool;
 	private ArrayList<Board> solutions;
 	private ArrayList<Integer> premierePiece;
 	private ArrayList<InstanceBoard> erreursBoard;
+	private String path = Main.path;
+	private Instrumentation instrumentation;
 	
-	public NineSquarePuzzle(Board b, Fenetre f){
-		this.board = b;
+	public NineSquarePuzzle(){
+		this.board = new Board(Main.path);
 		this.iterateur = 0;
-		this.fen = f;
 		this.solutions = new ArrayList<Board>();
 		this.pool = board.getPool();
 		this.premierePiece = new ArrayList<Integer>();
 		this.erreursBoard = new ArrayList<InstanceBoard>();
+		this.instrumentation = new Instrumentation();
+	}
+	
+	public void refresh(){
+        setChanged();
+        notifyObservers();
 	}
 	
 	public void affichePool(){
@@ -42,12 +51,15 @@ public class NineSquarePuzzle {
 	}
 	
 	public void resoudre(int n) throws InterruptedException{
+		System.out.println("Vitesse exec : "+vitesseExec);
 		int cptSolutions = 0;
 		int premierePiece = 0;
 		boolean premierTour = true;
+		System.out.println("entré dans resoudre()");
 		
-		while (cptSolutions <= board.getPool().getNbSolutions()) {
+		while (cptSolutions != board.getPool().getNbSolutions()) {
 			boolean unique = false;
+			System.out.println("Algo lancé");
 			resoudreAide(0, 0, 0, false, this.erreursBoard, false, premierePiece, true, 0);
 			if (!solutions.isEmpty()) {
 				unique = true;
@@ -69,7 +81,7 @@ public class NineSquarePuzzle {
 				System.out.println("Solution ajoutée (empty)");
 			}
 			
-			this.board.resetBoard();fen.refreshBoard(); 
+			this.board.resetBoard();refresh();
 			this.fini = false;
 			this.pool = new Pool(Main.path);
 			System.out.println("cpt de sols : "+(cptSolutions+1)+"\tNb de sols trouvées : "+this.getNbSolutionsTrouvees()+"\tTaille du tabl : "+solutions.size());
@@ -100,8 +112,8 @@ public class NineSquarePuzzle {
 //				System.out.println("fini : "+fini);
 				if (nbPiecesTestees > board.getPool().getPool().size()) {
 					if (n > 0 || !(nbToursPremierePiece < 3)) {
-						board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
-						board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+						board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);refresh();
+						board.retirer(board.getPositions().get(this.ordrePlacement[n]));refresh();
 						n--;
 					}
 					while (aEteUneInstance(new InstanceBoard(board), boardFaux)) {
@@ -109,14 +121,14 @@ public class NineSquarePuzzle {
 							//si la première pièce est mal placée on la fait tourner plus tard dans le programme
 						}
 						else if (n > 0) {
-							board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
-							board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+							board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);refresh();
+							board.retirer(board.getPositions().get(this.ordrePlacement[n]));refresh();
 							n--;
 						}else if (n < 0) {
 							n = 0;
-							board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
-							board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
-							board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);fen.refreshBoard();
+							board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);refresh();
+							board.retirer(board.getPositions().get(this.ordrePlacement[n]));refresh();
+							board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);refresh();
 						}
 					}
 					if (board.getPool().getPool().size() >= 0 && !(n == 0 && !(nbToursPremierePiece > 3))/*&& !board.getPositions().get(0).getNom().equals("*")*/) {
@@ -126,34 +138,34 @@ public class NineSquarePuzzle {
 				while (nbPiecesTestees <= board.getPool().getPool().size() && !this.fini) {//Tant qu'on a pas testé toutes les pièces pour une case
 //					System.out.println("n : "+n+"\ta tourné : "+aTourne+"\tnb de p testées : "+nbPiecesTestees);
 					if (n > 0 && aTourne || (n == 0 && !(nbToursPremierePiece < 3) )) {
-						board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);fen.refreshBoard();
-						board.retirer(board.getPositions().get(this.ordrePlacement[n]));fen.refreshBoard();
+						board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);refresh();
+						board.retirer(board.getPositions().get(this.ordrePlacement[n]));refresh();
 						nbPiecesTestees++;
 					}
 					if (board.getPool().getPool().size() > 0) {
 //						System.out.println("n : "+n);
 						if (premierTour) {
-							board.positionner(board.getPool().getPool().get(premierePiece), this.ordrePlacement[n]);fen.refreshBoard();
+							board.positionner(board.getPool().getPool().get(premierePiece), this.ordrePlacement[n]);refresh();
 							orientation = 0;
-							board.getPositions().get(this.ordrePlacement[n]).setOrientation(orientation);fen.refreshBoard();
-							Thread.sleep(1000-fen.getVitesseExec());
+							board.getPositions().get(this.ordrePlacement[n]).setOrientation(orientation);refresh();
+							Thread.sleep(1000-vitesseExec);
 						}
 						else if (nbToursPremierePiece < 3 && n == 0) {
 						//Ne rien faire, laisser tourner	
 						}else {
 							
 						}{
-							board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);fen.refreshBoard();
+							board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);refresh();
 							orientation = 0;
-							board.getPositions().get(this.ordrePlacement[n]).setOrientation(orientation);fen.refreshBoard();
-							Thread.sleep(1000-fen.getVitesseExec());
+							board.getPositions().get(this.ordrePlacement[n]).setOrientation(orientation);refresh();
+							Thread.sleep(1000-vitesseExec);
 						}
 					}else {
 //						System.out.println("Fini");System.out.println((new InstanceBoard(board).toString()));fini = true;//System.exit(0);
 					}
 //					System.out.println("coucou");
 					while (orientation < 4 && !this.fini) {
-						Thread.sleep(1000-fen.getVitesseExec());
+						Thread.sleep(1000-vitesseExec);
 //						System.out.println("n : "+n+"\t modulo  = 0 : "+(this.ordrePlacement[n] % 2 == 0)+"\t pool size "+board.getPool().getPool().size()+"\tfini : "+fini);
 						if (n == 0 && !premierTour) {
 							if (!(nbToursPremierePiece < 3)) {//Si la pièce à trop tournée, on fait en sorte qu'elle quitte le while et qu'on la retire après
@@ -161,7 +173,8 @@ public class NineSquarePuzzle {
 								orientation = 8;
 								nbToursPremierePiece = 0;
 							}else {//Sinon on la fait tourner
-								board.getPositions().get(this.ordrePlacement[n]).tourne(1);fen.refreshBoard();Thread.sleep(1000-fen.getVitesseExec());
+								board.getPositions().get(this.ordrePlacement[n]).tourne(1);refresh();
+								Thread.sleep(1000-vitesseExec);
 								nbToursPremierePiece++;
 							}
 						}
@@ -188,7 +201,8 @@ public class NineSquarePuzzle {
 							}else {
 								orientation++;
 								aTourne = true;
-								board.getPositions().get(this.ordrePlacement[n]).setOrientation(board.getPositions().get(this.ordrePlacement[n]).getOrientation()+1);fen.refreshBoard();
+								board.getPositions().get(this.ordrePlacement[n]).setOrientation(board.getPositions().get(this.ordrePlacement[n]).getOrientation()+1);
+						        refresh();
 							}
 					}
 //					System.out.println("Sorti de orientation < 4");
@@ -197,7 +211,7 @@ public class NineSquarePuzzle {
 			}
 //			System.out.println("Sorti de board.getPool().getPool().size() > 0");
 		}else {
-			fen.refreshBoard();
+			//fen.refreshBoard();
 			System.out.println("Solution ajoutée à l'arrayList\tnb solutions trouvees : "+(this.nbSolutionsTrouvees +1));
 			this.fini = true;this.nbSolutionsTrouvees++;
 		}
@@ -653,23 +667,26 @@ public class NineSquarePuzzle {
 		this.board = board;
 	}
 	
-	class MenuActionListener implements ActionListener{
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			if (e.getSource().equals(fen.getLancerAlgo())) {
-				try {
-					resoudre(0);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
+	public void ouvrir(){
+		String pathRecu = JOptionPane.showInputDialog(null, "Path :", "Ouvrir", JOptionPane.QUESTION_MESSAGE);
+		Path p = Paths.get(pathRecu);
+		if (Files.exists(p)) {
+			Main.path = pathRecu;
 		}
+		fichierOuvert = true;
+		board = new Board(Main.path);
+        setChanged();
+        notifyObservers();
+	}
+		
+	public void solutionPrecedente(){
 		
 	}
-
+	
+	public void solutionSuivante(){
+		
+	}
+	
 	public int getNbSolutionsTrouvees() {
 		return nbSolutionsTrouvees;
 	}
@@ -684,6 +701,39 @@ public class NineSquarePuzzle {
 
 	public void setSolutions(ArrayList<Board> solutions) {
 		this.solutions = solutions;
+	}
+
+	public void setVitesseExec(int value) {
+		// TODO Auto-generated method stub
+		this.vitesseExec = value;
+        setChanged();
+        notifyObservers();
+	}
+
+	public Pool getPool() {
+		return pool;
+	}
+
+	public void setPool(Pool pool) {
+		this.pool = pool;
+	}
+
+	public boolean getFichierOuvert() {
+		
+		return false;
+	}
+
+	public Instrumentation getInstrumentation() {
+		return instrumentation;
+	}
+
+	public void setInstrumentation(Instrumentation instrumentation) {
+		this.instrumentation = instrumentation;
+	}
+
+	public String getPath() {
+		// TODO Auto-generated method stub
+		return this.path;
 	}
 }
 

@@ -1,7 +1,5 @@
 package graphique;
 
-import javax.swing.text.Position;
-
 import nineSquarePuzzle.Board;
 
 public class BoardCarre {

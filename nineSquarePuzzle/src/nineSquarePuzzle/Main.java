@@ -5,9 +5,6 @@ import graphique.Fenetre;
 public class Main {
 	
 	public static String path = "data1.txt";
-	
-	public static Main main = new Main();
-	public static NineSquarePuzzle puzzle;
 
 	public static void main(String[] args) throws InterruptedException{
 //		Main sans GUI (interface graphique)
@@ -84,14 +81,6 @@ public class Main {
 //		System.out.println(q.getNom()+" est au dessus de "+r.getNom()+" : "+puzzle.isUpper(q, r));
 		
 //		fen.setInstrumentation();
-	}
 
-
-	public NineSquarePuzzle getPuzzle() {
-		return puzzle;
-	}
-
-	public static void setPuzzle(NineSquarePuzzle puzzle) {
-		Main.puzzle = puzzle;
 	}
 }
