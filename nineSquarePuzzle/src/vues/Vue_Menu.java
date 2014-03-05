@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import nineSquarePuzzle.NineSquarePuzzle;
+import controleurs.ControleurMenu_AfficherPool;
 import controleurs.ControleurMenu_Lancer;
 import controleurs.ControleurMenu_Ouvrir;
 import controleurs.ControleurMenu_Quitter;
@@ -36,10 +37,13 @@ public class Vue_Menu extends JMenuBar{
 	JMenu action = new JMenu("Action");
 		JMenuItem tourner = new JMenuItem("Tourner");
 		tourner.addActionListener(new ControleurMenu_Quitter());
+		JMenuItem afficherPool = new JMenuItem("Afficher");
+		afficherPool.addActionListener(new ControleurMenu_AfficherPool(this.puzzle));
 		JMenuItem lancerAlgo = new JMenuItem("Lancer");
 		lancerAlgo.addActionListener(new ControleurMenu_Lancer(this.puzzle));
 		lancerAlgo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
 	action.add(tourner);
+	action.add(afficherPool);
 	action.add(lancerAlgo);
 	
 	JMenu solutions = new JMenu("Solutions");

@@ -41,13 +41,16 @@ public class NineSquarePuzzle extends Observable{
 	public void affichePool(){
 		for (int i = board.getPositions().size()-1; i >= 0; i--) {
 			board.positionner(board.getPool().getPool().get(i), this.ordrePlacement[i]);
+			System.out.println("affichage");
 		}
+		refresh();
 	}
 	
 	public void chargeBoard(Board b){
 		for (int i = 0; i < b.getPositions().size(); i++) {
 			board.positionner(b.getPositions().get(i), this.ordrePlacement[i]);
 		}
+		refresh();
 	}
 	
 	public void resoudre(int n) throws InterruptedException{
