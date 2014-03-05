@@ -2,6 +2,7 @@ package vues;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JMenu;
@@ -18,12 +19,14 @@ import controleurs.ControleurMenu_Quitter;
 import controleurs.ControleurMenu_SolutionPrecedente;
 import controleurs.ControleurMenu_SolutionSuivante;
 
-public class Vue_Menu extends JMenuBar{
+public class Vue_Menu extends JMenuBar implements Observer{
 
 	NineSquarePuzzle puzzle;
 	
 	public Vue_Menu(NineSquarePuzzle puzzle){
 		this.puzzle = puzzle;
+		puzzle.addObserver(this);
+		
 		JMenu fichier = new JMenu("Fichier");
 		JMenuItem quitter = new JMenuItem("Quitter");
 		quitter.addActionListener(new ControleurMenu_Quitter());
@@ -48,14 +51,33 @@ public class Vue_Menu extends JMenuBar{
 	
 	JMenu solutions = new JMenu("Solutions");
 		JMenuItem solutionPrecedente = new JMenuItem("Solution précédente");
+//		if (this.puzzle.isAlgoFini()) {
+//			solutionPrecedente.setEnabled(true);
+//		}else {
+//			solutionPrecedente.setEnabled(false);
+//		}
+		solutionPrecedente.setEnabled(false);//Pour l'instant
 		solutionPrecedente.addActionListener(new ControleurMenu_SolutionPrecedente(this.puzzle));
+		solutionPrecedente.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, ActionEvent.CTRL_MASK));
 		JMenuItem solutionSuivante = new JMenuItem("Solution suivante");
+//		if (this.puzzle.isAlgoFini()) {
+//			solutionSuivante.setEnabled(true);
+//		}else {
+//			solutionSuivante.setEnabled(false);
+//		}
 		solutionSuivante.addActionListener(new ControleurMenu_SolutionSuivante(this.puzzle));
+		solutionSuivante.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, ActionEvent.CTRL_MASK));
 	solutions.add(solutionPrecedente);
 	solutions.add(solutionSuivante);
 	
 	this.add(fichier);
 	this.add(action);
 	this.add(solutions);
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
+		this.revalidate();
 	}
 }

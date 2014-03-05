@@ -47,7 +47,7 @@ public class Fenetre extends JFrame{
 	public static int WIDTH = 700;
 	public static int HEIGHT = 600;
 	
-	JPanel container = new JPanel(), grid = new JPanel();
+	JPanel container = new JPanel();
 	JLabel titreProjet = new JLabel("Nine Square Puzzle");
 	JMenuBar menu = new JMenuBar();
 	JMenu fichier, action, solutions;
@@ -63,7 +63,7 @@ public class Fenetre extends JFrame{
 	String path;
 	NineSquarePuzzle puzzle;
 	
-	public Fenetre(boolean donneesChargees){		
+	public Fenetre(){		
 		
 		puzzle = new NineSquarePuzzle();
 		
@@ -72,7 +72,6 @@ public class Fenetre extends JFrame{
 		this.setSize(this.WIDTH, this.HEIGHT);
 		this.setLocationRelativeTo(null);
 		
-		grid.setLayout(new GridLayout(3, 3, 5, 5));
 		container.setLayout(new BorderLayout());
 		container.setBackground(Color.white);
 		
@@ -93,24 +92,7 @@ public class Fenetre extends JFrame{
 		this.setContentPane(container);
 		this.setVisible(true);
 	}
-	
-	public void lancerAlgo() throws InterruptedException{
-		puzzle.resoudre(0);
-	}
-	
-	public void videGrid(){
-		for (int i = 0; i < 9; i++) {
-			grid.remove(i);
-		}
-	}
-	
-	public void repaint() { 
-//		 repaint le component courant 
-		super.repaint(); 
-//		repaint tous les components qu'il possède 
-		for(int i = 0; i < this.getComponentCount(); i++) 
-			this.getComponent(i).repaint(); 
-	} 
+	 
 		
 	public Pool getPool() {
 		return pool;
@@ -160,4 +142,7 @@ public class Fenetre extends JFrame{
 		this.puzzle = puzzle;
 	}
 
+	public static void main(String[] args){
+		Fenetre fen = new Fenetre();
+	}
 }

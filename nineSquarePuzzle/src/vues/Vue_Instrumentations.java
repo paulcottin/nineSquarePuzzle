@@ -16,6 +16,8 @@ public class Vue_Instrumentations extends JPanel implements Observer{
 	public Vue_Instrumentations(NineSquarePuzzle p){
 		this.puzzle = p;
 		
+		puzzle.addObserver(this);
+		
 		JLabel tempsExec = new JLabel("Temps d'execution : "+puzzle.getInstrumentation().tempsEcoule()+"  ---- ");
 		JLabel nbAppelRecur = new JLabel("Nombre d'appel recursif : "+String.valueOf(puzzle.getInstrumentation().getNbAppelRecursifs()));
 		this.add(tempsExec); 

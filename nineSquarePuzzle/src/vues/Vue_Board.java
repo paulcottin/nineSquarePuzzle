@@ -19,8 +19,11 @@ public class Vue_Board extends JPanel implements Observer{
 	BoardCarre boardCarre;
 	
 	public Vue_Board(NineSquarePuzzle p){
+		super();
 		 this.puzzle = p;
 		 boardCarre = new BoardCarre(puzzle.getBoard(), Fenetre.WIDTH, Fenetre.HEIGHT);
+		 
+		 puzzle.addObserver(this);
 		 
 		 this.setLayout(new GridLayout(3, 3, 5, 5));
 		 

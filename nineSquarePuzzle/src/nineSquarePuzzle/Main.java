@@ -4,7 +4,7 @@ import graphique.Fenetre;
 
 public class Main {
 	
-	public static String path = "data1.txt";
+	public static String path = "data2.txt";
 
 	public static void main(String[] args) throws InterruptedException{
 //		Main sans GUI (interface graphique)
@@ -24,20 +24,51 @@ public class Main {
 //		fen = new Fenetre(board, i, main);
 //		puzzle = new NineSquarePuzzle(board, fen, main);
 		
+		Fenetre fen = new Fenetre();
+//		Board b = new Board(Main.path);
+//		b.resetBoard();
+//		Board c = new Board(Main.path);
+//		c.resetBoard();
 		
-//		Piece p = puzzle.getBoard().getPool().getPool().get(3);
-//		Piece q = puzzle.getBoard().getPool().getPool().get(4);
-//		Piece r = puzzle.getBoard().getPool().getPool().get(3);
-//		Piece s = puzzle.getBoard().getPool().getPool().get(8);
-//		Piece t = puzzle.getBoard().getPool().getPool().get(6);
+//		Piece p = b.getPool().getPool().get(3);
+//		Piece q = b.getPool().getPool().get(4);
+//		Piece r = c.getPool().getPool().get(3);
+//		Piece s = c.getPool().getPool().get(8);
+//		Piece t = c.getPool().getPool().get(6);
 		
-		Fenetre fen = new Fenetre(false);
+//		b.positionner(p, 0);
+//		b.positionner(q, 0);
 		
-//		puzzle.getBoard().positionner(p, 0);
-//		puzzle.getBoard().positionner(q, Board.DROITE_HAUT);
-//		puzzle.getBoard().positionner(r, Board.GAUCHE_BAS);
-//		puzzle.getBoard().positionner(s, Board.DROITE);
-//		puzzle.getBoard().positionner(t, Board.CENTRE_BAS);
+//		fen.getPuzzle().getBoard().resetBoard();
+//		
+//		System.out.println("size of b.getpositions() : "+fen.getPuzzle().getBoard().getPositions().size());
+//		for (int i = 0; i < fen.getPuzzle().getBoard().getPositions().size(); i++) {
+//			fen.getPuzzle().getBoard().positionner(new Piece(), i);
+//		}
+//		
+//		fen.getPuzzle().affichePool();
+		
+//		c.positionner(r, 0);
+//		c.positionner(s, 1);
+//		c.positionner(t, 2);
+		
+//		fen.getPuzzle().getSolutions().add(b);
+//		fen.getPuzzle().getSolutions().add(c);
+//		System.out.println(fen.getPuzzle().getSolutions().get(0).getPositions().get(0).toString());
+		
+//		fen.getPuzzle().chargeBoard(fen.getPuzzle().getSolutions().get(1));
+//		fen.getPuzzle().refresh();
+		
+//		fen.getPuzzle().getBoard().positionner(p, 0);
+//		fen.getPuzzle().getBoard().positionner(q, Board.DROITE_HAUT);
+//		fen.getPuzzle().getBoard().positionner(r, Board.GAUCHE_BAS);
+//		fen.getPuzzle().getBoard().positionner(s, Board.DROITE);
+//		fen.getPuzzle().getBoard().positionner(t, Board.CENTRE_BAS);
+		
+//		System.out.println(fen.getPuzzle().getSolutions().contains(b));
+//		System.out.println(fen.getPuzzle().getSolutions().indexOf(b));
+//		fen.getPuzzle().chargeBoard(fen.getPuzzle().getSolutions().get(0));
+//		fen.getPuzzle().refresh();
 		
 //		i.start();
 //		puzzle.resoudre(0);

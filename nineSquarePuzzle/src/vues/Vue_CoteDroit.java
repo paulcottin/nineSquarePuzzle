@@ -25,6 +25,7 @@ public class Vue_CoteDroit extends JPanel implements Observer{
 	
 	public Vue_CoteDroit(NineSquarePuzzle p){
 		this.puzzle = p;
+		puzzle.addObserver(this);
 		
 		this.setBackground(Color.GREEN);
 		this.setPreferredSize(new Dimension(100, HEIGHT));

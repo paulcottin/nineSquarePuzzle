@@ -13,8 +13,8 @@ public class NineSquarePuzzle extends Observable{
 
 	private Board board;
 	private int[] ordrePlacement = {Board.CENTRE, Board.DROITE, Board.DROITE_HAUT, Board.CENTRE_HAUT, Board.GAUCHE_HAUT, Board.GAUCHE, Board.GAUCHE_BAS, Board.CENTRE_BAS, Board.DROITE_BAS};
-	private int iterateur, nbSolutions = 0, nbSolutionsTrouvees = 0, vitesseExec;
-	private boolean fini = false, fichierOuvert = false;
+	private int iterateur, nbSolutions = 0, nbSolutionsTrouvees = 0, vitesseExec, solutionCourante;
+	private boolean fini = false, fichierOuvert = false, algoFini;
 	private JPanel panel;
 	private Pool pool;
 	private ArrayList<Board> solutions;
@@ -25,7 +25,9 @@ public class NineSquarePuzzle extends Observable{
 	
 	public NineSquarePuzzle(){
 		this.board = new Board(Main.path);
+		this.algoFini = false;
 		this.iterateur = 0;
+		this.solutionCourante = 0;
 		this.solutions = new ArrayList<Board>();
 		this.pool = board.getPool();
 		this.premierePiece = new ArrayList<Integer>();
@@ -40,20 +42,23 @@ public class NineSquarePuzzle extends Observable{
 	
 	public void affichePool(){
 		for (int i = board.getPositions().size()-1; i >= 0; i--) {
-			board.positionner(board.getPool().getPool().get(i), this.ordrePlacement[i]);
-			System.out.println("affichage");
+			board.positionner(board.getPool().getPool().get(i), i);
 		}
 		refresh();
 	}
 	
 	public void chargeBoard(Board b){
+		board.resetBoard();
 		for (int i = 0; i < b.getPositions().size(); i++) {
-			board.positionner(b.getPositions().get(i), this.ordrePlacement[i]);
+			System.out.println(b.getPositions().get(i).toString());
+			board.positionner(b.getPositions().get(i), i);
 		}
 		refresh();
 	}
 	
 	public void resoudre(int n) throws InterruptedException{
+		algoFini = false;
+		solutions = new ArrayList<Board>();nbSolutionsTrouvees = 0;solutionCourante = 0;
 		System.out.println("Vitesse exec : "+vitesseExec);
 		int cptSolutions = 0;
 		int premierePiece = 0;
@@ -88,7 +93,9 @@ public class NineSquarePuzzle extends Observable{
 			this.fini = false;
 			this.pool = new Pool(Main.path);
 			System.out.println("cpt de sols : "+(cptSolutions+1)+"\tNb de sols trouvées : "+this.getNbSolutionsTrouvees()+"\tTaille du tabl : "+solutions.size());
-			premierePiece = pieceCentraleSuivante(solutions.get(cptSolutions));
+			if (cptSolutions == board.getPool().getNbSolutions()) {
+				premierePiece = pieceCentraleSuivante(solutions.get(cptSolutions));
+			}
 			System.out.println("nb total de solutions : "+board.getPool().getNbSolutions());
 			premierTour = true;
 			if (unique || solutions.size() == 1) {
@@ -96,6 +103,7 @@ public class NineSquarePuzzle extends Observable{
 				System.out.println("cpt de sol : "+cptSolutions);
 			}
 		}
+		algoFini = true;
 		System.out.println("Résolution finie");
 		int i = 0;
 		for (Board board : solutions) {
@@ -105,6 +113,8 @@ public class NineSquarePuzzle extends Observable{
 				System.out.println(p.getNom());
 			}
 		}
+		chargeBoard(solutions.get(solutionCourante));
+		refresh();
 	}
 	
 	public void resoudreAide(int n, int orientation, int nbPiecesTestees, boolean aTourne, ArrayList<InstanceBoard> boardFaux, boolean fini, int premierePiece, boolean premierTour, int nbToursPremierePiece) throws InterruptedException{
@@ -671,23 +681,50 @@ public class NineSquarePuzzle extends Observable{
 	}
 	
 	public void ouvrir(){
-		String pathRecu = JOptionPane.showInputDialog(null, "Path :", "Ouvrir", JOptionPane.QUESTION_MESSAGE);
-		Path p = Paths.get(pathRecu);
-		if (Files.exists(p)) {
-			Main.path = pathRecu;
+		
+		String pathRecu = Main.path;
+		pathRecu = JOptionPane.showInputDialog(null, "Path :", "Ouvrir", JOptionPane.QUESTION_MESSAGE);
+		try {
+			Path p = Paths.get(pathRecu);
+			if (Files.exists(p)) {
+				Main.path = pathRecu;
+			}
+			fichierOuvert = true;
+			board = new Board(Main.path);
+	        setChanged();
+	        notifyObservers();
+		} catch (NullPointerException e) {
+
 		}
-		fichierOuvert = true;
-		board = new Board(Main.path);
-        setChanged();
-        notifyObservers();
 	}
 		
 	public void solutionPrecedente(){
-		
+		System.out.println("sol cour : "+solutionCourante+"\t nbSolutions : "+nbSolutions);
+		if (solutionCourante == 0) {
+			solutionCourante = nbSolutions -1;
+			chargeBoard(solutions.get(solutionCourante));
+		}
+		else if((solutionCourante - 1) <= 0) {
+			solutionCourante = 0;
+			chargeBoard(solutions.get(solutionCourante));
+		}else {
+			solutionCourante--;
+			chargeBoard(solutions.get(solutionCourante));
+		}
 	}
 	
 	public void solutionSuivante(){
-		
+		if (solutionCourante == nbSolutions -1) { 
+			solutionCourante = 0;
+			chargeBoard(solutions.get(solutionCourante));
+		}
+		else if((solutionCourante+1) == solutions.size()) {
+			solutionCourante = 0;
+			chargeBoard(solutions.get(solutionCourante));
+		}else {
+			solutionCourante++;
+			chargeBoard(solutions.get(solutionCourante));
+		}
 	}
 	
 	public int getNbSolutionsTrouvees() {
@@ -737,6 +774,22 @@ public class NineSquarePuzzle extends Observable{
 	public String getPath() {
 		// TODO Auto-generated method stub
 		return this.path;
+	}
+
+	public int getSolutionCourante() {
+		return solutionCourante;
+	}
+
+	public void setSolutionCourante(int solutionCourante) {
+		this.solutionCourante = solutionCourante;
+	}
+
+	public boolean isAlgoFini() {
+		return algoFini;
+	}
+
+	public void setAlgoFini(boolean algoFini) {
+		this.algoFini = algoFini;
 	}
 }
 

@@ -1,6 +1,9 @@
 package nineSquarePuzzle;
 
 import java.util.ArrayList;
+import java.util.Observable;
+
+import vues.Vue_Board;
    
 
 public class Board {
@@ -48,10 +51,10 @@ public class Board {
 				}
 			}
 			if (!positionOccupees[indice]) {
-				while (p.getNom().equals("*")) {
-					indiceP = indiceP++ % this.getPool().getPool().size();
-					p = this.getPool().getPool().get(indiceP);
-				}
+//				while (p.getNom().equals("*")) {
+//					indiceP = indiceP++ % this.getPool().getPool().size();
+//					p = this.getPool().getPool().get(indiceP);
+//				}
 				positions.set(indice, p);
 				positionOccupees[indice] = true;
 				pool.enlevePiece(p);
