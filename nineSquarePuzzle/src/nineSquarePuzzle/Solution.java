@@ -13,6 +13,10 @@ public class Solution {
 			System.out.println("\t"+this.board.get(i).getNom());
 		}
 	}
+	
+	public String toString(){
+		return (this.getBoard().get(Board.GAUCHE_HAUT).toString()+""+this.getBoard().get(Board.CENTRE_HAUT).toString()+""+this.getBoard().get(Board.DROITE_HAUT).toString()+"\n"+this.getBoard().get(Board.GAUCHE).toString()+""+this.getBoard().get(Board.CENTRE).toString()+""+this.getBoard().get(Board.DROITE).toString()+"\n"+this.getBoard().get(Board.GAUCHE_BAS).toString()+""+this.getBoard().get(Board.CENTRE_BAS).toString()+""+this.getBoard().get(Board.DROITE_BAS).toString());
+	}
 
 	public ArrayList<Piece> getBoard() {
 		return board;

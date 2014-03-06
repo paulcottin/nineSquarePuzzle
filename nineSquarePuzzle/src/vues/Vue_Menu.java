@@ -18,6 +18,7 @@ import controleurs.ControleurMenu_Ouvrir;
 import controleurs.ControleurMenu_Quitter;
 import controleurs.ControleurMenu_SolutionPrecedente;
 import controleurs.ControleurMenu_SolutionSuivante;
+import controleurs.ControleurMenu_Tourner;
 
 public class Vue_Menu extends JMenuBar implements Observer{
 
@@ -38,18 +39,17 @@ public class Vue_Menu extends JMenuBar implements Observer{
 	fichier.add(quitter);
 	
 	JMenu action = new JMenu("Action");
-		JMenuItem tourner = new JMenuItem("Tourner");
-		tourner.addActionListener(new ControleurMenu_Quitter());
 		JMenuItem afficherPool = new JMenuItem("Afficher");
 		afficherPool.addActionListener(new ControleurMenu_AfficherPool(this.puzzle));
 		JMenuItem lancerAlgo = new JMenuItem("Lancer");
 		lancerAlgo.addActionListener(new ControleurMenu_Lancer(this.puzzle));
 		lancerAlgo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
-	action.add(tourner);
 	action.add(afficherPool);
 	action.add(lancerAlgo);
 	
 	JMenu solutions = new JMenu("Solutions");
+		JMenuItem tourner = new JMenuItem("Tourner");
+		tourner.addActionListener(new ControleurMenu_Tourner(this.puzzle));
 		JMenuItem solutionPrecedente = new JMenuItem("Solution précédente");
 //		if (this.puzzle.isAlgoFini()) {
 //			solutionPrecedente.setEnabled(true);
@@ -67,6 +67,7 @@ public class Vue_Menu extends JMenuBar implements Observer{
 //		}
 		solutionSuivante.addActionListener(new ControleurMenu_SolutionSuivante(this.puzzle));
 		solutionSuivante.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, ActionEvent.CTRL_MASK));
+	solutions.add(tourner);
 	solutions.add(solutionPrecedente);
 	solutions.add(solutionSuivante);
 	

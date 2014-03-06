@@ -120,6 +120,10 @@ public class Board {
 		return instance;
 	}
 	
+	public String toString(){
+		return (this.getPositions().get(GAUCHE_HAUT).toString()+" "+this.getPositions().get(CENTRE_HAUT).toString()+" "+this.getPositions().get(DROITE_HAUT).toString()+"\n"+this.getPositions().get(GAUCHE).toString()+" "+this.getPositions().get(CENTRE).toString()+" "+this.getPositions().get(DROITE).toString()+"\n"+this.getPositions().get(GAUCHE_BAS).toString()+" "+this.getPositions().get(CENTRE_BAS).toString()+" "+this.getPositions().get(DROITE_BAS).toString());
+	}
+	
 	public String toString(String[] instance){
 		return ("instance : "+instance[0]+", "+instance[1]+", "+instance[2]+", "+instance[3]+", "+instance[4]+", "+instance[5]+", "+instance[6]+", "+instance[7]+", "+instance[8]);
 	}

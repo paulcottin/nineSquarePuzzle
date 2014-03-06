@@ -76,7 +76,7 @@ public class NineSquarePuzzle extends Observable{
 			ajouteSolution(board.clone());
 			
 			this.board.resetBoard();refresh();
-			Thread.sleep(1000);
+//			Thread.sleep(1000);
 			this.fini = false;
 			this.pool = new Pool(Main.path);
 			System.out.println("cpt de sols : "+(cptSolutions+1)+"\tNb de sols trouvées : "+this.getNbSolutionsTrouvees()+"\tTaille du tabl : "+solutions.size());
@@ -96,9 +96,7 @@ public class NineSquarePuzzle extends Observable{
 		for (Solution solution: solutions) {
 			i++;
 			System.out.println("board solution n°"+i);
-			for (Piece p : solution.getBoard()) {
-				System.out.println(p.getNom());
-			}
+			solution.toString();
 		}
 		chargeBoard(solutions.get(solutionCourante));
 		refresh();
@@ -811,6 +809,44 @@ public class NineSquarePuzzle extends Observable{
 
 	public void setAlgoFini(boolean algoFini) {
 		this.algoFini = algoFini;
+	}
+
+	public void tournerSolution(ArrayList<Piece> b) {
+//	public void tournerSolution(Board b) {
+		if (algoFini) {
+			System.out.println("tourner");
+			for (int i = 0; i < b.size(); i++) {
+				b.get(i).tourne(1);
+			}
+			Board board = new Board(Main.path);
+			board.positionner(b.get(Board.GAUCHE_BAS), 0);
+			board.positionner(b.get(Board.GAUCHE), 1);
+			board.positionner(b.get(Board.GAUCHE_HAUT), 2);
+			board.positionner(b.get(Board.CENTRE_BAS), 3);
+			board.positionner(b.get(Board.CENTRE), 4);
+			board.positionner(b.get(Board.CENTRE_HAUT), 5);
+			board.positionner(b.get(Board.DROITE_BAS), 6);
+			board.positionner(b.get(Board.DROITE), 7);
+			board.positionner(b.get(Board.DROITE_HAUT), 8);
+			chargeBoard(new Solution(board.getPositions()));
+			
+//			this.board.resetBoard();
+//			this.board.positionner(arrayList.get(Board.GAUCHE_BAS), 0);
+//			this.board.positionner(arrayList.get(Board.GAUCHE), 1);
+//			this.board.positionner(arrayList.get(Board.GAUCHE_HAUT), 2);
+//			this.board.positionner(arrayList.get(Board.CENTRE_BAS), 3);
+//			this.board.positionner(arrayList.get(Board.CENTRE), 4);
+//			this.board.positionner(arrayList.get(Board.CENTRE_HAUT), 5);
+//			this.board.positionner(arrayList.get(Board.DROITE_BAS), 6);
+//			this.board.positionner(arrayList.get(Board.DROITE), 7);
+//			this.board.positionner(arrayList.get(Board.DROITE_HAUT), 8);
+			System.out.println(board.toString());
+//			b = board.clone();
+		}else {
+			System.out.println("L'algo n'est pas fini");
+		}
+		System.out.println(this.board.toString());
+		refresh();
 	}
 }
 
