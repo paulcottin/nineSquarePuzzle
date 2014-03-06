@@ -25,6 +25,7 @@ public class Main {
 //		puzzle = new NineSquarePuzzle(board, fen, main);
 		
 		Fenetre fen = new Fenetre();
+//		fen.getPuzzle().resoudre(0);
 //		Board b = new Board(Main.path);
 //		b.resetBoard();
 //		Board c = new Board(Main.path);

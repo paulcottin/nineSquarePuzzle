@@ -14,21 +14,22 @@ public class NineSquarePuzzle extends Observable{
 	private Board board;
 	private int[] ordrePlacement = {Board.CENTRE, Board.DROITE, Board.DROITE_HAUT, Board.CENTRE_HAUT, Board.GAUCHE_HAUT, Board.GAUCHE, Board.GAUCHE_BAS, Board.CENTRE_BAS, Board.DROITE_BAS};
 	private int iterateur, nbSolutions = 0, nbSolutionsTrouvees = 0, vitesseExec, solutionCourante;
-	private boolean fini = false, fichierOuvert = false, algoFini;
+	private boolean fini = false, fichierOuvert = false, algoFini, unique;
 	private JPanel panel;
 	private Pool pool;
-	private ArrayList<Board> solutions;
+	private ArrayList<Solution> solutions;
 	private ArrayList<Integer> premierePiece;
 	private ArrayList<InstanceBoard> erreursBoard;
 	private String path = Main.path;
 	private Instrumentation instrumentation;
 	
 	public NineSquarePuzzle(){
+		this.vitesseExec = 1000;
 		this.board = new Board(Main.path);
-		this.algoFini = false;
+		this.algoFini = false; unique = false;
 		this.iterateur = 0;
 		this.solutionCourante = 0;
-		this.solutions = new ArrayList<Board>();
+		this.solutions = new ArrayList<Solution>();
 		this.pool = board.getPool();
 		this.premierePiece = new ArrayList<Integer>();
 		this.erreursBoard = new ArrayList<InstanceBoard>();
@@ -41,24 +42,26 @@ public class NineSquarePuzzle extends Observable{
 	}
 	
 	public void affichePool(){
+		board.resetBoard();
 		for (int i = board.getPositions().size()-1; i >= 0; i--) {
 			board.positionner(board.getPool().getPool().get(i), i);
 		}
 		refresh();
 	}
 	
-	public void chargeBoard(Board b){
+	public void chargeBoard(Solution solution){
 		board.resetBoard();
-		for (int i = 0; i < b.getPositions().size(); i++) {
-			System.out.println(b.getPositions().get(i).toString());
-			board.positionner(b.getPositions().get(i), i);
+		for (int i = 0; i < solution.getBoard().size(); i++) {
+			System.out.println(solution.getBoard().get(i).toString());
+			board.positionner(solution.getBoard().get(i), i);
 		}
 		refresh();
 	}
 	
 	public void resoudre(int n) throws InterruptedException{
 		algoFini = false;
-		solutions = new ArrayList<Board>();nbSolutionsTrouvees = 0;solutionCourante = 0;
+		//solutions = new ArrayList<Solution>();
+		nbSolutionsTrouvees = 0;solutionCourante = 0;
 		System.out.println("Vitesse exec : "+vitesseExec);
 		int cptSolutions = 0;
 		int premierePiece = 0;
@@ -66,39 +69,23 @@ public class NineSquarePuzzle extends Observable{
 		System.out.println("entré dans resoudre()");
 		
 		while (cptSolutions != board.getPool().getNbSolutions()) {
-			boolean unique = false;
+			
 			System.out.println("Algo lancé");
 			resoudreAide(0, 0, 0, false, this.erreursBoard, false, premierePiece, true, 0);
-			if (!solutions.isEmpty()) {
-				unique = true;
-				for (int i = 0; i < solutions.size(); i++) {
-					if (((new InstanceBoard(this.board.clone())).equals(new InstanceBoard(solutions.get(i))) )) {
-						unique = false;
-					}
-				}
-				if (unique) {
-					solutions.add(this.board.clone());
-					erreursBoard.add(new InstanceBoard(this.board));
-					System.out.println("Solution ajoutée (not empty)");
-				}else {
-					System.out.println("Solution déjà trouvée");
-				}
-			}else {
-				solutions.add(this.board.clone());
-				erreursBoard.add(new InstanceBoard(this.board));
-				System.out.println("Solution ajoutée (empty)");
-			}
+			Thread.sleep(10000);
+			ajouteSolution(board.clone());
 			
 			this.board.resetBoard();refresh();
+			Thread.sleep(1000);
 			this.fini = false;
 			this.pool = new Pool(Main.path);
 			System.out.println("cpt de sols : "+(cptSolutions+1)+"\tNb de sols trouvées : "+this.getNbSolutionsTrouvees()+"\tTaille du tabl : "+solutions.size());
 			if (cptSolutions == board.getPool().getNbSolutions()) {
-				premierePiece = pieceCentraleSuivante(solutions.get(cptSolutions));
+				premierePiece = pieceCentraleSuivante(solutions.get(cptSolutions).getBoard());
 			}
 			System.out.println("nb total de solutions : "+board.getPool().getNbSolutions());
 			premierTour = true;
-			if (unique || solutions.size() == 1) {
+			if (unique) {
 				cptSolutions++;
 				System.out.println("cpt de sol : "+cptSolutions);
 			}
@@ -106,10 +93,10 @@ public class NineSquarePuzzle extends Observable{
 		algoFini = true;
 		System.out.println("Résolution finie");
 		int i = 0;
-		for (Board board : solutions) {
+		for (Solution solution: solutions) {
 			i++;
 			System.out.println("board solution n°"+i);
-			for (Piece p : board.getPositions()) {
+			for (Piece p : solution.getBoard()) {
 				System.out.println(p.getNom());
 			}
 		}
@@ -231,6 +218,37 @@ public class NineSquarePuzzle extends Observable{
 	}
 
 	
+	public void ajouteSolution(Board b){
+		unique = true;
+		if (!solutions.isEmpty()) {
+			System.out.println("Contenu de solutions : ");
+			for (int i = 0; i < solutions.size(); i++) {
+				System.out.println("solution n°"+i);
+				for (int j = 0; j < solutions.get(i).getBoard().size(); j++) {
+					System.out.println(solutions.get(i).getBoard().get(j).getNom());
+				}
+			}
+			for (int i = 0; i < solutions.size(); i++) {
+				if (((new InstanceBoard(b)).equals(new InstanceBoard(solutions.get(i))) )) {
+					unique = false;
+					System.out.println("instance égale  : "+(new InstanceBoard(solutions.get(i))).toString()+"\n \t"+(new InstanceBoard(b)).toString());
+				}
+			}
+			System.out.println("unique : "+unique);
+			if (unique) {
+				solutions.add(new Solution(b.getPositions()));
+				erreursBoard.add(new InstanceBoard(b));
+				System.out.println("Solution ajoutée (not empty)");
+			}else {
+				System.out.println("Solution déjà trouvée");
+			}
+		}else {
+			solutions.add(new Solution(b.getPositions()));
+			erreursBoard.add(new InstanceBoard(b));
+			System.out.println("Solution ajoutée (empty)");
+		}
+	}
+	
 	public int nbPiecesNonPlacees(){
 		int nb = 0;
 		for (int i = 0; i < board.getPositionOccupees().length; i++) {
@@ -241,9 +259,9 @@ public class NineSquarePuzzle extends Observable{
 		return nb;
 	}
 	
-	public int pieceCentraleSuivante(Board board){
+	public int pieceCentraleSuivante(ArrayList<Piece> arrayList){
 		String[] tabLettres = {"A", "B", "C", "D", "E", "F", "G", "H", "I"};
-		Piece piece = board.getPositions().get(Board.CENTRE);
+		Piece piece = arrayList.get(Board.CENTRE);
 		String anciennePieceCentrale = piece.getNom();
 		int indiceAnciennePiece = 0;
 		
@@ -711,9 +729,11 @@ public class NineSquarePuzzle extends Observable{
 			solutionCourante--;
 			chargeBoard(solutions.get(solutionCourante));
 		}
+		refresh();
 	}
 	
 	public void solutionSuivante(){
+		System.out.println("sol cour : "+solutionCourante+"\t nbSolutions : "+nbSolutions);
 		if (solutionCourante == nbSolutions -1) { 
 			solutionCourante = 0;
 			chargeBoard(solutions.get(solutionCourante));
@@ -725,6 +745,7 @@ public class NineSquarePuzzle extends Observable{
 			solutionCourante++;
 			chargeBoard(solutions.get(solutionCourante));
 		}
+		refresh();
 	}
 	
 	public int getNbSolutionsTrouvees() {
@@ -735,11 +756,11 @@ public class NineSquarePuzzle extends Observable{
 		this.nbSolutionsTrouvees = nbSolutionsTrouvees;
 	}
 
-	public ArrayList<Board> getSolutions() {
+	public ArrayList<Solution> getSolutions() {
 		return solutions;
 	}
 
-	public void setSolutions(ArrayList<Board> solutions) {
+	public void setSolutions(ArrayList<Solution> solutions) {
 		this.solutions = solutions;
 	}
 

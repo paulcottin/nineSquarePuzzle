@@ -3,20 +3,25 @@ package nineSquarePuzzle;
 
 public class InstanceBoard {
 
-	Board board;
 	String[] positions = new String[9];
 	int[] orientations = new int[9];
 	
 	public InstanceBoard(Board board){
-		this.board = board;
 		for (int i = 0; i < board.getPositions().size(); i++) {
 			this.positions[i] = board.getPositions().get(i).getNom();
 			this.orientations[i] = board.getPositions().get(i).getOrientation();
 		}
 	}
 	
+	public InstanceBoard(Solution sol){
+		for (int i = 0; i < sol.getBoard().size(); i++) {
+			this.positions[i] = sol.getBoard().get(i).getNom();
+			this.orientations[i] = sol.getBoard().get(i).getOrientation();
+		}
+	}
+	
 	public boolean equals(InstanceBoard inst){
-		for (int i = 0; i < board.getPositions().size(); i++) {
+		for (int i = 0; i < positions.length; i++) {
 			if(inst.getPositions()[i] != this.getPositions()[i] || inst.getOrientations()[i] != this.getOrientations()[i]){
 				return false;
 			}

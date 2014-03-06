@@ -64,12 +64,11 @@ public class Fenetre extends JFrame{
 	NineSquarePuzzle puzzle;
 	
 	public Fenetre(){		
-		
+		super(Main.path);
 		puzzle = new NineSquarePuzzle();
 		
-		this.setTitle(puzzle.getPath());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(this.WIDTH, this.HEIGHT);
+		this.setSize(WIDTH, HEIGHT);
 		this.setLocationRelativeTo(null);
 		
 		container.setLayout(new BorderLayout());
@@ -87,8 +86,6 @@ public class Fenetre extends JFrame{
 		Vue_CoteDroit coteDroit = new Vue_CoteDroit(puzzle);
 		container.add(coteDroit, BorderLayout.EAST);
 		
-//		JPanel titreProjetPanel = new JPanel(); titreProjetPanel.setOpaque(false);
-//		titreProjetPanel.add(titreProjet);
 		this.setContentPane(container);
 		this.setVisible(true);
 	}
