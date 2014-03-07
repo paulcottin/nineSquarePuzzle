@@ -4,7 +4,7 @@ import graphique.Fenetre;
 
 public class Main {
 	
-	public static String path = "data1.txt";
+	public static String path = "data6.txt";
 
 	public static void main(String[] args) throws InterruptedException{
 //		Main sans GUI (interface graphique)
@@ -25,7 +25,7 @@ public class Main {
 //		puzzle = new NineSquarePuzzle(board, fen, main);
 		
 		Fenetre fen = new Fenetre();
-		System.out.println(fen.getPuzzle().getBoard().toString());
+//		System.out.println(fen.getPuzzle().getBoard().toString());
 //		fen.getPuzzle().resoudre(0);
 //		Board b = new Board(Main.path);
 //		b.resetBoard();

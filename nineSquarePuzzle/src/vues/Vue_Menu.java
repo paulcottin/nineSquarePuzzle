@@ -41,10 +41,16 @@ public class Vue_Menu extends JMenuBar implements Observer{
 	JMenu action = new JMenu("Action");
 		JMenuItem afficherPool = new JMenuItem("Afficher");
 		afficherPool.addActionListener(new ControleurMenu_AfficherPool(this.puzzle));
+		JMenuItem pieceParfaite = new JMenuItem("Piece parfaite ?");
+		pieceParfaite.addActionListener(new ControleurMenu_Parfait(this.puzzle));
+		JMenuItem puzzleParfait = new JMenuItem("Puzzle parfait ?");
+		puzzleParfait.addActionListener(new ControleurMenu_PuzzleParfait(this.puzzle));
 		JMenuItem lancerAlgo = new JMenuItem("Lancer");
 		lancerAlgo.addActionListener(new ControleurMenu_Lancer(this.puzzle));
 		lancerAlgo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
 	action.add(afficherPool);
+	action.add(pieceParfaite);
+	action.add(puzzleParfait);
 	action.add(lancerAlgo);
 	
 	JMenu solutions = new JMenu("Solutions");
@@ -82,3 +88,4 @@ public class Vue_Menu extends JMenuBar implements Observer{
 		this.revalidate();
 	}
 }
+

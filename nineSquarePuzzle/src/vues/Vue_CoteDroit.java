@@ -60,7 +60,11 @@ public class Vue_CoteDroit extends JPanel implements Observer{
 			@Override
 			public void stateChanged(ChangeEvent arg0) {
 				// TODO Auto-generated method stub
-					puzzle.setVitesseExec(vitesse.getValue());
+					try {
+						puzzle.setVitesseExec(vitesse.getValue());
+					} catch (Exception e) {
+						System.out.println("EXCEPTION !!");
+					}
 			}
 		});
 		

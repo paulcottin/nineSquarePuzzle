@@ -8,10 +8,6 @@ public class Solution {
 	
 	public Solution(ArrayList<Piece> board){
 		this.board = board;
-		System.out.println("dans solution : ");
-		for (int i = 0; i < board.size(); i++) {
-			System.out.println("\t"+this.board.get(i).getNom());
-		}
 	}
 	
 	public String toString(){

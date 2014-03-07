@@ -17,7 +17,7 @@ public class ControleurMenu_Tourner implements ActionListener{
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 //		puzzle.tournerSolution(this.puzzle.getSolutions().get(puzzle.getSolutionCourante()).getBoard());
-		puzzle.tournerSolution(puzzle.getBoard().getPositions());
+		puzzle.tournerSolutionGraphique(puzzle.getBoard().getPositions());
 	}
 
 }

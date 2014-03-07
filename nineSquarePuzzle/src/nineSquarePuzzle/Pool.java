@@ -83,13 +83,12 @@ public class Pool {
 	}
 
 	public boolean isPerfect(){
-		boolean reponse = true;
 		for (Piece p : pool) {
 			if (!p.estParfaite()) {
-				reponse = false;
+				return false;
 			}
 		}
-		return reponse;
+		return true;
 	}
 	
 //	Verifie qu'une piece existe et si elle est dans le Pool ou pas.

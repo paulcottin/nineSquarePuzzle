@@ -20,6 +20,9 @@ public class Board {
 		positions = new ArrayList<Piece>();
 		positionOccupees = new boolean[9];
 		orientation = new int[9];
+		for (int i = 0; i < 9; i++) {
+			positions.add(new Piece());
+		}
 	}
 	
 	public Board(String path){
@@ -86,7 +89,7 @@ public class Board {
 	}
 
 	public Board clone(){
-		Board board = new Board();//A changer
+		Board board = new Board();
 		board.setPath(Main.path);
 		board.setPool(this.getPool());
 //		PositionsOccupees
@@ -95,8 +98,10 @@ public class Board {
 		}
 		
 //		Positions
+		int j = 0;
 		for (Piece p : this.positions) {
-			board.positions.add(p);
+			board.positions.set(j,p);
+			j++;
 		}
 
 //		Orientations
