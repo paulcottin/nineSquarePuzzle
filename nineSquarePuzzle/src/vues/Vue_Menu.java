@@ -23,6 +23,7 @@ import controleurs.ControleurMenu_Tourner;
 public class Vue_Menu extends JMenuBar implements Observer{
 
 	NineSquarePuzzle puzzle;
+	JMenuItem lancer, arreter;
 	
 	public Vue_Menu(NineSquarePuzzle puzzle){
 		this.puzzle = puzzle;
@@ -45,32 +46,23 @@ public class Vue_Menu extends JMenuBar implements Observer{
 		pieceParfaite.addActionListener(new ControleurMenu_Parfait(this.puzzle));
 		JMenuItem puzzleParfait = new JMenuItem("Puzzle parfait ?");
 		puzzleParfait.addActionListener(new ControleurMenu_PuzzleParfait(this.puzzle));
-		JMenuItem lancerAlgo = new JMenuItem("Lancer");
-		lancerAlgo.addActionListener(new ControleurMenu_Lancer(this.puzzle));
-		lancerAlgo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
+		lancer= new JMenuItem("Lancer");
+		lancer.addActionListener(new ControleurMenu_Lancer(this.puzzle));
+		lancer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
+		arreter = new JMenuItem("Arreter");
+		arreter.addActionListener(new ControleurMenu_Arreter(this.puzzle));
 	action.add(afficherPool);
 	action.add(pieceParfaite);
 	action.add(puzzleParfait);
-	action.add(lancerAlgo);
+	action.add(lancer);
 	
 	JMenu solutions = new JMenu("Solutions");
 		JMenuItem tourner = new JMenuItem("Tourner");
 		tourner.addActionListener(new ControleurMenu_Tourner(this.puzzle));
 		JMenuItem solutionPrecedente = new JMenuItem("Solution précédente");
-//		if (this.puzzle.isAlgoFini()) {
-//			solutionPrecedente.setEnabled(true);
-//		}else {
-//			solutionPrecedente.setEnabled(false);
-//		}
-		solutionPrecedente.setEnabled(false);//Pour l'instant
 		solutionPrecedente.addActionListener(new ControleurMenu_SolutionPrecedente(this.puzzle));
 		solutionPrecedente.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, ActionEvent.CTRL_MASK));
 		JMenuItem solutionSuivante = new JMenuItem("Solution suivante");
-//		if (this.puzzle.isAlgoFini()) {
-//			solutionSuivante.setEnabled(true);
-//		}else {
-//			solutionSuivante.setEnabled(false);
-//		}
 		solutionSuivante.addActionListener(new ControleurMenu_SolutionSuivante(this.puzzle));
 		solutionSuivante.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, ActionEvent.CTRL_MASK));
 	solutions.add(tourner);

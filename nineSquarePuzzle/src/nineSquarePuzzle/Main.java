@@ -4,7 +4,7 @@ import graphique.Fenetre;
 
 public class Main {
 	
-	public static String path = "data6.txt";
+	public static String path = "data4.txt";
 
 	public static void main(String[] args) throws InterruptedException{
 //		Main sans GUI (interface graphique)

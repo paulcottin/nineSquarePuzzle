@@ -7,8 +7,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
+import java.util.Observable;
 
-public class Pool {
+public class Pool extends Observable{
 
 	private ArrayList<String> lignes = new ArrayList<String>();
 	private String titre = "Pas de titre";
@@ -25,6 +26,7 @@ public class Pool {
 		this.creePool();
 //		au depart toutes les pieces sont utilisees
 		this.utilisee = this.pool;
+		setChanged();notifyObservers();
 	}
 	
 	public Pool(String titre, ArrayList<Piece> array){
@@ -134,6 +136,16 @@ public class Pool {
 		}else {
 			this.titre = titre;
 		}
+	}
+	
+	public Piece get(String nom){
+		for (int i = 0; i < pool.size(); i++) {
+			if (pool.get(i).getNom().equals(nom)) {
+				return pool.get(i);
+			}
+		}
+		System.out.println("pièce non trouvée");
+		return pool.get(0);
 	}
 
 	public ArrayList<Piece> getPool() {

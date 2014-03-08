@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import nineSquarePuzzle.NineSquarePuzzle;
+import nineSquarePuzzle.Solution;
 
 public class ControleurMenu_SolutionSuivante implements ActionListener{
 
@@ -16,7 +17,9 @@ public class ControleurMenu_SolutionSuivante implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		this.puzzle.solutionSuivante();
+		if (!puzzle.getSolutions().isEmpty()) {
+			this.puzzle.solutionSuivante();
+		}
 	}
 	
 	

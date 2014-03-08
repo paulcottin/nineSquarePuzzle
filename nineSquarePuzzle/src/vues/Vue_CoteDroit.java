@@ -18,14 +18,18 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import nineSquarePuzzle.NineSquarePuzzle;
+import nineSquarePuzzle.Pool;
 
 public class Vue_CoteDroit extends JPanel implements Observer{
 
 	NineSquarePuzzle puzzle;
+	Pool pool;
 	
 	public Vue_CoteDroit(NineSquarePuzzle p){
 		this.puzzle = p;
+		this.pool = p.getPool();
 		puzzle.addObserver(this);
+		pool.addObserver(this);
 		
 		this.setBackground(Color.GREEN);
 		this.setPreferredSize(new Dimension(100, HEIGHT));
@@ -35,7 +39,7 @@ public class Vue_CoteDroit extends JPanel implements Observer{
 		JLabel titre = new JLabel(puzzle.getPool().getTitre().substring(0, 9));
 		
 		titre.setPreferredSize(textDimension);
-		titre.setAlignmentX(Component.LEFT_ALIGNMENT);
+		titre.setAlignmentY(Component.LEFT_ALIGNMENT);
 		JLabel nbSolutions;
 		if (puzzle.getPool().getNbSolutions() == 1) {
 			nbSolutions = new JLabel("Il y a "+puzzle.getPool().getNbSolutions()+" solution");
@@ -85,6 +89,7 @@ public class Vue_CoteDroit extends JPanel implements Observer{
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
+		this.repaint();
 		this.revalidate();
 	}
 

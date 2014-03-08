@@ -58,42 +58,60 @@ public class NineSquarePuzzle extends Observable{
 		refresh();
 	}
 	
+	
 	public void resoudre(int n) throws InterruptedException{
-		algoFini = false;
-		//solutions = new ArrayList<Solution>();
-		nbSolutionsTrouvees = 0;solutionCourante = 0;
-		System.out.println("Vitesse exec : "+vitesseExec);
-		int cptSolutions = 0;
-		int premierePiece = 0;
-		boolean premierTour = true;
-		System.out.println("entré dans resoudre()");
-		
-		while (cptSolutions != board.getPool().getNbSolutions()) {
+		new Thread(){
 			
-			System.out.println("Algo lancé");
-			resoudreAide(0, 0, 0, false, this.erreursBoard, false, premierePiece, true, 0);
-			Thread.sleep(1000);
-			ajouteSolution(board.clone());
+			@Override
+			public void run(){
+				algoFini = false;
+				//solutions = new ArrayList<Solution>();
+				nbSolutionsTrouvees = 0;solutionCourante = 0;
+				System.out.println("Vitesse exec : "+vitesseExec);
+				int cptSolutions = 0;
+				int premierePiece = 0;
+				boolean premierTour = true;
+				System.out.println("entré dans resoudre()");
+				
+				while (cptSolutions != board.getPool().getNbSolutions()) {
+					
+					System.out.println("Algo lancé");
+					try {
+						resoudreAide(0, 0, 0, false, erreursBoard, false, premierePiece, true, 0);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					ajouteSolution(board.clone());
+					
+					board.resetBoard();refresh();
+					fini = false;
+					pool = new Pool(Main.path);
+					System.out.println("cpt de sols : "+(cptSolutions+1)+"\tNb de sols trouvées : "+getNbSolutionsTrouvees()+"\tTaille du tabl : "+solutions.size());
+					if (cptSolutions == board.getPool().getNbSolutions()) {
+						premierePiece = pieceCentraleSuivante(solutions.get(cptSolutions).getBoard());
+					}
+					System.out.println("nb total de solutions : "+board.getPool().getNbSolutions());
+					premierTour = true;
+					if (unique) {
+						cptSolutions++;
+						System.out.println("cpt de sol : "+cptSolutions);
+					}
+				}
+				algoFini = true;
+				System.out.println("Résolution finie");
+				
+				chargeBoard(solutions.get(solutionCourante));
+				refresh();
+			}
 			
-			this.board.resetBoard();refresh();
-			this.fini = false;
-			this.pool = new Pool(Main.path);
-			System.out.println("cpt de sols : "+(cptSolutions+1)+"\tNb de sols trouvées : "+this.getNbSolutionsTrouvees()+"\tTaille du tabl : "+solutions.size());
-			if (cptSolutions == board.getPool().getNbSolutions()) {
-				premierePiece = pieceCentraleSuivante(solutions.get(cptSolutions).getBoard());
-			}
-			System.out.println("nb total de solutions : "+board.getPool().getNbSolutions());
-			premierTour = true;
-			if (unique) {
-				cptSolutions++;
-				System.out.println("cpt de sol : "+cptSolutions);
-			}
-		}
-		algoFini = true;
-		System.out.println("Résolution finie");
-		
-		chargeBoard(solutions.get(solutionCourante));
-		refresh();
+		}.start();
 	}
 	
 	public void resoudreAide(int n, int orientation, int nbPiecesTestees, boolean aTourne, ArrayList<InstanceBoard> boardFaux, boolean fini, int premierePiece, boolean premierTour, int nbToursPremierePiece) throws InterruptedException{
@@ -904,6 +922,10 @@ public class NineSquarePuzzle extends Observable{
 		}else {
 			JOptionPane.showConfirmDialog(null, "Faux !", "Puzzle parfait ?", JOptionPane.CLOSED_OPTION);
 		}
+	}
+
+	public void arreterAlgo() {
+		
 	}
 }
 

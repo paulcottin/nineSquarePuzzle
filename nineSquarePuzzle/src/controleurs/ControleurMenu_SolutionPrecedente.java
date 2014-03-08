@@ -16,7 +16,9 @@ public class ControleurMenu_SolutionPrecedente implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
-		puzzle.solutionPrecedente();
+		if (!puzzle.getSolutions().isEmpty()) {
+			this.puzzle.solutionSuivante();
+		}
 	}
 
 }

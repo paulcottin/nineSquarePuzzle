@@ -27,6 +27,7 @@ import javax.swing.JSlider;
 import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.xml.stream.events.StartDocument;
 
 import vues.Vue_Board;
 import vues.Vue_CoteDroit;
@@ -62,10 +63,15 @@ public class Fenetre extends JFrame{
 	Main main;
 	String path;
 	NineSquarePuzzle puzzle;
+//	Thread thread;
 	
 	public Fenetre(){		
 		super(Main.path);
+//		thread = new Thread();
+		
+//		thread.start();
 		puzzle = new NineSquarePuzzle();
+		
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(WIDTH, HEIGHT);
@@ -140,6 +146,6 @@ public class Fenetre extends JFrame{
 	}
 
 	public static void main(String[] args){
-		Fenetre fen = new Fenetre();
+		new Fenetre();
 	}
 }
