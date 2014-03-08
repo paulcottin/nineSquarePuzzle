@@ -13,14 +13,17 @@ import javax.swing.KeyStroke;
 
 import nineSquarePuzzle.NineSquarePuzzle;
 import controleurs.ControleurMenu_AfficherPool;
+import controleurs.ControleurMenu_Arreter;
 import controleurs.ControleurMenu_Lancer;
 import controleurs.ControleurMenu_Ouvrir;
+import controleurs.ControleurMenu_Parfait;
+import controleurs.ControleurMenu_PuzzleParfait;
 import controleurs.ControleurMenu_Quitter;
 import controleurs.ControleurMenu_SolutionPrecedente;
 import controleurs.ControleurMenu_SolutionSuivante;
 import controleurs.ControleurMenu_Tourner;
 
-public class Vue_Menu extends JMenuBar implements Observer{
+public class Vue_Menu extends JMenuBar implements Observer {
 
 	NineSquarePuzzle puzzle;
 	JMenuItem lancer, arreter;
@@ -54,7 +57,12 @@ public class Vue_Menu extends JMenuBar implements Observer{
 	action.add(afficherPool);
 	action.add(pieceParfaite);
 	action.add(puzzleParfait);
-	action.add(lancer);
+	if (puzzle.isAlgoLance()) {
+		action.remove(lancer);
+		action.add(arreter);
+	}else {
+		action.add(lancer);
+	}
 	
 	JMenu solutions = new JMenu("Solutions");
 		JMenuItem tourner = new JMenuItem("Tourner");
@@ -76,8 +84,7 @@ public class Vue_Menu extends JMenuBar implements Observer{
 
 	@Override
 	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
-		this.revalidate();
+		
 	}
 }
 

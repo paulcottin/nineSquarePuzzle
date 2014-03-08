@@ -14,7 +14,7 @@ public class NineSquarePuzzle extends Observable{
 	private Board board;
 	private int[] ordrePlacement = {Board.CENTRE, Board.DROITE, Board.DROITE_HAUT, Board.CENTRE_HAUT, Board.GAUCHE_HAUT, Board.GAUCHE, Board.GAUCHE_BAS, Board.CENTRE_BAS, Board.DROITE_BAS};
 	private int iterateur, nbSolutions = 0, nbSolutionsTrouvees = 0, vitesseExec, solutionCourante;
-	private boolean fini = false, fichierOuvert = false, algoFini, unique;
+	private boolean fini = false, fichierOuvert = false, algoFini, unique, algoLance;
 	private JPanel panel;
 	private Pool pool;
 	private ArrayList<Solution> solutions;
@@ -22,11 +22,13 @@ public class NineSquarePuzzle extends Observable{
 	private ArrayList<InstanceBoard> erreursBoard;
 	private String path = Main.path;
 	private Instrumentation instrumentation;
+	private Resolution resolution;
 	
 	public NineSquarePuzzle(){
+		resolution = new Resolution(this);
 		this.vitesseExec = 999;
 		this.board = new Board(Main.path);
-		this.algoFini = false; unique = false;
+		this.algoFini = false; unique = false; algoLance = false;
 		this.iterateur = 0;
 		this.solutionCourante = 0;
 		this.solutions = new ArrayList<Solution>();
@@ -925,7 +927,20 @@ public class NineSquarePuzzle extends Observable{
 	}
 
 	public void arreterAlgo() {
-		
+		resolution.interrupt();
+	}
+
+	public Resolution getResolution() {
+		return resolution;
+	}
+
+	public boolean isAlgoLance() {
+		return algoLance;
+	}
+
+	public void setAlgoLance(boolean algoLance) {
+		this.algoLance = algoLance;
+		refresh();
 	}
 }
 

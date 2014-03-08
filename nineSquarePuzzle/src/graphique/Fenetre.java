@@ -63,13 +63,9 @@ public class Fenetre extends JFrame{
 	Main main;
 	String path;
 	NineSquarePuzzle puzzle;
-//	Thread thread;
 	
 	public Fenetre(){		
 		super(Main.path);
-//		thread = new Thread();
-		
-//		thread.start();
 		puzzle = new NineSquarePuzzle();
 		
 		

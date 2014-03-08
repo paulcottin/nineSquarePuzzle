@@ -1,4 +1,4 @@
-package vues;
+package controleurs;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +16,7 @@ public class ControleurMenu_Arreter implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		this.puzzle.arreterAlgo();
+		this.puzzle.setAlgoLance(false);
 	}
 
 }
