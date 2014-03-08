@@ -13,12 +13,10 @@ public class NineSquarePuzzle extends Observable{
 
 	private Board board;
 	private int[] ordrePlacement = {Board.CENTRE, Board.DROITE, Board.DROITE_HAUT, Board.CENTRE_HAUT, Board.GAUCHE_HAUT, Board.GAUCHE, Board.GAUCHE_BAS, Board.CENTRE_BAS, Board.DROITE_BAS};
-	private int iterateur, nbSolutions = 0, nbSolutionsTrouvees = 0, vitesseExec, solutionCourante;
-	private boolean fini = false, fichierOuvert = false, algoFini, unique, algoLance;
-	private JPanel panel;
+	private int nbSolutions = 0, nbSolutionsTrouvees = 0, vitesseExec, solutionCourante;
+	private boolean fini = false, algoFini, unique, algoLance;
 	private Pool pool;
 	private ArrayList<Solution> solutions;
-	private ArrayList<Integer> premierePiece;
 	private ArrayList<InstanceBoard> erreursBoard;
 	private String path = Main.path;
 	private Instrumentation instrumentation;
@@ -29,11 +27,9 @@ public class NineSquarePuzzle extends Observable{
 		this.vitesseExec = 999;
 		this.board = new Board(Main.path);
 		this.algoFini = false; unique = false; algoLance = false;
-		this.iterateur = 0;
 		this.solutionCourante = 0;
 		this.solutions = new ArrayList<Solution>();
 		this.pool = board.getPool();
-		this.premierePiece = new ArrayList<Integer>();
 		this.erreursBoard = new ArrayList<InstanceBoard>();
 		this.instrumentation = new Instrumentation();
 	}
@@ -72,7 +68,6 @@ public class NineSquarePuzzle extends Observable{
 				System.out.println("Vitesse exec : "+vitesseExec);
 				int cptSolutions = 0;
 				int premierePiece = 0;
-				boolean premierTour = true;
 				System.out.println("entré dans resoudre()");
 				
 				while (cptSolutions != board.getPool().getNbSolutions()) {
@@ -100,7 +95,6 @@ public class NineSquarePuzzle extends Observable{
 						premierePiece = pieceCentraleSuivante(solutions.get(cptSolutions).getBoard());
 					}
 					System.out.println("nb total de solutions : "+board.getPool().getNbSolutions());
-					premierTour = true;
 					if (unique) {
 						cptSolutions++;
 						System.out.println("cpt de sol : "+cptSolutions);
@@ -768,7 +762,6 @@ public class NineSquarePuzzle extends Observable{
 			if (Files.exists(p)) {
 				Main.path = pathRecu;
 			}
-			fichierOuvert = true;
 			board = new Board(Main.path);
 	        setChanged();
 	        notifyObservers();
@@ -941,6 +934,10 @@ public class NineSquarePuzzle extends Observable{
 	public void setAlgoLance(boolean algoLance) {
 		this.algoLance = algoLance;
 		refresh();
+	}
+
+	public int getVitesseExec() {
+		return vitesseExec;
 	}
 }
 

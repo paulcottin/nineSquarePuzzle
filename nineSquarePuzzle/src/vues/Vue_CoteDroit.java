@@ -1,16 +1,14 @@
 package vues;
 
-import graphique.Fenetre;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.util.Hashtable;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -33,7 +31,10 @@ public class Vue_CoteDroit extends JPanel implements Observer{
 		
 		this.setBackground(Color.GREEN);
 		this.setPreferredSize(new Dimension(100, HEIGHT));
-		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));		
+		this.setLayout(new BorderLayout());		
+		
+		JLabel texte = new JLabel();
+		texte.setLayout(new GridLayout(3,1));
 		
 		Dimension textDimension = new Dimension(100,50);
 		JLabel titre = new JLabel(puzzle.getPool().getTitre().substring(0, 9));
@@ -52,13 +53,13 @@ public class Vue_CoteDroit extends JPanel implements Observer{
 		rapport.setPreferredSize(textDimension);
 		rapport.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
-		this.add(titre);
-		this.add(nbSolutions);
-		this.add(rapport);
+		texte.add(titre);
+		texte.add(nbSolutions);
+		texte.add(rapport);
 		
 		JPanel slider = new JPanel();
 		JLabel vitesseExec = new JLabel("Vitesse");
-		final JSlider vitesse = new JSlider(JSlider.VERTICAL,0, 1000, 500);//A remettre à 500 après les tests
+		final JSlider vitesse = new JSlider(JSlider.VERTICAL,0, 1000, puzzle.getVitesseExec());//A remettre à 500 après les tests
 		vitesse.addChangeListener(new ChangeListener() {
 			
 			@Override
@@ -81,7 +82,8 @@ public class Vue_CoteDroit extends JPanel implements Observer{
 		vitesse.setPaintLabels(true);
 		slider.add(vitesseExec);
 		slider.add(vitesse);
-		this.add(slider);
+		this.add(texte, BorderLayout.CENTER);
+		this.add(slider, BorderLayout.SOUTH);
 		
 	}
 	
