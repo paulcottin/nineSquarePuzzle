@@ -22,7 +22,7 @@ public class Vue_CoteDroit extends JPanel implements Observer{
 
 	NineSquarePuzzle puzzle;
 	Pool pool;
-	JLabel rapport;
+	JLabel rapport, titre, nbSolutions;
 	
 	public Vue_CoteDroit(NineSquarePuzzle p){
 		this.puzzle = p;
@@ -38,13 +38,13 @@ public class Vue_CoteDroit extends JPanel implements Observer{
 		texte.setLayout(new GridLayout(3,1));
 		
 		Dimension textDimension = new Dimension(100,50);
-		JLabel titre = new JLabel(puzzle.getPool().getTitre().substring(0, 9));
+		titre = new JLabel(puzzle.getPool().getTitre().substring(0, 9));
 		
 		titre.setPreferredSize(textDimension);
 		titre.setAlignmentY(Component.LEFT_ALIGNMENT);
-		JLabel nbSolutions;
+		
 		if (puzzle.getPool().getNbSolutions() == 1) {
-			nbSolutions = new JLabel("Il y a "+puzzle.getPool().getNbSolutions()+" solution");
+			nbSolutions = new JLabel("Il y a une solution");
 		}else {
 			nbSolutions = new JLabel("Il y a "+puzzle.getPool().getNbSolutions()+" solutions");
 		}
@@ -92,6 +92,12 @@ public class Vue_CoteDroit extends JPanel implements Observer{
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
+		if (puzzle.getPool().getNbSolutions() == 1) {
+			nbSolutions.setText("Il y a une solution");
+		}else {
+			nbSolutions.setText("Il y a "+puzzle.getPool().getNbSolutions()+" solutions");
+		}
+		titre.setText(puzzle.getPool().getTitre().substring(0, 9));
 		rapport.setText("Trouvées : "+puzzle.getNbSolutionsTrouvees()+"/"+puzzle.getPool().getNbSolutions());
 		this.repaint();
 		this.revalidate();

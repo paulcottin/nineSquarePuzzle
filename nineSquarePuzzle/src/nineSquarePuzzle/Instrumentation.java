@@ -66,4 +66,20 @@ public class Instrumentation {
 	public void setNbAppelRecursifs(int nbAppelRecursifs) {
 		this.nbAppelRecursifs = nbAppelRecursifs;
 	}
+
+	public Date getDebut() {
+		return debut;
+	}
+
+	public void setDebut(Date debut) {
+		this.debut = debut;
+	}
+
+	public Date getFin() {
+		return fin;
+	}
+
+	public void setFin(Date fin) {
+		this.fin = fin;
+	}
 }

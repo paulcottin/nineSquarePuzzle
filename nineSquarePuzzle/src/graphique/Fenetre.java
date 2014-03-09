@@ -65,9 +65,8 @@ public class Fenetre extends JFrame{
 	NineSquarePuzzle puzzle;
 	
 	public Fenetre(){		
-		super(Main.path);
+		super("Nine Square Puzzle");
 		puzzle = new NineSquarePuzzle();
-		
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(WIDTH, HEIGHT);

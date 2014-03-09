@@ -1,13 +1,17 @@
 package nineSquarePuzzle;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Observable;
 
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import graphique.FiltreExtension;
 
 public class NineSquarePuzzle extends Observable{
 
@@ -102,6 +106,7 @@ public class NineSquarePuzzle extends Observable{
 					System.out.println("nb total de solutions : "+board.getPool().getNbSolutions());
 					if (unique) {
 						cptSolutions++;
+						nbSolutionsTrouvees++;
 						System.out.println("cpt de sol : "+cptSolutions);
 					}
 				}
@@ -237,7 +242,7 @@ public class NineSquarePuzzle extends Observable{
 		}else {
 			//fen.refreshBoard();
 			System.out.println("Solution ajoutée à l'arrayList\tnb solutions trouvees : "+(this.nbSolutionsTrouvees +1));
-			this.fini = true;this.nbSolutionsTrouvees++;
+			this.fini = true;
 		}
 	}
 
@@ -760,23 +765,37 @@ public class NineSquarePuzzle extends Observable{
 		this.board = board;
 	}
 	
-	public void ouvrir(){
-		
-		String pathRecu = Main.path;
-		pathRecu = JOptionPane.showInputDialog(null, "Path :", "Ouvrir", JOptionPane.QUESTION_MESSAGE);
-		try {
-			Path p = Paths.get(pathRecu);
-			if (Files.exists(p)) {
-				Main.path = pathRecu;
-			}
-			board = new Board(Main.path);
-	        setChanged();
-	        notifyObservers();
-		} catch (NullPointerException e) {
+	public void ouvrir() {
+        JFileChooser choix = new JFileChooser();
+        choix.setCurrentDirectory(new File("data1.txt"));
+        choix.setMultiSelectionEnabled(false);
+        // Ajout de filtre
+        choix.setFileFilter(new FiltreExtension("Texte", ".txt"));
+        choix.setAcceptAllFileFilterUsed(false);
 
-		}
-	}
+        int retour = choix.showOpenDialog(null);
+        if (retour == JFileChooser.APPROVE_OPTION) {
+            // chemin absolu du fichier choisi
+            Main.path = choix.getSelectedFile().getAbsolutePath();
+            reinitialisation();
+            refresh();
+        }
+    }
 		
+	private void reinitialisation() {
+		resolution = new Resolution(this);
+		this.vitesseExec = 999;
+		this.board = new Board(Main.path);
+		this.algoFini = false; unique = false; algoLance = false;
+		this.solutionCourante = 0;
+		this.nbSolutionsTrouvees = 0;
+		this.solutions = new ArrayList<Solution>();
+		this.pool = board.getPool();
+		this.erreursBoard = new ArrayList<InstanceBoard>();
+		this.instrumentation = new Instrumentation();
+		this.getInstrumentation().setNbAppelRecursifs(0);
+	}
+
 	public void solutionPrecedente(){
 		System.out.println("sol cour : "+solutionCourante+"\t nbSolutions : "+nbSolutions);
 		if (solutionCourante == 0) {
