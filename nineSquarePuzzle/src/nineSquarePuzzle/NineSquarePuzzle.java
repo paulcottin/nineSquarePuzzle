@@ -18,7 +18,7 @@ public class NineSquarePuzzle extends Observable{
 	private Pool pool;
 	private ArrayList<Solution> solutions;
 	private ArrayList<InstanceBoard> erreursBoard;
-	private String path = Main.path;
+	private String path = Main.path, tpsEcoule;
 	private Instrumentation instrumentation;
 	private Resolution resolution;
 	
@@ -35,8 +35,12 @@ public class NineSquarePuzzle extends Observable{
 	}
 	
 	public void refresh(){
-        setChanged();
-        notifyObservers();
+		try {
+	        setChanged();
+	        notifyObservers();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			// TODO: handle exception
+		}
 	}
 	
 	public void affichePool(){
@@ -62,6 +66,7 @@ public class NineSquarePuzzle extends Observable{
 			
 			@Override
 			public void run(){
+				instrumentation.start();
 				algoFini = false;
 				//solutions = new ArrayList<Solution>();
 				nbSolutionsTrouvees = 0;solutionCourante = 0;
@@ -100,6 +105,7 @@ public class NineSquarePuzzle extends Observable{
 						System.out.println("cpt de sol : "+cptSolutions);
 					}
 				}
+				instrumentation.stop();
 				algoFini = true;
 				System.out.println("Résolution finie");
 				
@@ -199,6 +205,7 @@ public class NineSquarePuzzle extends Observable{
 								if (premierTour) {
 									premierTour = false;
 								}
+								instrumentation.appel();
 								resoudreAide(n+1, 0, 0, false, boardFaux, fini, premierePiece, premierTour, nbToursPremierePiece);
 //								System.out.println("n : "+n);
 //								System.out.println("bien placée : "+bienPlacee(board.getPositions().get(Board.DROITE_BAS), n));
@@ -810,6 +817,10 @@ public class NineSquarePuzzle extends Observable{
 		this.nbSolutionsTrouvees = nbSolutionsTrouvees;
 	}
 
+	public String getTpsExec(){
+		return instrumentation.tempsEcouleCourant();
+	}
+	
 	public ArrayList<Solution> getSolutions() {
 		return solutions;
 	}
@@ -920,11 +931,16 @@ public class NineSquarePuzzle extends Observable{
 	}
 
 	public void arreterAlgo() {
+		this.board.resetBoard();refresh();
 		resolution.interrupt();
 	}
 
 	public Resolution getResolution() {
 		return resolution;
+	}
+	
+	public int getNbAppelRecursif(){
+		return instrumentation.nbAppelRecursifs;
 	}
 
 	public boolean isAlgoLance() {
@@ -938,6 +954,14 @@ public class NineSquarePuzzle extends Observable{
 
 	public int getVitesseExec() {
 		return vitesseExec;
+	}
+
+	public String getTpsEcoule() {
+		return tpsEcoule;
+	}
+
+	public void setTpsEcoule(String tpsEcoule) {
+		this.tpsEcoule = tpsEcoule;
 	}
 }
 

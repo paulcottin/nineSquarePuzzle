@@ -54,15 +54,13 @@ public class Vue_Menu extends JMenuBar implements Observer {
 		lancer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
 		arreter = new JMenuItem("Arreter");
 		arreter.addActionListener(new ControleurMenu_Arreter(this.puzzle));
+		arreter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
 	action.add(afficherPool);
 	action.add(pieceParfaite);
 	action.add(puzzleParfait);
-	if (puzzle.isAlgoLance()) {
-		action.remove(lancer);
-		action.add(arreter);
-	}else {
-		action.add(lancer);
-	}
+	action.add(lancer);
+	action.add(arreter);
+		
 	
 	JMenu solutions = new JMenu("Solutions");
 		JMenuItem tourner = new JMenuItem("Tourner");

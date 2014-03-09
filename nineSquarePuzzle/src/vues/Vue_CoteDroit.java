@@ -22,6 +22,7 @@ public class Vue_CoteDroit extends JPanel implements Observer{
 
 	NineSquarePuzzle puzzle;
 	Pool pool;
+	JLabel rapport;
 	
 	public Vue_CoteDroit(NineSquarePuzzle p){
 		this.puzzle = p;
@@ -49,7 +50,7 @@ public class Vue_CoteDroit extends JPanel implements Observer{
 		}
 		nbSolutions.setPreferredSize(textDimension);
 		nbSolutions.setAlignmentX(Component.LEFT_ALIGNMENT);
-		JLabel rapport = new JLabel("Trouvées : "+puzzle.getPool().getNbSolutionsTrouvees()+"/"+puzzle.getPool().getNbSolutions());
+		rapport = new JLabel("Trouvées : "+puzzle.getPool().getNbSolutionsTrouvees()+"/"+puzzle.getPool().getNbSolutions());
 		rapport.setPreferredSize(textDimension);
 		rapport.setAlignmentX(Component.LEFT_ALIGNMENT);
 		
@@ -91,6 +92,7 @@ public class Vue_CoteDroit extends JPanel implements Observer{
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
+		rapport.setText("Trouvées : "+puzzle.getNbSolutionsTrouvees()+"/"+puzzle.getPool().getNbSolutions());
 		this.repaint();
 		this.revalidate();
 	}

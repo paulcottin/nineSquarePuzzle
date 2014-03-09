@@ -5,11 +5,15 @@ import java.util.Date;
 public class Instrumentation {
 
 	Date debut, fin;
+	String duree;
 	boolean estFini = false;
 	int nbAppelRecursifs;
 	
 	public Instrumentation(){ 
 		nbAppelRecursifs = 0;
+		duree = "-1";
+		debut = new Date();
+		fin = new Date();
 	}
 	
 	public void start(){
@@ -34,6 +38,17 @@ public class Instrumentation {
 		}else {
 			return "-1";
 		}
+	}
+	
+	public String tempsEcouleCourant(){
+		long duree = 0;
+		int heure = 0, minute = 0, seconde = 0, millisec = 0;
+		duree = (new Date()).getTime() - debut.getTime();
+		millisec = (int) (duree % 1000);
+		seconde = (int) (duree /1000);
+		minute = (int) (duree / 60000);
+		heure = (int) (duree / 3600000);
+		return (heure+"h "+minute+"min "+seconde+"s "+millisec+"ms");
 	}
 	
 	public void appel(){
