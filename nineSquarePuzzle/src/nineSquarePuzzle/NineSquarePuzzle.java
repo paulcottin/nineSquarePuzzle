@@ -1,18 +1,17 @@
 package nineSquarePuzzle;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Observable;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
 import graphique.FiltreExtension;
-
+/**
+ * Classe principale - résolution du puzzle
+ * @author Paul
+ *
+ */
 public class NineSquarePuzzle extends Observable{
 
 	private Board board;
@@ -26,35 +25,114 @@ public class NineSquarePuzzle extends Observable{
 	private Instrumentation instrumentation;
 	private Resolution resolution;
 	
+	/**
+	 * initialisation des données
+	 */
 	public NineSquarePuzzle(){
 		resolution = new Resolution(this);
 		this.vitesseExec = 999;
+		this.pool = new Pool(Main.path);
 		this.board = new Board(Main.path);
+		this.board.setPool(this.pool);
 		this.algoFini = false; unique = false; algoLance = false;
 		this.solutionCourante = 0;
 		this.solutions = new ArrayList<Solution>();
-		this.pool = board.getPool();
 		this.erreursBoard = new ArrayList<InstanceBoard>();
 		this.instrumentation = new Instrumentation();
 	}
 	
-	public void refresh(){
-		try {
-	        setChanged();
-	        notifyObservers();
-		} catch (ArrayIndexOutOfBoundsException e) {
-			// TODO: handle exception
-		}
-	}
+	/**
+	 * ouvre un fichier de données
+	 */
+	public void ouvrir() {
+        JFileChooser choix = new JFileChooser();
+        choix.setCurrentDirectory(new File("data1.txt"));
+        choix.setMultiSelectionEnabled(false);
+        // Ajout de filtre
+        choix.setFileFilter(new FiltreExtension("Texte", ".txt"));
+        choix.setAcceptAllFileFilterUsed(false);
+
+        int retour = choix.showOpenDialog(null);
+        if (retour == JFileChooser.APPROVE_OPTION) {
+            // chemin absolu du fichier choisi
+            Main.path = choix.getSelectedFile().getAbsolutePath();
+            reinitialisation();
+        }
+        refresh();
+    }
 	
-	public void affichePool(){
+	/**
+	 * Réinitialisation du puzzle pour résoudre une autre instance (par ex)
+	 */
+	private void reinitialisation() {
 		board.resetBoard();
-		for (int i = board.getPositions().size()-1; i >= 0; i--) {
-			board.positionner(board.getPool().getPool().get(i), i);
+		resolution = new Resolution(this);
+		this.vitesseExec = 999;
+		this.algoFini = false; unique = false; algoLance = false;
+		this.solutionCourante = 0;
+		this.nbSolutionsTrouvees = 0;
+		this.solutions = new ArrayList<Solution>();
+		this.pool = new Pool(Main.path);
+		board.setPool(pool);
+		this.erreursBoard = new ArrayList<InstanceBoard>();
+		this.instrumentation = new Instrumentation();
+		this.getInstrumentation().setNbAppelRecursifs(0);
+	}
+
+	/**
+	 * Affiche la solution précédente
+	 */
+	public void solutionPrecedente(){
+		System.out.println("sol cour : "+solutionCourante+"\t nbSolutions : "+nbSolutions);
+		if (solutionCourante == 0) {
+			solutionCourante = nbSolutions -1;
+			chargeBoard(solutions.get(solutionCourante));
+		}
+		else if((solutionCourante - 1) <= 0) {
+			solutionCourante = 0;
+			chargeBoard(solutions.get(solutionCourante));
+		}else {
+			solutionCourante--;
+			chargeBoard(solutions.get(solutionCourante));
 		}
 		refresh();
 	}
 	
+	/**
+	 * Affiche la solution suivante
+	 */
+	public void solutionSuivante(){
+		System.out.println("sol cour : "+solutionCourante+"\t nbSolutions : "+nbSolutions);
+		if (solutionCourante == nbSolutions -1) { 
+			solutionCourante = 0;
+			chargeBoard(solutions.get(solutionCourante));
+		}
+		else if((solutionCourante+1) == solutions.size()) {
+			solutionCourante = 0;
+			chargeBoard(solutions.get(solutionCourante));
+		}else {
+			solutionCourante++;
+			chargeBoard(solutions.get(solutionCourante));
+		}
+		refresh();
+	}
+	
+	/**
+	 * Affiche la pool
+	 */
+	public void affichePool(){
+		board.resetBoard();
+		for (int i = board.getPositions().size()-1; i >= 0; i--) {
+			board.positionner(pool.getPool().get(i), i);
+		}
+		refresh();
+		board.resetBoard();
+	}
+	
+	/**
+	 * permet d'afficher un Board particulier
+	 * @param solution : la solution à afficher
+	 */
 	public void chargeBoard(Solution solution){
 		board.resetBoard();
 		for (int i = 0; i < solution.getBoard().size(); i++) {
@@ -64,25 +142,26 @@ public class NineSquarePuzzle extends Observable{
 		refresh();
 	}
 	
-	
+	/**
+	 * la fonction de résolution du puzzle
+	 * @param n paramètre de récursion
+	 * @throws InterruptedException
+	 */
 	public void resoudre(int n) throws InterruptedException{
-		new Thread(){
-			
-			@Override
-			public void run(){
+//		new Thread(){
+//			
+//			@Override
+//			public void run(){
 				algoLance = true;
 				instrumentation.start();
 				algoFini = false;
-				//solutions = new ArrayList<Solution>();
 				nbSolutionsTrouvees = 0;solutionCourante = 0;
 				System.out.println("Vitesse exec : "+vitesseExec);
 				int cptSolutions = 0;
 				int premierePiece = 0;
 				System.out.println("entré dans resoudre()");
 				
-				while (cptSolutions != board.getPool().getNbSolutions()) {
-					
-					System.out.println("Algo lancé");
+				while (cptSolutions != pool.getNbSolutions()) {
 					try {
 						resoudreAide(0, 0, 0, false, erreursBoard, false, premierePiece, true, 0);
 					} catch (InterruptedException e) {
@@ -90,7 +169,7 @@ public class NineSquarePuzzle extends Observable{
 						e.printStackTrace();
 					}
 					try {
-						sleep(1000);
+						Thread.sleep(1000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -101,10 +180,10 @@ public class NineSquarePuzzle extends Observable{
 					fini = false;
 					pool = new Pool(Main.path);
 					System.out.println("cpt de sols : "+(cptSolutions+1)+"\tNb de sols trouvées : "+getNbSolutionsTrouvees()+"\tTaille du tabl : "+solutions.size());
-					if (cptSolutions == board.getPool().getNbSolutions()) {
+					if (cptSolutions == pool.getNbSolutions()) {
 						premierePiece = pieceCentraleSuivante(solutions.get(cptSolutions).getBoard());
 					}
-					System.out.println("nb total de solutions : "+board.getPool().getNbSolutions());
+					System.out.println("nb total de solutions : "+pool.getNbSolutions());
 					if (unique) {
 						cptSolutions++;
 						nbSolutionsTrouvees++;
@@ -118,24 +197,37 @@ public class NineSquarePuzzle extends Observable{
 				
 				chargeBoard(solutions.get(solutionCourante));
 				refresh();
-			}
-			
-		}.start();
+//			}
+//			
+//		}.start();
 		algoLance = false;
 	}
 	
+	/**
+	 * fonction d'aide
+	 * @param n : paramètre de récursion
+	 * @param orientation : orientation d'une pièce
+	 * @param nbPiecesTestees : mémorise le nombre de pièces qui ont été testées pour un emplacement donné
+	 * @param aTourne : boolean pour savoir si une pièce à tourner 4 fois
+	 * @param boardFaux : arrayList mémorisant les instances ne fonctionnant pas
+	 * @param fini : boolean qui sert à sortir de la fonction d'aide
+	 * @param premierePiece : int sert à positionner la première pièce
+	 * @param premierTour : boolean qui sert à savoir si on est au premier tour de la récursion ou pas
+	 * @param nbToursPremierePiece : int
+	 * @throws InterruptedException
+	 */
 	public void resoudreAide(int n, int orientation, int nbPiecesTestees, boolean aTourne, ArrayList<InstanceBoard> boardFaux, boolean fini, int premierePiece, boolean premierTour, int nbToursPremierePiece) throws InterruptedException{
 		if (n < 9 && !bienPlacee(board.getPositions().get(Board.DROITE_BAS), n) && !this.fini) {
 //			System.out.println("derniere p bien placée : "+bienPlacee(board.getPositions().get(Board.DROITE_BAS), n));
 //			System.out.println("entre dans résoudreAide()\tn : "+n);
-			while (!bienPlacee(board.getPositions().get(Board.DROITE_BAS), n) /*board.getPool().getPool().size() > 0 && */) {
+			while (!bienPlacee(board.getPositions().get(Board.DROITE_BAS), n) /*pool.getPool().size() > 0 && */) {
 //				System.out.println("fini : "+fini);
 				if(n == 0 && aEteUneInstance(new InstanceBoard(this.board), boardFaux) && nbToursPremierePiece >=3){
 					board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);refresh();
 					board.retirer(board.getPositions().get(this.ordrePlacement[n]));refresh();
-					board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);refresh();
+					board.positionner(pool.getPool().get(0), this.ordrePlacement[n]);refresh();
 				}
-				if (nbPiecesTestees > board.getPool().getPool().size()) {
+				if (nbPiecesTestees > pool.getPool().size()) {
 					if (n > 0 || !(nbToursPremierePiece < 3)) {
 						board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);refresh();
 						board.retirer(board.getPositions().get(this.ordrePlacement[n]));refresh();
@@ -158,24 +250,24 @@ public class NineSquarePuzzle extends Observable{
 							n = 0;
 							board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);refresh();
 							board.retirer(board.getPositions().get(this.ordrePlacement[n]));refresh();
-							board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);refresh();
+							board.positionner(pool.getPool().get(0), this.ordrePlacement[n]);refresh();
 						}
 					}
-					if (board.getPool().getPool().size() >= 0 && !(n == 0 && !(nbToursPremierePiece > 3))/*&& !board.getPositions().get(0).getNom().equals("*")*/) {
+					if (pool.getPool().size() >= 0 && !(n == 0 && !(nbToursPremierePiece > 3))/*&& !board.getPositions().get(0).getNom().equals("*")*/) {
 						boardFaux.add(new InstanceBoard(board));
 					}
 				}
-				while (nbPiecesTestees <= board.getPool().getPool().size() && !this.fini) {//Tant qu'on a pas testé toutes les pièces pour une case
+				while (nbPiecesTestees <= pool.getPool().size() && !this.fini) {//Tant qu'on a pas testé toutes les pièces pour une case
 //					System.out.println("n : "+n+"\ta tourné : "+aTourne+"\tnb de p testées : "+nbPiecesTestees);
 					if (n > 0 && aTourne || (n == 0 && !(nbToursPremierePiece < 3) )) {
 						board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);refresh();
 						board.retirer(board.getPositions().get(this.ordrePlacement[n]));refresh();
 						nbPiecesTestees++;
 					}
-					if (board.getPool().getPool().size() > 0) {
+					if (pool.getPool().size() > 0) {
 //						System.out.println("n : "+n);
 						if (premierTour) {
-							board.positionner(board.getPool().getPool().get(premierePiece), this.ordrePlacement[n]);refresh();
+							board.positionner(pool.getPool().get(premierePiece), this.ordrePlacement[n]);refresh();
 							orientation = 0;
 							board.getPositions().get(this.ordrePlacement[n]).setOrientation(orientation);refresh();
 							Thread.sleep(1000-vitesseExec);
@@ -185,7 +277,7 @@ public class NineSquarePuzzle extends Observable{
 						}else {
 							
 						}{
-							board.positionner(board.getPool().getPool().get(0), this.ordrePlacement[n]);refresh();
+							board.positionner(pool.getPool().get(0), this.ordrePlacement[n]);refresh();
 							orientation = 0;
 							board.getPositions().get(this.ordrePlacement[n]).setOrientation(orientation);refresh();
 							Thread.sleep(1000-vitesseExec);
@@ -196,7 +288,7 @@ public class NineSquarePuzzle extends Observable{
 //					System.out.println("coucou");
 					while (orientation < 4 && !this.fini) {
 						Thread.sleep(1000-vitesseExec);
-//						System.out.println("n : "+n+"\t modulo  = 0 : "+(this.ordrePlacement[n] % 2 == 0)+"\t pool size "+board.getPool().getPool().size()+"\tfini : "+fini);
+//						System.out.println("n : "+n+"\t modulo  = 0 : "+(this.ordrePlacement[n] % 2 == 0)+"\t pool size "+pool.getPool().size()+"\tfini : "+fini);
 						if (n == 0 && !premierTour) {
 							if (!(nbToursPremierePiece < 3)) {//Si la pièce à trop tournée, on fait en sorte qu'elle quitte le while et qu'on la retire après
 								aTourne = true;
@@ -239,9 +331,9 @@ public class NineSquarePuzzle extends Observable{
 					}
 //					System.out.println("Sorti de orientation < 4");
 				}
-//				System.out.println("Sorti de nbPiecesTestees <= board.getPool().getPool().size()");
+//				System.out.println("Sorti de nbPiecesTestees <= pool.getPool().size()");
 			}
-//			System.out.println("Sorti de board.getPool().getPool().size() > 0");
+//			System.out.println("Sorti de pool.getPool().size() > 0");
 		}else {
 			//fen.refreshBoard();
 			System.out.println("Solution ajoutée à l'arrayList\tnb solutions trouvees : "+(this.nbSolutionsTrouvees +1));
@@ -249,7 +341,10 @@ public class NineSquarePuzzle extends Observable{
 		}
 	}
 
-	
+	/**
+	 * ajoute une solution à l'array list de solution
+	 * @param b
+	 */
 	public void ajouteSolution(Board b){
 		unique = true;
 		if (!solutions.isEmpty()) {
@@ -299,35 +394,81 @@ public class NineSquarePuzzle extends Observable{
 		erreursBoard.add(new InstanceBoard(bo));
 	}
 	
+	/**
+	 * fait tourner de 4 tours une solution pour avoir les 4 solutions relatives
+	 * @param b : ArrayLis<Solution>
+	 * @return Board (à charger)
+	 */
 	public ArrayList<Piece> tournerSolution(ArrayList<Piece> b) {
-					System.out.println("tourner");
-					for (int i = 0; i < b.size(); i++) {
-						b.get(i).tourne(1);
-					}
-					ArrayList<Piece> board = new ArrayList<Piece>();
-					board.add(b.get(Board.GAUCHE_BAS));
-					board.add(b.get(Board.GAUCHE));
-					board.add(b.get(Board.GAUCHE_HAUT));
-					board.add(b.get(Board.CENTRE_BAS));
-					board.add(b.get(Board.CENTRE));
-					board.add(b.get(Board.CENTRE_HAUT));
-					board.add(b.get(Board.DROITE_BAS));
-					board.add(b.get(Board.DROITE));
-					board.add(b.get(Board.DROITE_HAUT));
-				refresh();
-				return board;
-		}
-	
-	public int nbPiecesNonPlacees(){
-		int nb = 0;
-		for (int i = 0; i < board.getPositionOccupees().length; i++) {
-			if (!board.getPositionOccupees()[i]) {
-				nb++;
+			for (int i = 0; i < b.size(); i++) {
+				b.get(i).tourne(1);
 			}
-		}
-		return nb;
+			ArrayList<Piece> board = new ArrayList<Piece>();
+			board.add(b.get(Board.GAUCHE_BAS));
+			board.add(b.get(Board.GAUCHE));
+			board.add(b.get(Board.GAUCHE_HAUT));
+			board.add(b.get(Board.CENTRE_BAS));
+			board.add(b.get(Board.CENTRE));
+			board.add(b.get(Board.CENTRE_HAUT));
+			board.add(b.get(Board.DROITE_BAS));
+			board.add(b.get(Board.DROITE));
+			board.add(b.get(Board.DROITE_HAUT));
+		refresh();
+		return board;
 	}
 	
+	/**
+	 * fait tourner les solutions graphiquement
+	 * @param b : ArrayList<Piece>
+	 */
+	public void tournerSolutionGraphique(ArrayList<Piece> b) {
+		if (algoFini) {
+			tournerSolution(b);
+			chargeBoard(new Solution(board.getPositions()));
+		}else {
+			System.out.println("L'algo n'est pas fini");
+		}
+		refresh();
+	}
+	
+	/**
+	 * Détermine si une pièce est parfaite ou pas
+	 * @return boolean
+	 */
+	public boolean isPiecePerfect() {
+		Pool p = new Pool(Main.path);
+		String[] lettres = {"A", "B", "C", "D", "E", "F", "G", "H", "I"};
+		String piece = (String)JOptionPane.showInputDialog(null, 
+		      "La piece suivante est-elle parfaite ?",
+		      "Piece parfaite",
+		      JOptionPane.QUESTION_MESSAGE,
+		      null,
+		      lettres,
+		      lettres[0]);
+		if (pool.get(piece, p).estParfaite()) {
+			JOptionPane.showMessageDialog(null, "La pièce "+piece+" est parfaite");
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	/**
+	 * détermine si un Pool est parfait ou pas
+	 */
+	public void isPerfect(){
+		if (pool.isPerfect()) {
+			JOptionPane.showMessageDialog(null, "Vrai !");
+		}else {
+			JOptionPane.showMessageDialog(null, "Faux !");
+		}
+	}
+	
+	/**
+	 * Calcul quel doit être l'indice de la pièce centrale qui suit pour qu'elles y passent toutes
+	 * @param arrayList
+	 * @return int
+	 */
 	public int pieceCentraleSuivante(ArrayList<Piece> arrayList){
 		String[] tabLettres = {"A", "B", "C", "D", "E", "F", "G", "H", "I"};
 		Piece piece = arrayList.get(Board.CENTRE);
@@ -340,14 +481,14 @@ public class NineSquarePuzzle extends Observable{
 			}
 		}
 		if (indiceAnciennePiece < tabLettres.length -1) {
-			for (int i = 0; i < this.board.getPool().getPool().size(); i++) {
-				if (this.board.getPool().getPool().get(i).getNom().equals(tabLettres[indiceAnciennePiece+1])) {
+			for (int i = 0; i < this.pool.getPool().size(); i++) {
+				if (this.pool.getPool().get(i).getNom().equals(tabLettres[indiceAnciennePiece+1])) {
 					return i;
 				}
 			}
 		}else {
-			for (int i = 0; i < this.board.getPool().getPool().size(); i++) {
-				if (this.board.getPool().getPool().get(i).getNom().equals(tabLettres[8])) {
+			for (int i = 0; i < this.pool.getPool().size(); i++) {
+				if (this.pool.getPool().get(i).getNom().equals(tabLettres[8])) {
 					return i;
 				}
 			}
@@ -356,17 +497,10 @@ public class NineSquarePuzzle extends Observable{
 		return -1;
 	}
 	
-	public boolean aUneAutreSolution(Piece p, int n){
-		for (int i = 0; i < 3; i++) {
-			p.tourne(1);
-			if (bienPlacee(p, n)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	
+	/**
+	 * Nettoie les doublons pour raccourcir le temps de test
+	 * @param boardFaux ArrayList<InstanceBoard> : Les instances fausses
+	 */
 	public void nettoieDoublon(ArrayList<InstanceBoard> boardFaux){
 		ArrayList<Integer> indicesANettoyer = new ArrayList<Integer>();
 		int cpt = 0;
@@ -383,6 +517,12 @@ public class NineSquarePuzzle extends Observable{
 		}
 	}
 	
+	/**
+	 * Détermine si instance appartient à boardFauc
+	 * @param instance : InstanceBoard
+	 * @param boardFaux : ArrayList<InstanceBoard>
+	 * @return boolean
+	 */
 	public boolean aEteUneInstance(InstanceBoard instance, ArrayList<InstanceBoard> boardFaux){
 //		System.out.println("-----------------------------\n"+boardsFaux.size()+" instances\n|\t"+instance.toString());
 		for (InstanceBoard instanceBoard : boardFaux) {
@@ -395,6 +535,12 @@ public class NineSquarePuzzle extends Observable{
 		return false;
 	}
 	
+	/**
+	 * vérifie si deux pièces correspondent
+	 * @param p Piece
+	 * @param q Piece
+	 * @return boolean
+	 */
 	public boolean match(Piece p, Piece q){
 		int indiceP = 0, indiceQ = 0;
 		//	Recuperation des indices dans Board.positions des pieces p et q
@@ -418,19 +564,19 @@ public class NineSquarePuzzle extends Observable{
 			}
 			if (indiceP == Board.CENTRE_BAS && indiceQ == Board.GAUCHE_BAS && p.getWest()+q.getEast() == 0) {
 				return true;
-			}//
+			}
 			if (indiceP == Board.CENTRE_BAS && indiceQ == Board.CENTRE && p.getNorth()+q.getSouth() == 0) {
 				return true;
 			}
 			if (indiceP == Board.DROITE_BAS && indiceQ == Board.CENTRE_BAS && p.getWest()+q.getEast() == 0) {
 				return true;
-			}//
+			}
 			if (indiceP == Board.DROITE_BAS && indiceQ == Board.DROITE && p.getNorth()+q.getSouth() == 0) {
 				return true;
 			}
 			if (indiceP == Board.GAUCHE && indiceQ == Board.GAUCHE_BAS && p.getSouth()+q.getNorth() == 0) {
 				return true;
-			}//
+			}
 			if (indiceP == Board.GAUCHE && indiceQ == Board.CENTRE && p.getEast()+q.getWest() == 0) {
 				return true;
 			}
@@ -439,7 +585,7 @@ public class NineSquarePuzzle extends Observable{
 			}
 			if (indiceP == Board.CENTRE && indiceQ == Board.GAUCHE && p.getWest()+q.getEast() == 0) {
 				return true;
-			}//
+			}
 			if (indiceP == Board.CENTRE && indiceQ == Board.DROITE && p.getEast()+q.getWest() == 0) {
 				return true;
 			}
@@ -448,13 +594,13 @@ public class NineSquarePuzzle extends Observable{
 			}
 			if (indiceP == Board.CENTRE && indiceQ == Board.CENTRE_BAS && p.getSouth()+q.getNorth() == 0) {
 				return true;
-			}//
+			}
 			if (indiceP == Board.DROITE && indiceQ == Board.CENTRE && p.getWest()+q.getEast() == 0) {
 				return true;
 			}
 			if (indiceP == Board.DROITE && indiceQ == Board.DROITE_BAS && p.getSouth()+q.getNorth() == 0) {
 				return true;
-			}//
+			}
 			if (indiceP == Board.DROITE && indiceQ == Board.DROITE_HAUT && p.getNorth()+q.getSouth() == 0) {
 				return true;
 			}
@@ -482,6 +628,12 @@ public class NineSquarePuzzle extends Observable{
 		return false;
 	}
 	
+	/**
+	 * détermine si une pièce est bien placée
+	 * @param p Piece
+	 * @param n int : Rang de la récursion
+	 * @return boolean
+	 */
 	public boolean bienPlacee(Piece p, int n){
 		int indiceP = 0;
 		//	Recuperation des indices dans Board.positions des pieces p et q
@@ -500,19 +652,14 @@ public class NineSquarePuzzle extends Observable{
 			}
 //			Si c'est la dernière piece
 			if (n == 8) {
-//				System.out.println("dernière piece : "+p.getNom()+" doit etre testee avec : "+board.getPositions().get(this.ordrePlacement[n-1]).getNom()+" et "+board.getPositions().get(this.ordrePlacement[1]).getNom());
 				if (!(match(p, board.getPositions().get(this.ordrePlacement[n-1])) && match(p, board.getPositions().get(this.ordrePlacement[1])))) {
 					return false;
 				}
-//				for (Piece piece : board.getPositions()) {
-//					System.out.println(piece.getNom());
-//				}
-//				System.exit(0);
 			}
-			if (n == 0) {//Cas de test
+			if (n == 0) {
 				return false;
 			}
-			if (n > 8) {//cas de test
+			if (n > 8) {
 				return false;
 			}
 //			Cas général
@@ -528,307 +675,12 @@ public class NineSquarePuzzle extends Observable{
 		return true;
 	}
 	
-	//Fonction fausse...
-	public boolean boardParfait(int n){
-		for (Piece p : board.getPositions()) {
-			if (!bienPlacee(p, n)) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	public boolean estAutour(Piece p, Piece q){
-		int indiceP = 0, indiceQ = 0;
-		//	Recuperation des indices dans Board.positions des pieces p et q
-			for (int i = 0; i < board.getPositions().size(); i++) {
-				if (p.equals(board.getPositions().get(i))) {
-					indiceP = i;
-				}
-				if (q.equals(board.getPositions().get(i))) {
-					indiceQ = i;
-				}
-			}
-			
-			if (indiceP == Board.GAUCHE_BAS && (indiceQ == Board.GAUCHE || indiceQ == Board.CENTRE_BAS)) {
-				return true;
-			}
-			if (indiceP == Board.CENTRE_BAS && (indiceQ == Board.GAUCHE || indiceQ == Board.CENTRE || indiceQ == Board.DROITE_BAS)) {
-				return true;
-			}
-			if (indiceP == Board.DROITE_BAS && (indiceQ == Board.CENTRE_BAS || indiceQ == Board.DROITE)) {
-				return true;
-			}
-			if (indiceP == Board.GAUCHE && (indiceQ == Board.GAUCHE_BAS || indiceQ == Board.CENTRE || indiceQ == Board.GAUCHE_HAUT)) {
-				return true;
-			}
-			if (indiceP == Board.CENTRE && (indiceQ == Board.GAUCHE || indiceQ == Board.DROITE || indiceQ == Board.CENTRE_HAUT || indiceQ == Board.CENTRE_BAS)) {
-				return true;
-			}
-			if (indiceP == Board.DROITE &&  (indiceQ == Board.CENTRE || indiceQ == Board.DROITE_BAS || indiceQ == Board.DROITE_HAUT)) {
-				return true;
-			}
-			if (indiceP == Board.GAUCHE_HAUT && (indiceQ == Board.GAUCHE || indiceQ == Board.CENTRE_HAUT)) {
-				return true;
-			}
-			if (indiceP == Board.CENTRE_HAUT && (indiceQ == Board.GAUCHE_HAUT || indiceQ == Board.CENTRE || indiceQ == Board.DROITE_HAUT)) {
-				return true;
-			}
-		return false;
-	}
-	
-	public boolean aPieceAuDessus(Piece p){
-		int indiceP = 0;
-//	Recuperation des indices dans Board.positions des pieces p et q
-		for (int i = 0; i < board.getPositions().size(); i++) {
-			if (p.equals(board.getPositions().get(i))) {
-				indiceP = i;
-			}
-		}
-		if (indiceP == Board.GAUCHE_HAUT || indiceP == Board.CENTRE_HAUT || indiceP == Board.DROITE_HAUT) {
-			return false;
-		}
-		if ((indiceP == Board.GAUCHE && board.getPositions().get(Board.GAUCHE_HAUT).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.CENTRE && board.getPositions().get(Board.CENTRE_HAUT).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.DROITE && board.getPositions().get(Board.DROITE_HAUT).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.GAUCHE_BAS && board.getPositions().get(Board.GAUCHE).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.CENTRE_BAS && board.getPositions().get(Board.CENTRE).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.DROITE_BAS && board.getPositions().get(Board.DROITE).getNom().equals("*"))) {
-			return false;
-		}
-		return true;
-	}
-	
-	public boolean aPieceEnDesous(Piece p){
-		int indiceP = 0;
-//	Recuperation des indices dans Board.positions des pieces p et q
-		for (int i = 0; i < board.getPositions().size(); i++) {
-			if (p.equals(board.getPositions().get(i))) {
-				indiceP = i;
-			}
-		}
-		if (indiceP == Board.GAUCHE_BAS || indiceP == Board.CENTRE_BAS || indiceP == Board.DROITE_BAS) {
-			return false;
-		}
-		if ((indiceP == Board.GAUCHE && board.getPositions().get(Board.GAUCHE_BAS).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.CENTRE && board.getPositions().get(Board.CENTRE_BAS).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.DROITE && board.getPositions().get(Board.DROITE_BAS).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.GAUCHE_HAUT && board.getPositions().get(Board.GAUCHE).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.CENTRE_HAUT && board.getPositions().get(Board.CENTRE).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.DROITE_HAUT && board.getPositions().get(Board.DROITE).getNom().equals("*"))) {
-			return false;
-		}
-		return true;
-	}
-	
-	public boolean aPieceAGauche(Piece p){
-		int indiceP = 0;
-//	Recuperation des indices dans Board.positions des pieces p et q
-		for (int i = 0; i < board.getPositions().size(); i++) {
-			if (p.equals(board.getPositions().get(i))) {
-				indiceP = i;
-			}
-		}
-		if (indiceP == Board.GAUCHE_BAS || indiceP == Board.GAUCHE || indiceP == Board.GAUCHE_HAUT) {
-			return false;
-		}
-		if ((indiceP == Board.CENTRE_BAS && board.getPositions().get(Board.GAUCHE_BAS).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.CENTRE && board.getPositions().get(Board.GAUCHE).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.DROITE_BAS && board.getPositions().get(Board.CENTRE_BAS).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.DROITE && board.getPositions().get(Board.CENTRE).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.DROITE_HAUT && board.getPositions().get(Board.GAUCHE_HAUT).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.CENTRE_HAUT && board.getPositions().get(Board.GAUCHE_HAUT).getNom().equals("*"))) {
-			return false;
-		}
-		return true;
-	}
-	
-	public boolean aPieceADroite(Piece p){
-		int indiceP = 0;
-//	Recuperation des indices dans Board.positions des pieces p et q
-		for (int i = 0; i < board.getPositions().size(); i++) {
-			if (p.equals(board.getPositions().get(i))) {
-				indiceP = i;
-			}
-		}
-		if (indiceP == Board.DROITE_BAS || indiceP == Board.DROITE|| indiceP == Board.DROITE_HAUT) {
-			return false;
-		}
-		if ((indiceP == Board.CENTRE_BAS && board.getPositions().get(Board.DROITE_BAS).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.CENTRE && board.getPositions().get(Board.DROITE).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.CENTRE_HAUT && board.getPositions().get(Board.DROITE_HAUT).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.GAUCHE_BAS && board.getPositions().get(Board.CENTRE_BAS).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.GAUCHE && board.getPositions().get(Board.CENTRE).getNom().equals("*"))) {
-			return false;
-		}
-		if ((indiceP == Board.GAUCHE_HAUT && board.getPositions().get(Board.GAUCHE_HAUT).getNom().equals("*"))) {
-			return false;
-		}
-		return true;
-	}
-	
-	public boolean isUnder(Piece p, Piece q){
-		int indiceP = 0, indiceQ = 0;
-//		Recuperation des indices dans Board.positions des pieces p et q
-		for (int i = 0; i < board.getPositions().size(); i++) {
-			if (p.equals(board.getPositions().get(i))) {
-				indiceP = i;
-			}
-			if (q.equals(board.getPositions().get(i))) {
-				indiceQ = i;
-			}
-		}
-//		Comparaison
-		if (indiceQ == Board.GAUCHE_BAS || indiceQ == Board.CENTRE_BAS || indiceQ == Board.DROITE_BAS) {
-			return false;
-		}
-		if ((indiceP == Board.GAUCHE_BAS && indiceQ == Board.GAUCHE) ||(indiceP == Board.CENTRE_BAS && indiceQ == Board.CENTRE) || (indiceP == Board.DROITE_BAS && indiceQ == Board.DROITE)) {
-			return true;
-		}
-		if ((indiceP == Board.GAUCHE && indiceQ == Board.GAUCHE_HAUT) ||(indiceP == Board.CENTRE && indiceQ == Board.CENTRE_HAUT) || (indiceP == Board.DROITE && indiceQ == Board.DROITE_HAUT)) {
-			return true;
-		}
-		return false;
-	}
-	
-//	public boolean isUpper(Piece p, Piece q){
-//		return !isUnder(p, q);
-//	}
-
-	public boolean isAGauche(Piece p, Piece q){
-		int indiceP = 0, indiceQ = 0;
-//		Recuperation des indices dans Board.positions des pieces p et q
-		for (int i = 0; i < board.getPositions().size(); i++) {
-			if (p.equals(board.getPositions().get(i))) {
-				indiceP = i;
-			}
-			if (q.equals(board.getPositions().get(i))) {
-				indiceQ = i;
-			}
-		}
-		if (indiceQ == Board.GAUCHE_BAS || indiceQ == Board.GAUCHE || indiceQ == Board.GAUCHE_HAUT) {
-			return false;
-		}
-		if ((indiceP == Board.GAUCHE_BAS && indiceQ == Board.CENTRE_BAS) ||(indiceP == Board.GAUCHE && indiceQ == Board.CENTRE) || (indiceP == Board.GAUCHE_HAUT && indiceQ == Board.CENTRE_HAUT)) {
-			return true;
-		}
-		if ((indiceP == Board.CENTRE_BAS && indiceQ == Board.DROITE_BAS) ||(indiceP == Board.CENTRE && indiceQ == Board.DROITE) || (indiceP == Board.CENTRE_HAUT && indiceQ == Board.DROITE_HAUT)) {
-			return true;
-		}
-		return false;
-	}
-	
-//	public boolean isADroite(Piece p, Piece q){
-//		return !isAGauche(p,q);
-//	}
-	
 	public Board getBoard() {
 		return board;
 	}
 
 	public void setBoard(Board board) {
 		this.board = board;
-	}
-	
-	public void ouvrir() {
-        JFileChooser choix = new JFileChooser();
-        choix.setCurrentDirectory(new File("data1.txt"));
-        choix.setMultiSelectionEnabled(false);
-        // Ajout de filtre
-        choix.setFileFilter(new FiltreExtension("Texte", ".txt"));
-        choix.setAcceptAllFileFilterUsed(false);
-
-        int retour = choix.showOpenDialog(null);
-        if (retour == JFileChooser.APPROVE_OPTION) {
-            // chemin absolu du fichier choisi
-            Main.path = choix.getSelectedFile().getAbsolutePath();
-            reinitialisation();
-            refresh();
-        }
-    }
-		
-	private void reinitialisation() {
-		resolution = new Resolution(this);
-		this.vitesseExec = 999;
-		this.board = new Board(Main.path);
-		this.algoFini = false; unique = false; algoLance = false;
-		this.solutionCourante = 0;
-		this.nbSolutionsTrouvees = 0;
-		this.solutions = new ArrayList<Solution>();
-		this.pool = board.getPool();
-		this.erreursBoard = new ArrayList<InstanceBoard>();
-		this.instrumentation = new Instrumentation();
-		this.getInstrumentation().setNbAppelRecursifs(0);
-	}
-
-	public void solutionPrecedente(){
-		System.out.println("sol cour : "+solutionCourante+"\t nbSolutions : "+nbSolutions);
-		if (solutionCourante == 0) {
-			solutionCourante = nbSolutions -1;
-			chargeBoard(solutions.get(solutionCourante));
-		}
-		else if((solutionCourante - 1) <= 0) {
-			solutionCourante = 0;
-			chargeBoard(solutions.get(solutionCourante));
-		}else {
-			solutionCourante--;
-			chargeBoard(solutions.get(solutionCourante));
-		}
-		refresh();
-	}
-	
-	public void solutionSuivante(){
-		System.out.println("sol cour : "+solutionCourante+"\t nbSolutions : "+nbSolutions);
-		if (solutionCourante == nbSolutions -1) { 
-			solutionCourante = 0;
-			chargeBoard(solutions.get(solutionCourante));
-		}
-		else if((solutionCourante+1) == solutions.size()) {
-			solutionCourante = 0;
-			chargeBoard(solutions.get(solutionCourante));
-		}else {
-			solutionCourante++;
-			chargeBoard(solutions.get(solutionCourante));
-		}
-		refresh();
 	}
 	
 	public int getNbSolutionsTrouvees() {
@@ -852,7 +704,6 @@ public class NineSquarePuzzle extends Observable{
 	}
 
 	public void setVitesseExec(int value) {
-		// TODO Auto-generated method stub
 		this.vitesseExec = value;
         setChanged();
         notifyObservers();
@@ -880,7 +731,6 @@ public class NineSquarePuzzle extends Observable{
 	}
 
 	public String getPath() {
-		// TODO Auto-generated method stub
 		return this.path;
 	}
 
@@ -900,63 +750,16 @@ public class NineSquarePuzzle extends Observable{
 		this.algoFini = algoFini;
 	}
 
-	public void tournerSolutionGraphique(ArrayList<Piece> b) {
-//	public void tournerSolution(Board b) {
-		if (algoFini) {
-			System.out.println("tourner");
-			for (int i = 0; i < b.size(); i++) {
-				b.get(i).tourne(1);
-			}
-			Board board = new Board(Main.path);
-			board.positionner(b.get(Board.GAUCHE_BAS), 0);
-			board.positionner(b.get(Board.GAUCHE), 1);
-			board.positionner(b.get(Board.GAUCHE_HAUT), 2);
-			board.positionner(b.get(Board.CENTRE_BAS), 3);
-			board.positionner(b.get(Board.CENTRE), 4);
-			board.positionner(b.get(Board.CENTRE_HAUT), 5);
-			board.positionner(b.get(Board.DROITE_BAS), 6);
-			board.positionner(b.get(Board.DROITE), 7);
-			board.positionner(b.get(Board.DROITE_HAUT), 8);
-			chargeBoard(new Solution(board.getPositions()));
-			
-//			this.board.resetBoard();
-//			this.board.positionner(arrayList.get(Board.GAUCHE_BAS), 0);
-//			this.board.positionner(arrayList.get(Board.GAUCHE), 1);
-//			this.board.positionner(arrayList.get(Board.GAUCHE_HAUT), 2);
-//			this.board.positionner(arrayList.get(Board.CENTRE_BAS), 3);
-//			this.board.positionner(arrayList.get(Board.CENTRE), 4);
-//			this.board.positionner(arrayList.get(Board.CENTRE_HAUT), 5);
-//			this.board.positionner(arrayList.get(Board.DROITE_BAS), 6);
-//			this.board.positionner(arrayList.get(Board.DROITE), 7);
-//			this.board.positionner(arrayList.get(Board.DROITE_HAUT), 8);
-			System.out.println(board.toString());
-//			b = board.clone();
-		}else {
-			System.out.println("L'algo n'est pas fini");
-		}
-		System.out.println(this.board.toString());
-		refresh();
-	}
-
-	public void isPiecePerfect() {
-//		JOptionPane jop = 
-	}
-	
-	public void isPerfect(){
-		if (pool.isPerfect()) {
-			JOptionPane.showConfirmDialog(null, "Vrai !", "Puzzle parfait ?", JOptionPane.CLOSED_OPTION);
-		}else {
-			JOptionPane.showConfirmDialog(null, "Faux !", "Puzzle parfait ?", JOptionPane.CLOSED_OPTION);
-		}
-	}
-
-	public void arreterAlgo() {
-		this.board.resetBoard();refresh();
-		resolution.interrupt();
-	}
-
 	public Resolution getResolution() {
 		return resolution;
+	}
+	
+	public void refresh(){
+		try {
+	        setChanged();
+	        notifyObservers();
+		} catch (ArrayIndexOutOfBoundsException e) {
+		}
 	}
 	
 	public int getNbAppelRecursif(){
@@ -983,6 +786,7 @@ public class NineSquarePuzzle extends Observable{
 	public void setTpsEcoule(String tpsEcoule) {
 		this.tpsEcoule = tpsEcoule;
 	}
+	
 }
 
 	

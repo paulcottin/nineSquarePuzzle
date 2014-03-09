@@ -18,8 +18,18 @@ import javax.swing.event.ChangeListener;
 import nineSquarePuzzle.NineSquarePuzzle;
 import nineSquarePuzzle.Pool;
 
+/**
+ * Affichage des informations relatives à l'état d'avancement de la résolution de l'algorithme
+ * @author Paul
+ *
+ */
 public class Vue_CoteDroit extends JPanel implements Observer{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	NineSquarePuzzle puzzle;
 	Pool pool;
 	JLabel rapport, titre, nbSolutions;
@@ -69,7 +79,6 @@ public class Vue_CoteDroit extends JPanel implements Observer{
 					try {
 						puzzle.setVitesseExec(vitesse.getValue());
 					} catch (Exception e) {
-						System.out.println("EXCEPTION !!");
 					}
 			}
 		});

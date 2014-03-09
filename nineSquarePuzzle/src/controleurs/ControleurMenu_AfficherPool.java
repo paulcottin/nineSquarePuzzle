@@ -2,8 +2,6 @@ package controleurs;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Observer;
-
 import nineSquarePuzzle.NineSquarePuzzle;
 
 public class ControleurMenu_AfficherPool implements ActionListener {

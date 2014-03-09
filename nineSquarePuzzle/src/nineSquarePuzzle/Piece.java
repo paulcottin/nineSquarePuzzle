@@ -1,5 +1,10 @@
 package nineSquarePuzzle;
 
+/**
+ * 
+ * @author Jean-Laurent
+ *
+ */
 public class Piece {
 
 	String nom;
@@ -29,13 +34,19 @@ public class Piece {
 		if (east>0) {eastSigne = " ";}else {eastSigne = "-";}
 	}
 	
-//	Faire tourner la piece, de n quart, dans le sens des aiguilles d'une montre
+	/**
+	 * Faire tourner la piece, d'un quart de tour, dans le sens des aiguilles d'une montre
+	 * @param n int : nb de tours 
+	 */
 	public void tourne(int n){
 		for (int i = 0; i < n ; i++) {
 			tourneUneFois();
 		}
 	}
 	
+	/**
+	 * Faire tourner la pièce une fois
+	 */
 	public void tourneUneFois(){
 		int temp = north;String tempSign = northSigne;
 		north = west;northSigne = weastSigne;

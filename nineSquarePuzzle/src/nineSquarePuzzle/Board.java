@@ -1,11 +1,12 @@
 package nineSquarePuzzle;
 
 import java.util.ArrayList;
-import java.util.Observable;
-
-import vues.Vue_Board;
    
-
+/**
+ * Liste les positions, leur occupation par une pièce et leur orientation
+ * @author Jean-Laurent
+ *
+ */
 public class Board {
 
 	public static int GAUCHE_HAUT = 0, CENTRE_HAUT = 1, DROITE_HAUT = 2, GAUCHE = 3, CENTRE = 4, DROITE = 5, GAUCHE_BAS = 6, CENTRE_BAS = 7, DROITE_BAS = 8;
@@ -14,7 +15,6 @@ public class Board {
 	boolean[] positionOccupees = new boolean[9];
 	int[] orientation = new int[9];
 	private Pool pool;
-	String path;
 	
 	public Board(){
 		positions = new ArrayList<Piece>();
@@ -26,10 +26,6 @@ public class Board {
 	}
 	
 	public Board(String path){
-		/*
-		 * Initialiser positions avec des pieces vides (créer un constructeur vide dans Piece)
-		 * Changer positions.add(indice, p) par un set
-		 * */
 		positions = new ArrayList<Piece>();
 		for (int i = 0; i < 9; i++) {//Au départ les cases sont occupées par des pièces vides
 			positions.add(new Piece());
@@ -40,10 +36,13 @@ public class Board {
 		for (int i = 0; i < 9; i++) {
 			orientation[i] = positions.get(i).getOrientation();
 		}
-		pool = new Pool(path);
-		this.path = path;
 	}
 	
+	/**
+	 * positionne une pièce en modifiant tous les paramètres impliqués
+	 * @param p Piece : à positionner
+	 * @param indice int
+	 */
 	public void positionner(Piece p, int indice){
 		if (indice < 9) {
 			int indiceP = 0;
@@ -67,6 +66,10 @@ public class Board {
 		}
 	}
 	
+	/**
+	 * Retire une pièce et modifie tous les paramètres impliqués
+	 * @param p Piece
+	 */
 	public void retirer(Piece p){
 		for (int i = 0; i < positions.size(); i++) {
 			if (p.equals(positions.get(i))) {
@@ -77,6 +80,10 @@ public class Board {
 		}
 	}
 	
+	/**
+	 * Initialise l'orientation de la pièce.
+	 * @param p Piece
+	 */
 	public void resetPieceOrientation(Piece p){
 		for (Piece p1 : this.pool.getPool()) {
 			if (p1.equals(p)) {
@@ -88,13 +95,15 @@ public class Board {
 		}
 	}
 
+	/**
+	 * Crée un autre Board avec les mêmes caractéristiques
+	 */
 	public Board clone(){
 		Board board = new Board();
 		ArrayList<Piece> positions = new ArrayList<Piece>();
 		boolean[] positionOccupees = new boolean[9];
 		int[] orientation = new int[9];
 		
-		board.setPath(Main.path);
 		board.setPool(this.getPool());
 //		PositionsOccupees
 		for (int i = 0; i < board.positionOccupees.length; i++) {
@@ -117,6 +126,9 @@ public class Board {
 		return board;
 	}
 	
+	/**
+	 * Initialise le Board
+	 */
 	public void resetBoard(){
 		for (Piece p : this.positions) {
 			this.retirer(p);
@@ -161,14 +173,6 @@ public class Board {
 
 	public void setPositionOccupees(boolean[] positionOccupees) {
 		this.positionOccupees = positionOccupees;
-	}
-
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
 	}
 
 	public int[] getOrientation() {

@@ -5,10 +5,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.Observable;
 
+/**
+ * Associe le fichier fourni à une liste de pièces
+ * @author Jean-Laurent
+ *
+ */
 public class Pool extends Observable{
 
 	private ArrayList<String> lignes = new ArrayList<String>();
@@ -38,6 +42,9 @@ public class Pool extends Observable{
 		this.pool = array;
 	}
 	
+	/**
+	 * Ajoute les pièces à la liste
+	 */
 	public void creePool(){
 		for (int i = 1; i < 10; i++) {
 			pool.add(this.creePieces(lignes.get(i)));
@@ -138,7 +145,7 @@ public class Pool extends Observable{
 		}
 	}
 	
-	public Piece get(String nom){
+	public Piece get(String nom, Pool p){
 		for (int i = 0; i < pool.size(); i++) {
 			if (pool.get(i).getNom().equals(nom)) {
 				return pool.get(i);

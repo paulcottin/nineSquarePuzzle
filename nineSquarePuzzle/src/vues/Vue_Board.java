@@ -1,7 +1,6 @@
 package vues;
 
 import graphique.BoardCarre;
-import graphique.Carre;
 import graphique.Fenetre;
 
 import java.awt.GridLayout;
@@ -10,11 +9,20 @@ import java.util.Observer;
 
 import javax.swing.JPanel;
 
-import nineSquarePuzzle.Board;
 import nineSquarePuzzle.NineSquarePuzzle;
 
+/**
+ * Affichage du Board (affichage principal)
+ * @author Paul
+ *
+ */
 public class Vue_Board extends JPanel implements Observer{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	NineSquarePuzzle puzzle;
 	BoardCarre boardCarre;
 	

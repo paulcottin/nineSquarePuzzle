@@ -6,6 +6,7 @@ public class Main {
 	
 	public static String path = "data2.txt";
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) throws InterruptedException{
 //		Main sans GUI (interface graphique)
 //		int[] tab = {1,-2,-3,4};

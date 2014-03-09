@@ -8,7 +8,6 @@ import java.util.Observer;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 import nineSquarePuzzle.NineSquarePuzzle;
@@ -23,8 +22,18 @@ import controleurs.ControleurMenu_SolutionPrecedente;
 import controleurs.ControleurMenu_SolutionSuivante;
 import controleurs.ControleurMenu_Tourner;
 
+/**
+ * Affichage du menu
+ * @author Paul
+ *
+ */
 public class Vue_Menu extends JMenuBar implements Observer {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	NineSquarePuzzle puzzle;
 	JMenuItem lancer, arreter;
 	boolean algoLance = false;
@@ -51,10 +60,10 @@ public class Vue_Menu extends JMenuBar implements Observer {
 		JMenuItem puzzleParfait = new JMenuItem("Puzzle parfait ?");
 		puzzleParfait.addActionListener(new ControleurMenu_PuzzleParfait(this.puzzle));
 		lancer= new JMenuItem("Lancer");
-		lancer.addActionListener(new ControleurMenu_Lancer(this.puzzle));
+		lancer.addActionListener(new ControleurMenu_Lancer(this.puzzle, this));
 		lancer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
 		arreter = new JMenuItem("Arreter");
-		arreter.addActionListener(new ControleurMenu_Arreter(this.puzzle));
+		arreter.addActionListener(new ControleurMenu_Arreter(this.puzzle, this));
 		arreter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
 	action.add(afficherPool);
 	action.add(pieceParfaite);
@@ -91,6 +100,14 @@ public class Vue_Menu extends JMenuBar implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 		algoLance = puzzle.isAlgoLance();
+	}
+
+	public JMenuItem getLancer() {
+		return lancer;
+	}
+
+	public JMenuItem getArreter() {
+		return arreter;
 	}
 }
 
