@@ -36,6 +36,7 @@ public class Piece {
 		}
 	}
 	
+//	Faire tourner la piece, d'un quart de tour, dans le sens des aiguilles d'une montre
 	public void tourneUneFois(){
 		int temp = north;String tempSign = northSigne;
 		north = west;northSigne = weastSigne;

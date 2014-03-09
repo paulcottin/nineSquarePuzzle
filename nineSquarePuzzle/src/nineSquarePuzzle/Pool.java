@@ -29,6 +29,7 @@ public class Pool extends Observable{
 		setChanged();notifyObservers();
 	}
 	
+	//Associe le fichier fourni à une liste
 	public Pool(String titre, ArrayList<Piece> array){
 		if (titre.length() != 1) {
 			System.out.println("Le titre ne doit comporter qu'un caractère !");
@@ -38,11 +39,13 @@ public class Pool extends Observable{
 		this.pool = array;
 	}
 	
+//	ajoute les pièce à la liste
 	public void creePool(){
 		for (int i = 1; i < 10; i++) {
 			pool.add(this.creePieces(lignes.get(i)));
 		}
 	}
+	
 	
 	public Piece creePieces(String ligne){
 		int longueur = ligne.length();

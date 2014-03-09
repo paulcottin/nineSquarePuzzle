@@ -16,7 +16,8 @@ public class Board {
 	private Pool pool;
 	String path;
 	
-	public Board(){
+//	Liste les positions, leur occupation par une pièce et leur orientation
+public Board(){
 		positions = new ArrayList<Piece>();
 		positionOccupees = new boolean[9];
 		orientation = new int[9];
@@ -44,6 +45,7 @@ public class Board {
 		this.path = path;
 	}
 	
+//	positionne une pièce en modifiant tous les paramètres impliqués
 	public void positionner(Piece p, int indice){
 		if (indice < 9) {
 			int indiceP = 0;
@@ -67,6 +69,7 @@ public class Board {
 		}
 	}
 	
+//	Retire une pièce et modifie tous les paramètres impliqués
 	public void retirer(Piece p){
 		for (int i = 0; i < positions.size(); i++) {
 			if (p.equals(positions.get(i))) {
@@ -77,6 +80,7 @@ public class Board {
 		}
 	}
 	
+//	Initialise l'orientation de la pièce.
 	public void resetPieceOrientation(Piece p){
 		for (Piece p1 : this.pool.getPool()) {
 			if (p1.equals(p)) {
@@ -117,6 +121,7 @@ public class Board {
 		return board;
 	}
 	
+//	Initialise le Board
 	public void resetBoard(){
 		for (Piece p : this.positions) {
 			this.retirer(p);
