@@ -27,6 +27,7 @@ public class Vue_Menu extends JMenuBar implements Observer {
 
 	NineSquarePuzzle puzzle;
 	JMenuItem lancer, arreter;
+	boolean algoLance = false;
 	
 	public Vue_Menu(NineSquarePuzzle puzzle){
 		this.puzzle = puzzle;
@@ -58,6 +59,13 @@ public class Vue_Menu extends JMenuBar implements Observer {
 	action.add(afficherPool);
 	action.add(pieceParfaite);
 	action.add(puzzleParfait);
+	if (!algoLance) {
+		arreter.setEnabled(false);
+		lancer.setEnabled(true);
+	}else {
+		arreter.setEnabled(true);
+		lancer.setEnabled(false);
+	}
 	action.add(lancer);
 	action.add(arreter);
 		
@@ -82,7 +90,7 @@ public class Vue_Menu extends JMenuBar implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		
+		algoLance = puzzle.isAlgoLance();
 	}
 }
 

@@ -57,6 +57,10 @@ public class Piece {
 		}
 	}
 	
+	public Piece clone(){
+		return new Piece(this.nom, (new int[]{this.north, this.east, this.south, this.west}));
+	}
+	
 	public String toString(){
 		return ("+----------------+\n|\t"+this.northSigne+Math.abs(this.north)+" \t |\n|  "+this.weastSigne+Math.abs(this.west)+"   ["+this.nom+"]   "+this.eastSigne+Math.abs(this.east)+" |\n|\t"+this.southSigne+Math.abs(this.south)+"\t |\n+----------------+");
 	}

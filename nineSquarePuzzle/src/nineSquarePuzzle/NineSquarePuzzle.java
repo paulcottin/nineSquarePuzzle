@@ -70,6 +70,7 @@ public class NineSquarePuzzle extends Observable{
 			
 			@Override
 			public void run(){
+				algoLance = true;
 				instrumentation.start();
 				algoFini = false;
 				//solutions = new ArrayList<Solution>();
@@ -113,12 +114,14 @@ public class NineSquarePuzzle extends Observable{
 				instrumentation.stop();
 				algoFini = true;
 				System.out.println("Résolution finie");
+				JOptionPane.showMessageDialog(null, "Résolution finie !");
 				
 				chargeBoard(solutions.get(solutionCourante));
 				refresh();
 			}
 			
 		}.start();
+		algoLance = false;
 	}
 	
 	public void resoudreAide(int n, int orientation, int nbPiecesTestees, boolean aTourne, ArrayList<InstanceBoard> boardFaux, boolean fini, int premierePiece, boolean premierTour, int nbToursPremierePiece) throws InterruptedException{
@@ -936,9 +939,7 @@ public class NineSquarePuzzle extends Observable{
 	}
 
 	public void isPiecePerfect() {
-		if (pool.isPerfect()) {
-			
-		}
+//		JOptionPane jop = 
 	}
 	
 	public void isPerfect(){

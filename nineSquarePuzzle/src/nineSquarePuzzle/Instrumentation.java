@@ -32,7 +32,7 @@ public class Instrumentation {
 			duree = fin.getTime() - debut.getTime();
 			millisec = (int) (duree % 1000);
 			seconde = (int) (duree /1000);
-			minute = (int) (duree / 60000);
+			minute = (int) ((duree / 60000)%60);
 			heure = (int) (duree / 3600000);
 			return (heure+"h "+minute+"min "+seconde+"s "+millisec+"ms");
 		}else {

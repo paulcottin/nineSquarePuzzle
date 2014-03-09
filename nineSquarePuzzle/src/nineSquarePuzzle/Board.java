@@ -90,24 +90,30 @@ public class Board {
 
 	public Board clone(){
 		Board board = new Board();
+		ArrayList<Piece> positions = new ArrayList<Piece>();
+		boolean[] positionOccupees = new boolean[9];
+		int[] orientation = new int[9];
+		
 		board.setPath(Main.path);
 		board.setPool(this.getPool());
 //		PositionsOccupees
 		for (int i = 0; i < board.positionOccupees.length; i++) {
-			board.positionOccupees[i] = this.getPositionOccupees()[i];
+			positionOccupees[i] = this.getPositionOccupees()[i];
 		}
 		
 //		Positions
-		int j = 0;
 		for (Piece p : this.positions) {
-			board.positions.set(j,p);
-			j++;
+			positions.add(p.clone());
 		}
 
 //		Orientations
 		for (int i = 0; i < this.orientation.length; i++) {
-			board.orientation[i] = this.orientation[i];
+			orientation[i] = this.orientation[i];
 		}
+		
+		board.setPositions(positions);
+		board.setOrientation(orientation);
+		board.setPositionOccupees(positionOccupees);
 		return board;
 	}
 	
