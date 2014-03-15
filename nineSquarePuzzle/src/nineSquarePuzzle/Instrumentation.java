@@ -25,7 +25,7 @@ public class Instrumentation {
 		estFini = true; 
 	}
 	
-	public String tempsEcoule(){
+	public String tempsEcouleTotal(){
 		long duree = 0;
 		int heure = 0, minute = 0, seconde = 0, millisec = 0;
 		if (estFini) {
@@ -56,7 +56,7 @@ public class Instrumentation {
 	}
 	
 	public String afficheInfos(){
-		return ("----------\n Temps d'exécution : "+this.tempsEcoule()+"\nNombre d'appels récursifs : "+nbAppelRecursifs);
+		return ("----------\n Temps d'exécution : "+this.tempsEcouleTotal()+"\nNombre d'appels récursifs : "+nbAppelRecursifs);
 	}
 
 	public int getNbAppelRecursifs() {

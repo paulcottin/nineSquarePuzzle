@@ -14,7 +14,6 @@ public class Resolution extends Thread{
 		try {
 			p.resoudre(0);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

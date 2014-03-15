@@ -29,7 +29,7 @@ public class Vue_Instrumentations extends JPanel implements Observer{
 		
 		puzzle.addObserver(this);
 		
-		tempsExec = new JLabel("Temps d'execution : "+puzzle.getInstrumentation().tempsEcoule()+"  ---- ");
+		tempsExec = new JLabel("Temps d'execution : "+puzzle.getInstrumentation().tempsEcouleTotal()+"  ---- ");
 		nbAppelRecur = new JLabel("Nombre d'appel recursif : "+String.valueOf(puzzle.getInstrumentation().getNbAppelRecursifs()));
 		this.add(tempsExec); 
 		this.add(nbAppelRecur);
@@ -41,7 +41,7 @@ public class Vue_Instrumentations extends JPanel implements Observer{
 		if (puzzle.isAlgoFini()) {
 			tempsExec.setText("Temps d'execution : "+puzzle.getTpsExec()+"  ---- ");
 		}else if (puzzle.isAlgoLance()) {
-			tempsExec.setText("Temps d'execution : "+puzzle.getInstrumentation().tempsEcoule()+"  ---- ");
+			tempsExec.setText("Temps d'execution : "+puzzle.getInstrumentation().tempsEcouleTotal()+"  ---- ");
 		} else {
 			tempsExec.setText("Temps d'execution : -1  ---- ");
 		}

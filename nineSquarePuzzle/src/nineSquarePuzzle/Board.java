@@ -75,7 +75,7 @@ public class Board {
 			if (p.equals(positions.get(i))) {
 				positions.set(i, new Piece());//Au lieu de supprimer on met une pièce vide
 				positionOccupees[i] = false;
-				pool.ajoutePiece(p);
+				this.pool.ajoutePiece(p);
 			}
 		}
 	}

@@ -100,6 +100,13 @@ public class Vue_Menu extends JMenuBar implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 		algoLance = puzzle.isAlgoLance();
+		if (algoLance) {
+			lancer.setEnabled(false);
+			arreter.setEnabled(true);
+		}else {
+			lancer.setEnabled(true);
+			arreter.setEnabled(false);
+		}
 	}
 
 	public JMenuItem getLancer() {
