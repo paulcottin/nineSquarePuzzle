@@ -38,12 +38,13 @@ public class Vue_Instrumentations extends JPanel implements Observer{
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
-		if (puzzle.isAlgoLance()) {
+		if (puzzle.isAlgoFini()) {
 			tempsExec.setText("Temps d'execution : "+puzzle.getTpsExec()+"  ---- ");
-		}else {
+		}else if (puzzle.isAlgoLance()) {
 			tempsExec.setText("Temps d'execution : "+puzzle.getInstrumentation().tempsEcoule()+"  ---- ");
+		} else {
+			tempsExec.setText("Temps d'execution : -1  ---- ");
 		}
-		tempsExec.setText("Temps d'execution : "+puzzle.getTpsExec()+"  ---- ");
 		nbAppelRecur.setText("Nombre d'appel recursif : "+String.valueOf(puzzle.getNbAppelRecursif()));
 		this.revalidate();
 	}

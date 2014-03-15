@@ -16,7 +16,7 @@ public class ControleurMenu_Lancer implements ActionListener {
 	public ControleurMenu_Lancer(NineSquarePuzzle p, Vue_Menu menu){
 		this.puzzle = p;
 		this.menu = menu;
-		this.r = puzzle.getResolution();
+		r = new Resolution(puzzle);
 	}
 	
 	

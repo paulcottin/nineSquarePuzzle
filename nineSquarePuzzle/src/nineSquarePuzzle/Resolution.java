@@ -5,6 +5,7 @@ public class Resolution extends Thread{
 	NineSquarePuzzle p;
 	
 	public Resolution(NineSquarePuzzle p) {
+		super();
 		this.p = p;
 	}
 	

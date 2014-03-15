@@ -116,9 +116,6 @@ public class Pool extends Observable{
 	public void enlevePiece(Piece p){
 		if (this.isUtilise(p)) {
 			utilisee.remove(p);
-//			System.out.println("Piece "+p.getNom()+" enlevée du Pool");
-		}else {
-//			System.out.println("Pièce utilisée : Pool.enlevePiece");
 		}
 	}
 	
@@ -127,9 +124,6 @@ public class Pool extends Observable{
 		if (!p.getNom().equals("*")) {
 			if (!this.isUtilise(p)) {
 				utilisee.add(p);
-//				System.out.println("Piece "+p.getNom()+" mise dans le pool");
-			}else {
-//				System.out.println("Piece "+p.getNom()+" déjà utilisée : Pool.ajoutePiece");
 			}
 		}
 	}

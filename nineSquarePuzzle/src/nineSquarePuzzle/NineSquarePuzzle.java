@@ -1,18 +1,20 @@
 package nineSquarePuzzle;
 
 import java.io.File;
+import java.security.AlgorithmParametersSpi;
 import java.util.ArrayList;
 import java.util.Observable;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+
 import graphique.FiltreExtension;
 /**
  * Classe principale - résolution du puzzle
  * @author Paul
  *
  */
-public class NineSquarePuzzle extends Observable{
+public class NineSquarePuzzle extends Observable implements Runnable{
 
 	private Board board;
 	private int[] ordrePlacement = {Board.CENTRE, Board.DROITE, Board.DROITE_HAUT, Board.CENTRE_HAUT, Board.GAUCHE_HAUT, Board.GAUCHE, Board.GAUCHE_BAS, Board.CENTRE_BAS, Board.DROITE_BAS};
@@ -59,6 +61,7 @@ public class NineSquarePuzzle extends Observable{
             reinitialisation();
         }
         refresh();
+        System.out.println("algo lance : "+algoLance);
     }
 	
 	/**
@@ -156,38 +159,28 @@ public class NineSquarePuzzle extends Observable{
 				instrumentation.start();
 				algoFini = false;
 				nbSolutionsTrouvees = 0;solutionCourante = 0;
-				System.out.println("Vitesse exec : "+vitesseExec);
 				int cptSolutions = 0;
 				int premierePiece = 0;
-				System.out.println("entré dans resoudre()");
 				
 				while (cptSolutions != pool.getNbSolutions()) {
 					try {
 						resoudreAide(0, 0, 0, false, erreursBoard, false, premierePiece, true, 0);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					
 					ajouteSolution(board.clone());
 					
 					board.resetBoard();refresh();
 					fini = false;
 					pool = new Pool(Main.path);
-					System.out.println("cpt de sols : "+(cptSolutions+1)+"\tNb de sols trouvées : "+getNbSolutionsTrouvees()+"\tTaille du tabl : "+solutions.size());
 					if (cptSolutions == pool.getNbSolutions()) {
 						premierePiece = pieceCentraleSuivante(solutions.get(cptSolutions).getBoard());
 					}
-					System.out.println("nb total de solutions : "+pool.getNbSolutions());
 					if (unique) {
 						cptSolutions++;
 						nbSolutionsTrouvees++;
-						System.out.println("cpt de sol : "+cptSolutions);
 					}
 				}
 				instrumentation.stop();
@@ -218,10 +211,7 @@ public class NineSquarePuzzle extends Observable{
 	 */
 	public void resoudreAide(int n, int orientation, int nbPiecesTestees, boolean aTourne, ArrayList<InstanceBoard> boardFaux, boolean fini, int premierePiece, boolean premierTour, int nbToursPremierePiece) throws InterruptedException{
 		if (n < 9 && !bienPlacee(board.getPositions().get(Board.DROITE_BAS), n) && !this.fini) {
-//			System.out.println("derniere p bien placée : "+bienPlacee(board.getPositions().get(Board.DROITE_BAS), n));
-//			System.out.println("entre dans résoudreAide()\tn : "+n);
-			while (!bienPlacee(board.getPositions().get(Board.DROITE_BAS), n) /*pool.getPool().size() > 0 && */) {
-//				System.out.println("fini : "+fini);
+			while (!bienPlacee(board.getPositions().get(Board.DROITE_BAS), n)) {
 				if(n == 0 && aEteUneInstance(new InstanceBoard(this.board), boardFaux) && nbToursPremierePiece >=3){
 					board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);refresh();
 					board.retirer(board.getPositions().get(this.ordrePlacement[n]));refresh();
@@ -240,7 +230,6 @@ public class NineSquarePuzzle extends Observable{
 						else if (n > 0 && orientation < 4) {
 							orientation++;
 							board.getPositions().get(this.ordrePlacement[n]).tourne(1);refresh();
-//							setOrientation(orientation);refresh();
 						}
 						else if (n > 0 && orientation >= 4) {
 							board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);refresh();
@@ -253,19 +242,17 @@ public class NineSquarePuzzle extends Observable{
 							board.positionner(pool.getPool().get(0), this.ordrePlacement[n]);refresh();
 						}
 					}
-					if (pool.getPool().size() >= 0 && !(n == 0 && !(nbToursPremierePiece > 3))/*&& !board.getPositions().get(0).getNom().equals("*")*/) {
+					if (pool.getPool().size() >= 0 && !(n == 0 && !(nbToursPremierePiece > 3))) {
 						boardFaux.add(new InstanceBoard(board));
 					}
 				}
 				while (nbPiecesTestees <= pool.getPool().size() && !this.fini) {//Tant qu'on a pas testé toutes les pièces pour une case
-//					System.out.println("n : "+n+"\ta tourné : "+aTourne+"\tnb de p testées : "+nbPiecesTestees);
 					if (n > 0 && aTourne || (n == 0 && !(nbToursPremierePiece < 3) )) {
 						board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);refresh();
 						board.retirer(board.getPositions().get(this.ordrePlacement[n]));refresh();
 						nbPiecesTestees++;
 					}
 					if (pool.getPool().size() > 0) {
-//						System.out.println("n : "+n);
 						if (premierTour) {
 							board.positionner(pool.getPool().get(premierePiece), this.ordrePlacement[n]);refresh();
 							orientation = 0;
@@ -283,13 +270,11 @@ public class NineSquarePuzzle extends Observable{
 							Thread.sleep(1000-vitesseExec);
 						}
 					}else {
-//						System.out.println("Fini");System.out.println((new InstanceBoard(board).toString()));fini = true;//System.exit(0);
+						
 					}
-//					System.out.println("coucou");
 					while (orientation < 4 && !this.fini) {
 						Thread.sleep(1000-vitesseExec);
-//						System.out.println("n : "+n+"\t modulo  = 0 : "+(this.ordrePlacement[n] % 2 == 0)+"\t pool size "+pool.getPool().size()+"\tfini : "+fini);
-						if (n == 0 && !premierTour) {
+							if (n == 0 && !premierTour) {
 							if (!(nbToursPremierePiece < 3)) {//Si la pièce à trop tournée, on fait en sorte qu'elle quitte le while et qu'on la retire après
 								aTourne = true;
 								orientation = 8;
@@ -301,19 +286,14 @@ public class NineSquarePuzzle extends Observable{
 							}
 						}
 							if (bienPlacee(board.getPositions().get(this.ordrePlacement[n]), n)) {
-//								System.out.println("bien placée");
 								if (premierTour) {
 									premierTour = false;
 								}
 								instrumentation.appel();
 								resoudreAide(n+1, 0, 0, false, boardFaux, fini, premierePiece, premierTour, nbToursPremierePiece);
-//								System.out.println("n : "+n);
-//								System.out.println("bien placée : "+bienPlacee(board.getPositions().get(Board.DROITE_BAS), n));
 									if (bienPlacee(board.getPositions().get(Board.DROITE_BAS), n)) {
-//										System.out.println("Sortie de fonction : \n"+board.toString());
 										this.fini = true;
 										nettoieDoublon(erreursBoard);//Enlève les doublons pour raccourcir les tests
-//										System.out.println("fini");
 										orientation = 4;
 										return;
 									}
@@ -329,14 +309,9 @@ public class NineSquarePuzzle extends Observable{
 						        refresh();
 							}
 					}
-//					System.out.println("Sorti de orientation < 4");
 				}
-//				System.out.println("Sorti de nbPiecesTestees <= pool.getPool().size()");
 			}
-//			System.out.println("Sorti de pool.getPool().size() > 0");
 		}else {
-			//fen.refreshBoard();
-			System.out.println("Solution ajoutée à l'arrayList\tnb solutions trouvees : "+(this.nbSolutionsTrouvees +1));
 			this.fini = true;
 		}
 	}
@@ -371,9 +346,7 @@ public class NineSquarePuzzle extends Observable{
 					solutions.add(new Solution(b.getPositions()));
 					erreursBoard.add(new InstanceBoard(b));
 				}
-				System.out.println("Solution ajoutée (not empty)");
 			}else {
-				System.out.println("Solution déjà trouvée");
 			}
 		}else {
 			solutions.add(new Solution(b.getPositions()));
@@ -384,13 +357,11 @@ public class NineSquarePuzzle extends Observable{
 				solutions.add(new Solution(b.getPositions()));
 				erreursBoard.add(new InstanceBoard(b));
 			}
-			System.out.println("Solution ajoutée (empty)");
 		}
 		
 //		Ajoute à erreurBoard l'instance de la pièce centrale seule
 		Board bo = new Board();
 		bo.getPositions().set(Board.CENTRE, this.board.getPositions().get(Board.CENTRE));
-		System.out.println("longueur de posiitons : "+bo.getPositions().size());
 		erreursBoard.add(new InstanceBoard(bo));
 	}
 	
@@ -785,6 +756,16 @@ public class NineSquarePuzzle extends Observable{
 
 	public void setTpsEcoule(String tpsEcoule) {
 		this.tpsEcoule = tpsEcoule;
+	}
+
+	@Override
+	public void run() {
+		try {
+			resoudre(0);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 	}
 	
 }
