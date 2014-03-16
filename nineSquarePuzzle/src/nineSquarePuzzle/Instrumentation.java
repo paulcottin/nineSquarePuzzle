@@ -31,7 +31,7 @@ public class Instrumentation {
 		if (estFini) {
 			duree = fin.getTime() - debut.getTime();
 			millisec = (int) (duree % 1000);
-			seconde = (int) (duree /1000);
+			seconde = (int) ((duree /1000)%60);
 			minute = (int) ((duree / 60000)%60);
 			heure = (int) (duree / 3600000);
 			return (heure+"h "+minute+"min "+seconde+"s "+millisec+"ms");
@@ -45,8 +45,8 @@ public class Instrumentation {
 		int heure = 0, minute = 0, seconde = 0, millisec = 0;
 		duree = (new Date()).getTime() - debut.getTime();
 		millisec = (int) (duree % 1000);
-		seconde = (int) (duree /1000);
-		minute = (int) (duree / 60000);
+		seconde = (int) ((duree /1000) % 60);
+		minute = (int) ((duree / 60000) % 60);
 		heure = (int) (duree / 3600000);
 		return (heure+"h "+minute+"min "+seconde+"s "+millisec+"ms");
 	}

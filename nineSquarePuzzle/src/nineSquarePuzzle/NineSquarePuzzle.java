@@ -316,9 +316,6 @@ public class NineSquarePuzzle extends Observable implements Runnable{
 				}
 			}
 			if (unique) {
-				for (int i = 0; i < b.getPositions().size(); i++) {
-					b.getPositions().get(i).tourne(1);
-				}
 				solutions.add(new Solution(b.getPositions()));
 				erreursBoard.add(new InstanceBoard(b));
 				//				Ajoute aux solutions et à erreurBoard les rotation de la solution
