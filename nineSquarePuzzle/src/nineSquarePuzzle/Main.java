@@ -4,7 +4,7 @@ import graphique.Fenetre;
 
 public class Main {
 	
-	public static String path = "data2.txt";
+	public static String path = "data1.txt";
 
 	@SuppressWarnings("unused")
 	public static void main(String[] args) throws InterruptedException{

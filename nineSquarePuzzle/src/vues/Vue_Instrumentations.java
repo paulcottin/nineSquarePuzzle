@@ -39,9 +39,9 @@ public class Vue_Instrumentations extends JPanel implements Observer{
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
 		if (puzzle.isAlgoFini()) {
-			tempsExec.setText("Temps d'execution : "+puzzle.getTpsExec()+"  ---- ");
-		}else if (puzzle.isAlgoLance()) {
 			tempsExec.setText("Temps d'execution : "+puzzle.getInstrumentation().tempsEcouleTotal()+"  ---- ");
+		}else if (puzzle.isAlgoLance()) {
+			tempsExec.setText("Temps d'execution : "+puzzle.getInstrumentation().tempsEcouleCourant()+"  ---- ");
 		} else {
 			tempsExec.setText("Temps d'execution : -1  ---- ");
 		}

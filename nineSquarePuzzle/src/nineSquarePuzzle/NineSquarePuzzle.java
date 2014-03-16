@@ -180,6 +180,7 @@ public class NineSquarePuzzle extends Observable implements Runnable{
 		chargeBoard(solutions.get(solutionCourante));
 		refresh();
 		algoLance = false;
+		resolution.interrupt();
 	}
 
 	/**
@@ -315,6 +316,9 @@ public class NineSquarePuzzle extends Observable implements Runnable{
 				}
 			}
 			if (unique) {
+				for (int i = 0; i < b.getPositions().size(); i++) {
+					b.getPositions().get(i).tourne(1);
+				}
 				solutions.add(new Solution(b.getPositions()));
 				erreursBoard.add(new InstanceBoard(b));
 				//				Ajoute aux solutions et à erreurBoard les rotation de la solution
@@ -348,19 +352,19 @@ public class NineSquarePuzzle extends Observable implements Runnable{
 	 * @return Board (à charger)
 	 */
 	public ArrayList<Piece> tournerSolution(ArrayList<Piece> b) {
-		for (int i = 0; i < b.size(); i++) {
-			b.get(i).tourne(1);
-		}
 		ArrayList<Piece> board = new ArrayList<Piece>();
-		board.add(b.get(Board.GAUCHE_BAS));
-		board.add(b.get(Board.GAUCHE));
-		board.add(b.get(Board.GAUCHE_HAUT));
-		board.add(b.get(Board.CENTRE_BAS));
-		board.add(b.get(Board.CENTRE));
-		board.add(b.get(Board.CENTRE_HAUT));
-		board.add(b.get(Board.DROITE_BAS));
-		board.add(b.get(Board.DROITE));
-		board.add(b.get(Board.DROITE_HAUT));
+		board.add(b.get(Board.GAUCHE_BAS).clone());
+		board.add(b.get(Board.GAUCHE).clone());
+		board.add(b.get(Board.GAUCHE_HAUT).clone());
+		board.add(b.get(Board.CENTRE_BAS).clone());
+		board.add(b.get(Board.CENTRE).clone());
+		board.add(b.get(Board.CENTRE_HAUT).clone());
+		board.add(b.get(Board.DROITE_BAS).clone());
+		board.add(b.get(Board.DROITE).clone());
+		board.add(b.get(Board.DROITE_HAUT).clone());
+		for (int i = 0; i < board.size(); i++) {
+			board.get(i).tourne(1);
+		}
 		refresh();
 		return board;
 	}
@@ -371,10 +375,10 @@ public class NineSquarePuzzle extends Observable implements Runnable{
 	 */
 	public void tournerSolutionGraphique(ArrayList<Piece> b) {
 		if (algoFini) {
-			tournerSolution(b);
+			this.board.setPositions(tournerSolution(b));
 			chargeBoard(new Solution(board.getPositions()));
 		}else {
-			System.out.println("L'algo n'est pas fini");
+			JOptionPane.showMessageDialog(null, "L'algo n'est pas fini");
 		}
 		refresh();
 	}
