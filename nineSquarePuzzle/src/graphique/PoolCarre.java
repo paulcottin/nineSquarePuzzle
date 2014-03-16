@@ -1,7 +1,5 @@
 package graphique;
 
-import java.awt.Color;
-
 import nineSquarePuzzle.Pool;
 
 public class PoolCarre {

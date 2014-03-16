@@ -25,7 +25,6 @@ public class ControleurMenu_Lancer implements ActionListener {
 		puzzle.setAlgoLance(true);
 		menu.getArreter().setEnabled(true);
 		menu.getLancer().setEnabled(false);
-		System.out.println("thread interrupted : "+r.isInterrupted());
 		if (r.isInterrupted()) {
 			r.run();
 		}else {
