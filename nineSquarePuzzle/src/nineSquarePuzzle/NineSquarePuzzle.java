@@ -13,7 +13,7 @@ import graphique.FiltreExtension;
  * @author Paul
  *
  */
-public class NineSquarePuzzle extends Observable implements Runnable{
+public class NineSquarePuzzle extends Observable{
 
 	private Board board;
 	private int[] ordrePlacement = {Board.CENTRE, Board.DROITE, Board.DROITE_HAUT, Board.CENTRE_HAUT, Board.GAUCHE_HAUT, Board.GAUCHE, Board.GAUCHE_BAS, Board.CENTRE_BAS, Board.DROITE_BAS};
@@ -158,7 +158,7 @@ public class NineSquarePuzzle extends Observable implements Runnable{
 				resoudreAide(0, 0, 0, false, erreursBoard, false, premierePiece, true, 0);
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				System.out.println("interrupted exception !");
+				System.out.println(e.toString());
 			}
 
 			ajouteSolution(board.clone());
@@ -222,11 +222,6 @@ public class NineSquarePuzzle extends Observable implements Runnable{
 							board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);refresh();
 							board.retirer(board.getPositions().get(this.ordrePlacement[n]));refresh();
 							n--;
-						}else if (n < 0) {
-							n = 0;
-							board.getPositions().get(this.ordrePlacement[n]).setOrientation(4);refresh();
-							board.retirer(board.getPositions().get(this.ordrePlacement[n]));refresh();
-							board.positionner(pool.getPool().get(0), this.ordrePlacement[n]);refresh();
 						}
 					}
 					if (pool.getPool().size() >= 0 && !(n == 0 && !(nbToursPremierePiece > 3))) {
@@ -248,17 +243,13 @@ public class NineSquarePuzzle extends Observable implements Runnable{
 						}
 						else if (nbToursPremierePiece < 3 && n == 0) {
 							//Ne rien faire, laisser tourner	
-						}else {
-
-						}{
+						}
+					}
 							board.positionner(pool.getPool().get(0), this.ordrePlacement[n]);refresh();
 							orientation = 0;
 							board.getPositions().get(this.ordrePlacement[n]).setOrientation(orientation);refresh();
 							Thread.sleep(1000-vitesseExec);
-						}
-					}else {
-
-					}
+					
 					while (orientation < 4 && !this.fini) {
 						Thread.sleep(1000-vitesseExec);
 						if (n == 0 && !premierTour) {
@@ -730,16 +721,6 @@ public class NineSquarePuzzle extends Observable implements Runnable{
 
 	public void setTpsEcoule(String tpsEcoule) {
 		this.tpsEcoule = tpsEcoule;
-	}
-
-	@Override
-	public void run() {
-		try {
-			resoudre(0);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
 	}
 
 	public void setResolution(Resolution resolution) {
